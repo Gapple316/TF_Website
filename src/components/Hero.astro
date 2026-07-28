@@ -54,7 +54,12 @@ const embedUrl = getBackgroundEmbedUrl(videoUrl, startSeconds);
 				/>
 			) : null
 		}
-		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/70" />
+		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/70" />
+		{
+			embedUrl && (
+				<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.65)_0%,transparent_38%)]" />
+			)
+		}
 	</div>
 
 	{

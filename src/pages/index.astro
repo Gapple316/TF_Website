@@ -118,6 +118,11 @@ const teaserThumbnails = Object.fromEntries(
 				)
 			}
 			<div class="absolute inset-0 bg-black/65" />
+			{
+				showreelEmbedUrl && (
+					<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.65)_0%,transparent_38%)]" />
+				)
+			}
 		</div>
 
 		<HeroLogo client:load />
