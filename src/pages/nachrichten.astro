@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+---
+
+<BaseLayout
+	title="Nachrichten"
+	description="Nachrichtenbeiträge von TRUE FRAME für dpa und RTS."
+	theme="news"
+	footerVariant="category"
+>
+	<Hero
+		scriptLine="zuerst vor Ort"
+		scriptFont="news-script"
+		headline={["NACHRICHTEN"]}
+		headlineFont="news"
+		body="Beiträge für dpa, RTS und Redaktionen. Schnell, verlässlich, sendefertig."
+	/>
+
+	<section class="bg-[#1b2c4b] px-6 py-16 md:px-10">
+		<div class="mx-auto grid max-w-5xl gap-10 text-center md:grid-cols-3">
+			<div>
+				<p class="font-display text-4xl text-white">120+</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">BEITRÄGE / JAHR</p>
+			</div>
+			<div>
+				<p class="font-display text-4xl text-white">24 H</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">LIEFERZEIT</p>
+			</div>
+			<div>
+				<p class="font-doku italic font-black text-4xl text-[#8ab0e8]">live</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">SCHALTUNGEN</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">
+		<p class="font-mono text-xs tracking-widest text-ink-muted">ARCHIV</p>
+		<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+			{
+				Array.from({ length: 4 }).map((_, i) => (
+					<div class="relative aspect-video overflow-hidden border border-dashed border-line bg-surface">
+						<div class="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4 text-center">
+							<span class="font-script text-xl text-script-accent">Beispiel folgt</span>
+							<span class="font-mono text-[10px] tracking-widest text-ink-muted">
+								PLATZHALTER {i + 1}/4
+							</span>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="bg-[#1b2c4b] px-6 py-20 text-center md:px-10">
+		<p class="font-news font-extralight uppercase tracking-[0.2em] text-3xl text-white md:text-5xl">
+			Kurzfristig vor Ort?
+		</p>
+		<a
+			href="tel:+436605777367"
+			class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
+		>
+			Jetzt anrufen
+		</a>
+	</section>
+</BaseLayout>
