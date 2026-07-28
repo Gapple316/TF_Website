@@ -34,9 +34,9 @@ describe("parseVideoUrl", () => {
 });
 
 describe("getBackgroundEmbedUrl", () => {
-	it("builds a muted autoplay loop embed for youtube", () => {
+	it("builds a muted autoplay loop embed for youtube with no operable controls", () => {
 		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs")).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0",
+			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1",
 		);
 	});
 
@@ -52,7 +52,7 @@ describe("getBackgroundEmbedUrl", () => {
 
 	it("appends a start offset for youtube", () => {
 		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 30)).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&start=30",
+			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1&start=30",
 		);
 	});
 
@@ -64,7 +64,7 @@ describe("getBackgroundEmbedUrl", () => {
 
 	it("ignores a start offset of 0", () => {
 		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 0)).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0",
+			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1",
 		);
 	});
 });

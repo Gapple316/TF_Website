@@ -27,7 +27,12 @@ export function getBackgroundEmbedUrl(
 	if (!info) return undefined;
 
 	if (info.provider === "youtube") {
-		const base = `https://www.youtube-nocookie.com/embed/${info.id}?autoplay=1&mute=1&loop=1&playlist=${info.id}&controls=0&modestbranding=1&rel=0&showinfo=0`;
+		// disablekb/fs/iv_load_policy/playsinline: this embed is a pure
+		// background visual (pointer-events: none in markup) — these params
+		// ensure no operable-looking control ever renders, even briefly or
+		// on platforms (e.g. iOS Safari without playsinline) that would
+		// otherwise show native player chrome.
+		const base = `https://www.youtube-nocookie.com/embed/${info.id}?autoplay=1&mute=1&loop=1&playlist=${info.id}&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1`;
 		return startSeconds ? `${base}&start=${startSeconds}` : base;
 	}
 
