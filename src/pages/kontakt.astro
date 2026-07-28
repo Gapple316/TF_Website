@@ -72,14 +72,22 @@ import kontaktHero from "../assets/photos/kontakt-hero.jpg";
 		</div>
 	</section>
 
-	<section class="mx-auto max-w-6xl px-6 pb-24 md:px-10">
-		<div class="aspect-[16/9] overflow-hidden border border-line grayscale transition hover:grayscale-0">
+	<section class="pb-24">
+		<a
+			href="https://www.google.com/maps/search/?api=1&query=Hofgartenweg+5,+5163+Mattsee"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="group relative block aspect-[16/5] w-full overflow-hidden"
+			aria-label="Standort auf Google Maps öffnen: Hofgartenweg 5, 5163 Mattsee"
+		>
 			<iframe
 				src="https://www.google.com/maps?q=Hofgartenweg+5,+5163+Mattsee&output=embed"
 				title="Standort TRUE FRAME – Hofgartenweg 5, 5163 Mattsee"
 				loading="lazy"
-				class="h-full w-full border-0"
+				tabindex="-1"
+				class="pointer-events-none h-full w-full border-0 grayscale"
 			/>
-		</div>
+			<div class="absolute inset-0 bg-black/0 transition group-hover:bg-black/10"></div>
+		</a>
 	</section>
 </BaseLayout>
