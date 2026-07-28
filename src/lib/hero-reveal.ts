@@ -1,11 +1,17 @@
-const REVEAL_DELAY_MS = 2000;
+const REVEAL_DELAY_MS = 5000;
+export const HERO_REVEAL_EVENT = "hero-reveal";
 
 export function initHeroReveal(): void {
-	const el = document.querySelector<HTMLElement>("[data-hero-reveal]");
-	if (!el) return;
+	const els = document.querySelectorAll<HTMLElement>("[data-hero-reveal]");
+	if (els.length === 0) return;
+
+	const revealAll = () => {
+		els.forEach((el) => el.classList.add("is-revealed"));
+		window.dispatchEvent(new CustomEvent(HERO_REVEAL_EVENT));
+	};
 
 	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-		el.classList.add("is-revealed");
+		revealAll();
 		return;
 	}
 
@@ -13,7 +19,7 @@ export function initHeroReveal(): void {
 	const reveal = () => {
 		if (revealed) return;
 		revealed = true;
-		el.classList.add("is-revealed");
+		revealAll();
 		window.removeEventListener("scroll", onScroll);
 	};
 
@@ -26,4 +32,6 @@ export function initHeroReveal(): void {
 	window.addEventListener("scroll", onScroll, { passive: true });
 }
 
-document.addEventListener("astro:page-load", initHeroReveal);
+if (typeof document !== "undefined") {
+	document.addEventListener("astro:page-load", initHeroReveal);
+}
