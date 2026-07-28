@@ -1,0 +1,81 @@
+---
+interface Props {
+	variant?: "full" | "category" | "minimal";
+}
+
+const { variant = "full" } = Astro.props;
+
+const partners = [
+	{ src: "/images/logos/rts.webp", alt: "RTS Regionalfernsehen" },
+	{ src: "/images/logos/dpa.webp", alt: "Deutsche Presse-Agentur" },
+	{ src: "/images/logos/explosive-egg.webp", alt: "Explosive Egg" },
+	{ src: "/images/logos/aqus.webp", alt: "Aqus" },
+	{ src: "/images/logos/grow-scale.webp", alt: "Grow & Scale" },
+	{ src: "/images/logos/r9.webp", alt: "R9" },
+];
+---
+
+<footer class="border-t border-line px-6 py-16 md:px-10">
+	{
+		variant === "minimal" ? (
+			<div class="mx-auto flex max-w-6xl flex-col items-center gap-4 text-center">
+				<img
+					src="/images/logos/true-frame-logo.webp"
+					alt="TRUE FRAME"
+					class="h-7 w-auto opacity-90"
+				/>
+				<p class="font-sans text-sm text-ink-muted">TRUE FRAME · GABRIEL NEUMAYR</p>
+			</div>
+		) : (
+			<div
+				class="mx-auto grid max-w-6xl gap-12"
+				class:list={[variant === "full" ? "md:grid-cols-3" : "md:grid-cols-2"]}
+			>
+				<div>
+					<img
+						src="/images/logos/true-frame-logo.webp"
+						alt="TRUE FRAME"
+						class="mb-4 h-7 w-auto opacity-90"
+					/>
+					<p class="max-w-xs font-sans text-sm text-ink-muted">
+						Produktionsfirma für Imagefilme, Nachrichtenbeiträge und
+						Dokumentationen.
+					</p>
+				</div>
+
+				<div class="font-sans text-sm text-ink-muted">
+					<p class="mb-2 font-medium text-ink">Kontakt</p>
+					<p><a href="tel:+436605777367" class="hover:text-accent">+43 660 577 73 67</a></p>
+					<p><a href="mailto:mail@true-frame.net" class="hover:text-accent">mail@true-frame.net</a></p>
+					<p>Hofgartenweg 5, 5163 Mattsee</p>
+					<div class="mt-4 flex gap-4">
+						<a href="https://www.instagram.com/gabriel_neumayr" class="hover:text-accent">Instagram</a>
+						<a href="https://www.youtube.com/@True_Frame_net" class="hover:text-accent">YouTube</a>
+					</div>
+				</div>
+
+				{
+					variant === "full" && (
+						<div class="flex flex-wrap items-center gap-6 md:justify-end">
+							{partners.map((p) => (
+								<img
+									src={p.src}
+									alt={p.alt}
+									class="h-6 w-auto opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0"
+								/>
+							))}
+						</div>
+					)
+				}
+			</div>
+		)
+	}
+
+	<div class="mx-auto mt-12 flex max-w-6xl flex-col gap-2 text-xs text-ink-muted md:flex-row md:justify-between">
+		<p>© {new Date().getFullYear()} TRUE FRAME</p>
+		<div class="flex gap-4">
+			<a href="/impressum" class="hover:text-accent">Impressum</a>
+			<a href="/datenschutz" class="hover:text-accent">Datenschutz</a>
+		</div>
+	</div>
+</footer>

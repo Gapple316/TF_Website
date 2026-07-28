@@ -9,9 +9,10 @@ interface Props {
 	description: string;
 	theme: "landing" | "doku" | "imagefilm" | "news";
 	showHeaderLogo?: boolean;
+	footerVariant?: "full" | "category" | "minimal";
 }
 
-const { title, description, theme, showHeaderLogo = true } = Astro.props;
+const { title, description, theme, showHeaderLogo = true, footerVariant = "full" } = Astro.props;
 ---
 
 <!doctype html>
@@ -30,7 +31,7 @@ const { title, description, theme, showHeaderLogo = true } = Astro.props;
 		<main>
 			<slot />
 		</main>
-		<Footer />
+		<Footer variant={footerVariant} />
 		<script>
 			import "../lib/hero-reveal";
 		</script>

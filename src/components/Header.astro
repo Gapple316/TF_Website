@@ -1,0 +1,65 @@
+---
+import MobileNav from "./MobileNav.vue";
+
+interface Props {
+	showLogo?: boolean;
+}
+
+const { showLogo = true } = Astro.props;
+
+const links = [
+	{ href: "/imagefilme", label: "Imagefilme" },
+	{ href: "/dokumentationen", label: "Dokumentationen" },
+	{ href: "/nachrichten", label: "Nachrichten" },
+	{ href: "/kontakt", label: "Kontakt" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+	class="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-5 md:px-10"
+>
+	<a href="/" class="relative z-50" class:list={[{ invisible: !showLogo }]}>
+		<img
+			src="/images/logos/true-frame-logo.webp"
+			alt="TRUE FRAME"
+			class="h-8 w-auto md:h-9"
+		/>
+	</a>
+
+	<nav class="hidden items-center gap-9 md:flex">
+		{
+			links.map((link) => {
+				const active = currentPath === link.href;
+				return (
+					<a
+						href={link.href}
+						class="nav-underline relative font-sans text-sm uppercase tracking-widest transition-colors"
+						class:list={[active ? "text-script-accent" : "text-ink-muted hover:text-ink"]}
+						data-active={active ? "true" : "false"}
+					>
+						{link.label}
+						<svg
+							viewBox="0 0 100 12"
+							preserveAspectRatio="none"
+							class="pointer-events-none absolute -bottom-2 left-0 h-3 w-full overflow-visible"
+							aria-hidden="true"
+						>
+							<path
+								d="M2 6 Q 20 2, 35 6 T 65 5 T 98 6"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2.5"
+								stroke-linecap="round"
+								class="text-accent"
+							/>
+						</svg>
+					</a>
+				);
+			})
+		}
+	</nav>
+
+	<MobileNav links={[{ href: "/", label: "Home" }, ...links]} client:load />
+</header>
