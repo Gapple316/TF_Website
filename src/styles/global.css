@@ -157,3 +157,26 @@ body {
 	background-size: 180px;
 	mix-blend-mode: overlay;
 }
+
+/*
+  Video-zuerst-Hero: der Text-Block ist unsichtbar bis initHeroReveal()
+  die Klasse is-revealed setzt (nach 2s oder beim ersten Scroll).
+*/
+[data-hero-reveal] {
+	opacity: 0;
+	transform: translateY(16px);
+	transition:
+		opacity 0.8s ease,
+		transform 0.8s ease;
+}
+
+[data-hero-reveal].is-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-hero-reveal] {
+		transition: none;
+	}
+}
