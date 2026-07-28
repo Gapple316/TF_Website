@@ -1,0 +1,221 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroLogo from "../components/HeroLogo.vue";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getBackgroundEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { Image } from "astro:assets";
+import kapitelDenken from "../assets/photos/home-kapitel-denken.jpg";
+import kapitelHoeren from "../assets/photos/home-kapitel-hoeren.jpg";
+import kapitelSehen from "../assets/photos/home-kapitel-sehen.jpg";
+import kapitelErzaehlen from "../assets/photos/home-kapitel-erzaehlen.jpg";
+
+const projects = await getCollection("projects");
+const showreel = projects.find((p) => p.data.title === "Showreel");
+const showreelEmbedUrl = getBackgroundEmbedUrl(showreel?.data.videoUrl);
+
+const categories = [
+	{
+		slug: "imagefilme",
+		category: "imagefilm" as const,
+		label: "Imagefilme",
+		labelFont: "font-imagefilm normal-case tracking-normal",
+		tagline: "Premiumproduktionen",
+		description:
+			"Hochglanz-Bewegtbild mit großem Set, durchdachter Bildsprache und Zeit für jede Einstellung.",
+	},
+	{
+		slug: "dokumentationen",
+		category: "doku" as const,
+		label: "Dokumentationen",
+		labelFont: "font-doku uppercase tracking-tight",
+		tagline: "Hochwertig erzählt",
+		description:
+			"Beobachtende, aufwendig produzierte Geschichten mit echtem Raum zum Atmen.",
+	},
+	{
+		slug: "nachrichten",
+		category: "news" as const,
+		label: "Nachrichten",
+		labelFont: "font-news uppercase tracking-wide",
+		tagline: "Schnell. Präzise. Vor Ort.",
+		description:
+			"Recherche, Dreh und Schnitt unter Zeitdruck – journalistisch sauber, ohne Umwege.",
+	},
+];
+
+const kapitel = [
+	{
+		tagline: "Recherche",
+		word: "DENKEN",
+		text: "Bevor die Kamera läuft, steht die Idee. Ich recherchiere, lese, telefoniere — und baue daraus ein Konzept, das trägt.",
+		image: kapitelDenken,
+		align: "left" as const,
+	},
+	{
+		tagline: "Zuhören",
+		word: "HÖREN",
+		text: "Was der Kunde sagt — und was er eigentlich meint. Das Gespräch entscheidet, welcher Film am Ende entsteht.",
+		image: kapitelHoeren,
+		align: "right" as const,
+	},
+	{
+		tagline: "Momente",
+		word: "SEHEN",
+		text: "Drehen heißt warten können. Ich fange die Momente ein, die sich nicht wiederholen lassen — Licht, Blick, Handgriff.",
+		image: kapitelSehen,
+		align: "left" as const,
+	},
+	{
+		tagline: "Schnitt",
+		word: "ERZÄHLEN",
+		text: "Aus Material wird ein Film: Struktur, Text, Ton, Rhythmus. Dann Feedback — und der letzte Schnitt.",
+		image: kapitelErzaehlen,
+		align: "right" as const,
+	},
+];
+
+const featuredByCategory = Object.fromEntries(
+	categories.map((c) => {
+		const inCategory = projects.filter(
+			(p: CollectionEntry<"projects">) => p.data.category === c.category,
+		);
+		const featured =
+			inCategory.find((p: CollectionEntry<"projects">) => p.data.featured) ??
+			inCategory[0];
+		return [c.slug, featured];
+	}),
+);
+
+const teaserThumbnails = Object.fromEntries(
+	await Promise.all(
+		Object.entries(featuredByCategory).map(async ([slug, project]) => [
+			slug,
+			await getThumbnailUrl(project?.data.videoUrl),
+		]),
+	),
+);
+---
+
+<BaseLayout
+	title="Home"
+	description="TRUE FRAME – Produktionsfirma für Imagefilme, Nachrichtenbeiträge und Dokumentationen."
+	theme="landing"
+	showHeaderLogo={false}
+>
+	<section
+		id="hero"
+		class="relative flex min-h-[130vh] flex-col items-center overflow-hidden px-6 text-center"
+	>
+		<div class="absolute inset-0 -z-10 bg-bg">
+			{
+				showreelEmbedUrl && (
+					<iframe
+						class="pointer-events-none absolute left-1/2 top-1/2 h-[100vh] w-[177.78vh] min-h-[56.25vw] min-w-full -translate-x-1/2 -translate-y-1/2"
+						src={showreelEmbedUrl}
+						title="Showreel Hintergrund"
+						allow="autoplay"
+					/>
+				)
+			}
+			<div class="absolute inset-0 bg-black/65" />
+		</div>
+
+		<HeroLogo client:load />
+
+		<div data-hero-reveal class="mt-auto mb-24 flex flex-col items-center gap-6 text-center">
+			<p class="font-script text-2xl text-accent md:text-3xl">
+				Filme, die bleiben
+			</p>
+			<h1 class="font-display text-5xl uppercase leading-[0.85] tracking-tight text-white md:text-8xl">
+				Ich erzähle<br />deine<br />Geschichte
+			</h1>
+			<p class="max-w-xl font-sans text-white/70 md:text-lg">
+				Produktionsfirma für Imagefilme, Nachrichtenbeiträge und
+				Dokumentationen – ehrliche Geschichten, cinematisch erzählt.
+			</p>
+			<p class="mt-4 font-mono text-[10px] tracking-[0.24em] text-white/50">SCROLLEN</p>
+		</div>
+	</section>
+
+	<section class="mx-auto max-w-6xl px-6 py-24 md:px-10">
+		<div class="flex items-baseline gap-4">
+			<p class="font-mono text-[10px] tracking-[0.26em] text-ink-muted">WIE ICH ARBEITE</p>
+			<div class="h-px flex-1 bg-line"></div>
+			<p class="font-script text-2xl text-accent">vier Kapitel</p>
+		</div>
+
+		<div class="mt-12 flex flex-col">
+			{
+				kapitel.map((k) => (
+					<div
+						class="grid items-center gap-8 border-t border-line py-10 md:grid-cols-2"
+						class:list={[k.align === "right" && "md:[&>*:first-child]:order-2"]}
+					>
+						<div class:list={[k.align === "right" && "text-right"]}>
+							<p class="font-script text-2xl text-accent md:text-4xl">{k.tagline}</p>
+							<p class="font-display text-5xl leading-[0.86] text-ink md:text-7xl">{k.word}</p>
+							<p
+								class="mt-4 max-w-lg font-sans text-sm text-ink-muted md:text-base"
+								class:list={[k.align === "right" && "ml-auto"]}
+							>
+								{k.text}
+							</p>
+						</div>
+						<div class="aspect-[16/10] overflow-hidden border border-line">
+							<Image
+								src={k.image}
+								alt={`${k.tagline} – ${k.word}`}
+								class="h-full w-full object-cover transition duration-700 hover:scale-105"
+								widths={[400, 800, 1200]}
+								sizes="(min-width: 768px) 50vw, 100vw"
+							/>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="mx-auto max-w-6xl px-6 py-24 md:px-10">
+		<h2 class="font-display text-3xl uppercase tracking-wide md:text-4xl">
+			Drei Arten, Geschichten zu erzählen
+		</h2>
+
+		<div class="mt-12 grid gap-8 md:grid-cols-3">
+			{
+				categories.map((cat) => {
+					const featured = featuredByCategory[cat.slug];
+					const thumbnailUrl = teaserThumbnails[cat.slug];
+					return (
+						<a href={`/${cat.slug}`} class="group block">
+							<div class="aspect-[4/5] overflow-hidden bg-surface">
+								{thumbnailUrl ? (
+									<img
+										src={thumbnailUrl}
+										alt={featured?.data.title}
+										class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+									/>
+								) : (
+									<div class="flex h-full items-center justify-center border border-dashed border-line">
+										<span class="font-script text-xl text-accent">
+											Bald mehr
+										</span>
+									</div>
+								)}
+							</div>
+							<p class="mt-4 font-script text-xl text-accent">
+								{cat.tagline}
+							</p>
+							<p class={`text-2xl ${cat.labelFont}`}>
+								{cat.label}
+							</p>
+							<p class="mt-1 font-sans text-sm text-ink-muted">
+								{cat.description}
+							</p>
+						</a>
+					);
+				})
+			}
+		</div>
+	</section>
+</BaseLayout>
