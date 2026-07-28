@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import kontaktHero from "../assets/photos/kontakt-hero.jpg";
+---
+
+<BaseLayout
+	title="Kontakt"
+	description="Kontakt zu TRUE FRAME – Projektanfragen für Imagefilme, Nachrichten und Dokumentationen."
+	theme="landing"
+	footerVariant="minimal"
+>
+	<Hero
+		image={kontaktHero}
+		imageAlt="Gabriel Neumayr bei der Arbeit für TRUE FRAME"
+		caption="PORTRAIT / BEHIND THE SCENES · VOLLFLÄCHIG"
+		scriptLine="reden wir"
+		headline={["GABRIEL", "NEUMAYR"]}
+		metaLine="VIDEOJOURNALIST & FILMEMACHER · SALZBURG · ÖSTERREICH"
+	/>
+
+	<section class="mx-auto grid max-w-6xl gap-16 px-6 py-24 md:grid-cols-2 md:px-10">
+		<div class="space-y-6 font-sans">
+			<a href="tel:+436605777367" class="block border-t border-line pt-6">
+				<p class="text-xs uppercase tracking-widest text-ink-muted">Telefon</p>
+				<p class="font-display text-2xl transition-colors hover:text-accent">
+					+43 660 577 73 67
+				</p>
+			</a>
+			<a href="mailto:mail@true-frame.net" class="block border-t border-line pt-6">
+				<p class="text-xs uppercase tracking-widest text-ink-muted">E-Mail</p>
+				<p class="font-display text-xl transition-colors hover:text-accent">
+					mail@true-frame.net
+				</p>
+			</a>
+			<div class="border-t border-line pt-6">
+				<p class="text-xs uppercase tracking-widest text-ink-muted">Adresse</p>
+				<p class="text-lg">Hofgartenweg 5, 5163 Mattsee</p>
+			</div>
+
+			<div class="flex gap-4 pt-4">
+				<a
+					href="https://www.instagram.com/gabriel_neumayr"
+					class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
+				>
+					Instagram
+				</a>
+				<a
+					href="https://www.youtube.com/@True_Frame_net"
+					class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
+				>
+					YouTube
+				</a>
+			</div>
+		</div>
+
+		<div>
+			<p class="font-script text-2xl text-accent">einfach anrufen</p>
+			<h2 class="font-display text-4xl uppercase tracking-tight text-ink md:text-5xl">
+				Erstgespräch, unverbindlich
+			</h2>
+			<p class="mt-6 max-w-md font-sans text-ink-muted md:text-lg">
+				Kein Formular. Ruf an oder schreib mir — meist antworte ich am selben
+				Tag. Erzähl mir, was du vorhast, den Rest klären wir im Gespräch.
+			</p>
+			<a
+				href="tel:+436605777367"
+				class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
+			>
+				Jetzt anrufen
+			</a>
+		</div>
+	</section>
+</BaseLayout>
