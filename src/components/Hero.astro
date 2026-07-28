@@ -1,0 +1,91 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { getBackgroundEmbedUrl } from "../lib/video";
+
+interface Props {
+	videoUrl?: string;
+	image?: ImageMetadata;
+	imageAlt?: string;
+	caption?: string;
+	scriptLine: string;
+	scriptFont?: "script" | "news-script";
+	headline: string[];
+	headlineFont?: "display" | "doku" | "news";
+	metaLine?: string;
+	body?: string;
+}
+
+const {
+	videoUrl,
+	image,
+	imageAlt,
+	caption,
+	scriptLine,
+	scriptFont = "script",
+	headline,
+	headlineFont = "display",
+	metaLine,
+	body,
+} = Astro.props;
+
+const embedUrl = getBackgroundEmbedUrl(videoUrl);
+---
+
+<section class="relative flex min-h-screen flex-col overflow-hidden">
+	<div class="absolute inset-0 -z-10 bg-bg">
+		{
+			embedUrl ? (
+				<iframe
+					class="pointer-events-none absolute left-1/2 top-1/2 h-[100vh] w-[177.78vh] min-h-[56.25vw] min-w-full -translate-x-1/2 -translate-y-1/2"
+					src={embedUrl}
+					title={caption ?? scriptLine}
+					allow="autoplay"
+				/>
+			) : image ? (
+				<Image
+					src={image}
+					alt={imageAlt ?? ""}
+					class="h-full w-full object-cover"
+					widths={[640, 1024, 1600, 2400]}
+					sizes="100vw"
+				/>
+			) : null
+		}
+		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/70" />
+	</div>
+
+	{
+		caption && (
+			<p class="absolute left-1/2 top-[26%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.3em] text-white/40">
+				{caption}
+			</p>
+		)
+	}
+
+	<div data-hero-reveal class="mt-auto flex flex-col gap-3 px-6 pb-16 pt-32 md:px-10 md:pb-20">
+		<p
+			class="text-script-accent text-3xl md:text-5xl"
+			class:list={[scriptFont === "news-script" ? "font-doku italic font-black" : "font-script"]}
+		>
+			{scriptLine}
+		</p>
+		<h1
+			class="uppercase leading-[0.85] tracking-tight text-white"
+			class:list={[
+				headlineFont === "doku" && "font-doku font-black text-5xl md:text-8xl",
+				headlineFont === "news" && "font-news font-extralight tracking-normal text-5xl md:text-8xl",
+				headlineFont === "display" && "font-display text-5xl md:text-8xl",
+			]}
+		>
+			{headline.map((line, i) => (
+				<>
+					{i > 0 && <br />}
+					{line}
+				</>
+			))}
+		</h1>
+		{metaLine && <p class="font-mono text-xs tracking-widest text-white/70">{metaLine}</p>}
+		{body && <p class="max-w-xl font-sans text-white/70 md:text-lg">{body}</p>}
+	</div>
+</section>
