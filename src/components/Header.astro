@@ -8,6 +8,7 @@ interface Props {
 const { showLogo = true } = Astro.props;
 
 const links = [
+	{ href: "/", label: "Start" },
 	{ href: "/imagefilme", label: "Imagefilme" },
 	{ href: "/dokumentationen", label: "Dokumentationen" },
 	{ href: "/nachrichten", label: "Nachrichten" },
@@ -61,5 +62,5 @@ const currentPath = Astro.url.pathname;
 		}
 	</nav>
 
-	<MobileNav links={[{ href: "/", label: "Home" }, ...links]} client:load />
+	<MobileNav links={links} client:load />
 </header>
