@@ -1541,13 +1541,13 @@ const gridCards = await Promise.all(
 	</section>
 
 	<section class="bg-script-accent px-6 py-20 text-center md:px-10">
-		<p class="font-script text-3xl text-[#8f1d22] md:text-4xl">Erzählen wir</p>
-		<p class="font-display text-4xl uppercase tracking-tight text-[#8f1d22] md:text-6xl">
+		<p class="font-script text-3xl text-ink md:text-4xl">Erzählen wir</p>
+		<p class="font-display text-4xl uppercase tracking-tight text-ink md:text-6xl">
 			und deine Marke?
 		</p>
 		<a
 			href="/kontakt"
-			class="mt-8 inline-block bg-[#8f1d22] px-8 py-4 font-sans text-sm uppercase tracking-widest text-[#fdf8ec] transition hover:opacity-90"
+			class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
 		>
 			Projekt anfragen
 		</a>
