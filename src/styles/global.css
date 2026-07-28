@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@import "@fontsource/anton";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/pinyon-script";
+@import "@fontsource/bodoni-moda/900.css";
+@import "@fontsource/bodoni-moda/900-italic.css";
+@import "@fontsource/archivo/200.css";
+@import "@fontsource/courier-prime";
+
+@theme {
+	--font-display: "Anton", sans-serif;
+	--font-sans: "Inter", sans-serif;
+	--font-script: "Pinyon Script", cursive;
+	--font-mono: "Courier Prime", monospace;
+
+	/* Zierschriften je Kategorie-Identität */
+	--font-doku: "Bodoni Moda", serif;
+	--font-news: "Archivo", sans-serif;
+
+	--color-accent: #a3282f;
+	--color-accent-hover: #c9333c;
+
+	--color-bg: #08090a;
+	--color-surface: #131417;
+	--color-ink: #f4f4f2;
+	--color-ink-muted: #9a9a9d;
+	--color-line: #23242a;
+	--color-script-accent: #a3282f;
+}
+
+/*
+  Fünf Theme-Varianten je Bereich (data-theme auf <html>):
+  landing/kontakt = dunkel/kühl, doku = dunkel/warm/grün,
+  imagefilm = hell/warm/gold, news = hell/kühl/navy-blau.
+  Rot (--color-accent) bleibt in jeder Variante die CTA-/Link-Farbe;
+  --color-script-accent ist die Farbe der jeweiligen Zierschrift/aktiven Nav.
+*/
+:root,
+[data-theme="landing"] {
+	--color-bg: #08090a;
+	--color-surface: #131417;
+	--color-ink: #f4f4f2;
+	--color-ink-muted: #9a9a9d;
+	--color-line: #23242a;
+	--color-script-accent: var(--color-accent);
+}
+
+[data-theme="doku"] {
+	--color-bg: #14120f;
+	--color-surface: #1d1611;
+	--color-ink: #ece5d8;
+	--color-ink-muted: #b0a292;
+	--color-line: #2c2119;
+	--color-script-accent: #9db27a;
+}
+
+[data-theme="imagefilm"] {
+	--color-bg: #fdf8ec;
+	--color-surface: #ffffff;
+	--color-ink: #1c1a15;
+	--color-ink-muted: #7a7367;
+	--color-line: #e8ddc2;
+	--color-script-accent: #f2c14b;
+}
+
+[data-theme="news"] {
+	--color-bg: #f4f5f8;
+	--color-surface: #ffffff;
+	--color-ink: #14203a;
+	--color-ink-muted: #5c6577;
+	--color-line: #dde1e8;
+	--color-script-accent: #3f6fbd;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	background-color: var(--color-bg);
+	color: var(--color-ink);
+	font-family: var(--font-sans);
+}
+
+/*
+  Hand-gezeichnete Unterstreichung im Nav statt eines klinischen Hover-States:
+  ein SVG-Pfad "malt" sich beim Hover/auf der aktiven Seite ein.
+*/
+.nav-underline path {
+	stroke-dasharray: 140;
+	stroke-dashoffset: 140;
+	transition: stroke-dashoffset 0.5s ease;
+}
+
+.nav-underline:hover path,
+.nav-underline[data-active="true"] path {
+	stroke-dashoffset: 0;
+}
+
+/*
+  Seitenübergang: wie eine Kamerafahrt über ein großes Whiteboard, von einer
+  Stelle zur nächsten. Alte und neue Seite hängen wie zwei benachbarte
+  Tafel-Ausschnitte aneinander und schieben sich im exakt selben Tempo nach
+  links durch — kein Schnitt, keine Lücke, ein kurzer Bewegungsschleier
+  beim schnellsten Punkt der Fahrt verkauft das Tempo.
+*/
+::view-transition-old(root) {
+	animation: tf-pan-out 0.85s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+::view-transition-new(root) {
+	animation: tf-pan-in 0.85s cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+
+@keyframes tf-pan-out {
+	0% {
+		transform: translateX(0);
+		filter: blur(0);
+	}
+	50% {
+		filter: blur(6px);
+	}
+	100% {
+		transform: translateX(-100%);
+		filter: blur(0);
+	}
+}
+
+@keyframes tf-pan-in {
+	0% {
+		transform: translateX(100%);
+		filter: blur(0);
+	}
+	50% {
+		filter: blur(6px);
+	}
+	100% {
+		transform: translateX(0);
+		filter: blur(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none !important;
+	}
+}
+
+/* Feinkörniges Film-Grain über der ganzen Seite für einen physischen, nicht-klinischen Look */
+.grain-overlay {
+	background-image: url("/textures/grain.svg");
+	background-repeat: repeat;
+	background-size: 180px;
+	mix-blend-mode: overlay;
+}
