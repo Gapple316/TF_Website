@@ -180,3 +180,19 @@ body {
 		transition: none;
 	}
 }
+
+/*
+  Der fixierte Header hat keinen eigenen Hintergrund und schwebt über dem
+  Hero jeder Seite (immer dunkel verlaufend, unabhängig vom Seiten-Theme).
+  Solange der Hero sichtbar ist (initHeaderContrast()), erzwingt dieser
+  Block helle Nav-Farben statt der themenabhängigen Klassen, damit der
+  Kontrast auf jeder Seite garantiert lesbar bleibt. Sobald der Hero aus
+  dem Viewport gescrollt ist, greifen wieder die normalen Theme-Farben.
+*/
+header[data-over-hero="true"] .nav-underline {
+	color: rgba(255, 255, 255, 0.75);
+}
+
+header[data-over-hero="true"] .nav-underline[data-active="true"] {
+	color: #ffffff;
+}
