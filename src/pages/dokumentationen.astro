@@ -11,10 +11,9 @@ const projects = all.filter(
 );
 
 const hero = projects.find((p) => p.data.featured) ?? projects[0];
-const grid = projects.filter((p) => p.id !== hero?.id);
 
 const gridCards = await Promise.all(
-	grid.map(async (p) => ({
+	projects.map(async (p) => ({
 		project: p,
 		embedUrl: getCardEmbedUrl(p.data.videoUrl),
 		thumbnailUrl: await getThumbnailUrl(p.data.videoUrl),
@@ -31,6 +30,7 @@ const gridCards = await Promise.all(
 >
 	<Hero
 		videoUrl={hero?.data.videoUrl}
+		startSeconds={hero?.data.startSeconds}
 		caption="AKTUELLER FILM · VOLLFLÄCHIGES VIDEO"
 		scriptLine="geerdet"
 		headline={["DOKUMEN-", "TATIONEN"]}
@@ -47,7 +47,7 @@ const gridCards = await Promise.all(
 
 	<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">
 		<p class="font-mono text-xs tracking-widest text-ink-muted">
-			{grid.length} WEITERE FILME
+			{projects.length} FILME
 		</p>
 		<div class="mt-8 grid gap-8 md:grid-cols-2">
 			{

@@ -5,6 +5,7 @@ import { getBackgroundEmbedUrl } from "../lib/video";
 
 interface Props {
 	videoUrl?: string;
+	startSeconds?: number;
 	image?: ImageMetadata;
 	imageAlt?: string;
 	caption?: string;
@@ -18,6 +19,7 @@ interface Props {
 
 const {
 	videoUrl,
+	startSeconds,
 	image,
 	imageAlt,
 	caption,
@@ -29,7 +31,7 @@ const {
 	body,
 } = Astro.props;
 
-const embedUrl = getBackgroundEmbedUrl(videoUrl);
+const embedUrl = getBackgroundEmbedUrl(videoUrl, startSeconds);
 ---
 
 <section id="hero" class="relative flex min-h-screen flex-col overflow-hidden">
@@ -37,7 +39,7 @@ const embedUrl = getBackgroundEmbedUrl(videoUrl);
 		{
 			embedUrl ? (
 				<iframe
-					class="pointer-events-none absolute left-1/2 top-1/2 h-[100vh] w-[177.78vh] min-h-[56.25vw] min-w-full -translate-x-1/2 -translate-y-1/2"
+					class="pointer-events-none absolute left-1/2 top-1/2 h-[100vh] w-[177.78vh] min-h-[56.25vw] min-w-full scale-110 -translate-x-1/2 -translate-y-1/2"
 					src={embedUrl}
 					title={caption ?? scriptLine}
 					allow="autoplay"

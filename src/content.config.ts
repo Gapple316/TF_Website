@@ -7,6 +7,7 @@ const projects = defineCollection({
 		title: z.string(),
 		category: z.enum(["imagefilm", "news", "doku"]).optional(),
 		videoUrl: z.string().url().optional(),
+		startSeconds: z.number().optional(),
 		client: z.string().optional(),
 		year: z.number().optional(),
 		duration: z.string().optional(),

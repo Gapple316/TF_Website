@@ -19,14 +19,20 @@ export function parseVideoUrl(url?: string): VideoInfo | undefined {
 	return undefined;
 }
 
-export function getBackgroundEmbedUrl(url?: string): string | undefined {
+export function getBackgroundEmbedUrl(
+	url?: string,
+	startSeconds?: number,
+): string | undefined {
 	const info = parseVideoUrl(url);
 	if (!info) return undefined;
 
 	if (info.provider === "youtube") {
-		return `https://www.youtube-nocookie.com/embed/${info.id}?autoplay=1&mute=1&loop=1&playlist=${info.id}&controls=0&modestbranding=1&rel=0&showinfo=0`;
+		const base = `https://www.youtube-nocookie.com/embed/${info.id}?autoplay=1&mute=1&loop=1&playlist=${info.id}&controls=0&modestbranding=1&rel=0&showinfo=0`;
+		return startSeconds ? `${base}&start=${startSeconds}` : base;
 	}
-	return `https://player.vimeo.com/video/${info.id}?background=1&autoplay=1&loop=1&muted=1`;
+
+	const base = `https://player.vimeo.com/video/${info.id}?background=1&autoplay=1&loop=1&muted=1`;
+	return startSeconds ? `${base}#t=${startSeconds}s` : base;
 }
 
 export function getCardEmbedUrl(url?: string): string | undefined {
