@@ -23,6 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# local, machine-specific Claude Code permission overrides
+.claude/settings.local.json
+
 # subagent-driven-development scratch (progress ledger, briefs, reports)
 .superpowers/
 

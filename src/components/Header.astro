@@ -25,38 +25,22 @@ const currentPath = Astro.url.pathname;
 	<a href="/" class="relative z-50" class:list={[{ invisible: !showLogo }]}>
 		<img
 			src="/images/logos/true-frame-logo.webp"
-			alt="TRUE FRAME"
-			class="h-8 w-auto md:h-9"
+			alt="TRUE FRAME — by Gabriel Neumayr"
+			class="h-[38px] w-auto md:h-[52px]"
 		/>
 	</a>
 
-	<nav class="hidden items-center gap-9 md:flex">
+	<nav class="hidden items-center gap-10 md:flex lg:gap-12">
 		{
 			links.map((link) => {
 				const active = currentPath === link.href;
 				return (
 					<a
 						href={link.href}
-						class="nav-underline relative font-sans text-sm uppercase tracking-widest transition-colors"
-						class:list={[active ? "text-script-accent" : "text-ink-muted hover:text-ink"]}
+						class="nav-link font-sans text-[11px] uppercase tracking-[0.12em]"
 						data-active={active ? "true" : "false"}
 					>
 						{link.label}
-						<svg
-							viewBox="0 0 100 12"
-							preserveAspectRatio="none"
-							class="pointer-events-none absolute -bottom-2 left-0 h-3 w-full overflow-visible"
-							aria-hidden="true"
-						>
-							<path
-								d="M2 6 Q 20 2, 35 6 T 65 5 T 98 6"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2.5"
-								stroke-linecap="round"
-								class="text-accent"
-							/>
-						</svg>
 					</a>
 				);
 			})

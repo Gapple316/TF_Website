@@ -1,0 +1,45 @@
+---
+import type { LogoEntry } from "../data/logos";
+
+interface Props {
+	heading: string;
+	logos: LogoEntry[];
+	direction?: "left" | "right";
+}
+
+const { heading, logos, direction = "left" } = Astro.props;
+---
+
+<div class="w-full">
+	<p class="font-mono text-[10px] tracking-[0.26em] text-ink-muted">{heading}</p>
+	<div class="logo-marquee relative mt-6 overflow-hidden">
+		<div
+			class="logo-marquee__track"
+			class:list={[direction === "right" && "logo-marquee__track--reverse"]}
+		>
+			<div class="logo-marquee__group">
+				{
+					logos.map((logo) => (
+						<a
+							href={logo.url}
+							target={logo.url ? "_blank" : undefined}
+							rel={logo.url ? "noopener noreferrer" : undefined}
+							class="shrink-0"
+						>
+							<img src={logo.src} alt={logo.name} class="logo-marquee__logo" />
+						</a>
+					))
+				}
+			</div>
+			<div class="logo-marquee__group" aria-hidden="true">
+				{
+					logos.map((logo) => (
+						<a href={logo.url} tabindex={-1} class="shrink-0">
+							<img src={logo.src} alt="" class="logo-marquee__logo" />
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</div>

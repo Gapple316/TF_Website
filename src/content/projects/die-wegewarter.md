@@ -8,5 +8,5 @@ year: 2024
 duration: "28:00"
 description: "Porträt über die ehrenamtlichen Wegewarter der Alpen – ruhige, beobachtende Erzählweise mit großem Set- und Landschaftsanteil."
 tags: ["Dokumentation"]
-featured: true
+featured: false
 ---

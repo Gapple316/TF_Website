@@ -8,6 +8,8 @@ defineProps<{
 	meta?: string;
 	embedUrl?: string;
 	thumbnailUrl?: string;
+	sourceUrl?: string;
+	embeddable?: boolean;
 }>();
 
 const loaded = ref(false);
@@ -15,8 +17,39 @@ const loaded = ref(false);
 
 <template>
 	<div class="group relative aspect-video overflow-hidden bg-surface">
+		<a
+			v-if="embeddable === false && sourceUrl"
+			:href="sourceUrl"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="absolute inset-0 h-full w-full"
+			:aria-label="`${title} auf YouTube ansehen (externer Link)`"
+		>
+			<img
+				v-if="thumbnailUrl"
+				:src="thumbnailUrl"
+				:alt="title"
+				class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+			/>
+			<div v-else class="h-full w-full bg-surface" />
+			<span
+				class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/20 transition group-hover:bg-black/10"
+			>
+				<span
+					class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent"
+				>
+					<svg viewBox="0 0 24 24" class="h-6 w-6 fill-current">
+						<path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z" />
+						<path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" />
+					</svg>
+				</span>
+				<span class="font-mono text-[10px] tracking-widest text-white/90">
+					AUF YOUTUBE ANSEHEN
+				</span>
+			</span>
+		</a>
 		<iframe
-			v-if="loaded && embedUrl"
+			v-else-if="loaded && embedUrl"
 			:src="embedUrl"
 			class="absolute inset-0 h-full w-full"
 			:title="title"

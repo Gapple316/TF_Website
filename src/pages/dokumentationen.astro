@@ -4,6 +4,9 @@ import Hero from "../components/Hero.astro";
 import VideoCard from "../components/VideoCard.vue";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getCardEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { categoryContent } from "../data/categories";
+
+const cat = categoryContent.find((c) => c.slug === "dokumentationen")!;
 
 const all = await getCollection("projects");
 const projects = all.filter(
@@ -32,9 +35,9 @@ const gridCards = await Promise.all(
 		videoUrl={hero?.data.videoUrl}
 		startSeconds={hero?.data.startSeconds}
 		caption="AKTUELLER FILM · VOLLFLÄCHIGES VIDEO"
-		scriptLine="geerdet"
-		headline={["DOKUMEN-", "TATIONEN"]}
-		headlineFont="doku"
+		scriptLine={cat.scriptLine}
+		headline={cat.headline}
+		headlineFont={cat.headlineFont}
 		metaLine={
 			hero
 				? [hero.data.client, hero.data.year, hero.data.duration]
@@ -42,7 +45,7 @@ const gridCards = await Promise.all(
 						.join(" · ")
 				: undefined
 		}
-		body="Über Menschen, Handwerk und Orte, die Zeit brauchen."
+		body={cat.body}
 	/>
 
 	<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">

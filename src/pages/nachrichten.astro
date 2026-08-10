@@ -4,6 +4,9 @@ import Hero from "../components/Hero.astro";
 import VideoCard from "../components/VideoCard.vue";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getCardEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { categoryContent } from "../data/categories";
+
+const cat = categoryContent.find((c) => c.slug === "nachrichten")!;
 
 const all = await getCollection("projects");
 const projects = all.filter(
@@ -19,6 +22,10 @@ const gridCards = await Promise.all(
 		thumbnailUrl: await getThumbnailUrl(p.data.videoUrl),
 	})),
 );
+
+// dpa-sonderflug-dubai ist von YouTube-Embedding gesperrt (Content-ID durch
+// den Rechteinhaber Seven.One) - projects[].data.embeddable steuert, ob
+// VideoCard einen Live-Player oder einen Link-out-Fallback zeigt.
 ---
 
 <BaseLayout
@@ -30,16 +37,16 @@ const gridCards = await Promise.all(
 	<Hero
 		videoUrl={hero?.data.videoUrl}
 		caption="AKTUELLER BEITRAG · VOLLFLÄCHIGES VIDEO"
-		scriptLine="zuerst vor Ort"
-		scriptFont="news-script"
-		headline={["NACHRICHTEN"]}
-		headlineFont="news"
+		scriptLine={cat.scriptLine}
+		scriptFont={cat.scriptFont}
+		headline={cat.headline}
+		headlineFont={cat.headlineFont}
 		metaLine={
 			hero
 				? [hero.data.client, hero.data.year].filter(Boolean).join(" · ")
 				: undefined
 		}
-		body="Beiträge für dpa, APA und Redaktionen. Schnell, verlässlich, sendefertig."
+		body={cat.body}
 	/>
 
 	<section class="bg-[#1b2c4b] px-6 py-16 md:px-10">
@@ -73,6 +80,8 @@ const gridCards = await Promise.all(
 						client={project.data.client}
 						embedUrl={embedUrl}
 						thumbnailUrl={thumbnailUrl}
+						sourceUrl={project.data.videoUrl}
+						embeddable={project.data.embeddable ?? true}
 					/>
 				))
 			}

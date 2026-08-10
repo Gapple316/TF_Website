@@ -86,21 +86,6 @@ body {
 }
 
 /*
-  Hand-gezeichnete Unterstreichung im Nav statt eines klinischen Hover-States:
-  ein SVG-Pfad "malt" sich beim Hover/auf der aktiven Seite ein.
-*/
-.nav-underline path {
-	stroke-dasharray: 140;
-	stroke-dashoffset: 140;
-	transition: stroke-dashoffset 0.5s ease;
-}
-
-.nav-underline:hover path,
-.nav-underline[data-active="true"] path {
-	stroke-dashoffset: 0;
-}
-
-/*
   Seitenübergang: wie eine Kamerafahrt über ein großes Whiteboard, von einer
   Stelle zur nächsten. Alte und neue Seite hängen wie zwei benachbarte
   Tafel-Ausschnitte aneinander und schieben sich im exakt selben Tempo nach
@@ -182,17 +167,255 @@ body {
 }
 
 /*
-  Der fixierte Header hat keinen eigenen Hintergrund und schwebt über dem
-  Hero jeder Seite (immer dunkel verlaufend, unabhängig vom Seiten-Theme).
-  Solange der Hero sichtbar ist (initHeaderContrast()), erzwingt dieser
-  Block helle Nav-Farben statt der themenabhängigen Klassen, damit der
-  Kontrast auf jeder Seite garantiert lesbar bleibt. Sobald der Hero aus
-  dem Viewport gescrollt ist, greifen wieder die normalen Theme-Farben.
+  Navbar Punkt 3 (überarbeitet): keine durchgehende Leiste mehr – der
+  Header-Hintergrund bleibt immer transparent. Stattdessen ist jeder
+  Menüpunkt für sich ein "Clearglass"-Button: dezentes Glas (Blur +
+  Tint + Hairline-Border) permanent auf dem Button, Glow verstärkt sich
+  beim Hover/Fokus. @supports-Fallback für Browser ohne backdrop-filter.
 */
-header[data-over-hero="true"] .nav-underline {
+.nav-link {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.55rem 1.15rem;
+	border-radius: 9999px;
 	color: rgba(255, 255, 255, 0.75);
+	background: rgba(255, 255, 255, 0.055);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	transition:
+		color 280ms ease-out,
+		text-shadow 280ms ease-out,
+		background-color 280ms ease-out,
+		border-color 280ms ease-out;
 }
 
-header[data-over-hero="true"] .nav-underline[data-active="true"] {
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+	.nav-link {
+		backdrop-filter: blur(12px) saturate(160%);
+		-webkit-backdrop-filter: blur(12px) saturate(160%);
+	}
+}
+
+@supports not
+	((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	.nav-link {
+		background: rgba(10, 10, 12, 0.45);
+	}
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
 	color: #ffffff;
+	background: rgba(255, 255, 255, 0.14);
+	border-color: rgba(255, 255, 255, 0.32);
+	text-shadow:
+		0 0 6px rgba(255, 255, 255, 0.85),
+		0 0 22px rgba(255, 255, 255, 0.35);
+}
+
+.nav-link[data-active="true"] {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.22);
+	text-shadow:
+		0 0 4px rgba(255, 255, 255, 0.5),
+		0 0 16px rgba(255, 255, 255, 0.18);
+}
+
+.nav-link:focus-visible {
+	outline: 2px solid rgba(255, 255, 255, 0.9);
+	outline-offset: 3px;
+}
+
+/*
+  Sobald der Hero verlassen wurde (header[data-over-hero="false"], v.a.
+  relevant auf den hellen Unterseiten Imagefilme/Nachrichten): dunkel
+  getöntes Glas statt Weiß-auf-Hell, sonst unlesbar.
+*/
+header[data-over-hero="false"] .nav-link {
+	color: var(--color-ink-muted);
+	background: rgba(0, 0, 0, 0.035);
+	border-color: rgba(0, 0, 0, 0.08);
+}
+
+header[data-over-hero="false"] .nav-link:hover,
+header[data-over-hero="false"] .nav-link:focus-visible {
+	color: var(--color-ink);
+	background: rgba(0, 0, 0, 0.06);
+	border-color: rgba(0, 0, 0, 0.14);
+	text-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+}
+
+header[data-over-hero="false"] .nav-link[data-active="true"] {
+	color: var(--color-script-accent);
+	background: rgba(0, 0, 0, 0.045);
+	border-color: rgba(0, 0, 0, 0.1);
+	text-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nav-link {
+		transition: none;
+	}
+}
+
+/*
+  Phase 1+2 der Hero-Logo-FLIP-Animation (HeroLogo.vue): "position: fixed"
+  ab dem Mount, damit die Box vom normalen Scrollen der (nicht gepinnten)
+  Hero-Section unberührt bleibt – einzig der GSAP-Transform (translate +
+  scale) bewegt sie. top/left/width/height kommen per Inline-Style von
+  einem gleich großen, unsichtbaren Platzhalter im Flex-Layout (hält die
+  Lücke offen, solange die Box nicht gedockt ist).
+*/
+.logo-fixed {
+	position: fixed;
+	z-index: 40;
+}
+
+/*
+  Endzustand der Hero-Logo-FLIP-Animation (HeroLogo.vue, Phase 3): reines
+  CSS, keine Inline-Styles mehr. Werte spiegeln exakt die Header-Padding-
+  Werte (px-6/py-5/md:px-10) und die dort verwendete Logo-Zielgröße, damit
+  das gedockte Logo exakt an der Stelle sitzt, an der das (unsichtbare)
+  echte Header-Logo ebenfalls stehen würde.
+*/
+.is-docked {
+	position: fixed;
+	top: 1.25rem;
+	left: 1.5rem;
+	width: auto;
+	height: 38px;
+	aspect-ratio: 1024 / 410;
+	z-index: 50;
+}
+
+@media (min-width: 768px) {
+	.is-docked {
+		left: 2.5rem;
+		height: 52px;
+	}
+}
+
+/*
+  Endlos-Marquee für die Kundenlogos (LogoMarquee.astro). Der Track enthält
+  den Logo-Satz zweimal hintereinander (zweite Kopie aria-hidden) und
+  animiert exakt um die halbe Track-Breite – das ergibt eine nahtlose
+  Schleife ohne Sprung am Ende. Rein CSS-getrieben, keine Hydration nötig.
+*/
+.logo-marquee {
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent,
+		black 8%,
+		black 92%,
+		transparent
+	);
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		black 8%,
+		black 92%,
+		transparent
+	);
+}
+
+.logo-marquee__track {
+	display: flex;
+	width: max-content;
+	align-items: center;
+	gap: 4rem;
+	animation: logo-marquee-scroll 36s linear infinite;
+}
+
+.logo-marquee__track--reverse {
+	animation-direction: reverse;
+}
+
+.logo-marquee:hover .logo-marquee__track {
+	animation-play-state: paused;
+}
+
+.logo-marquee__group {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 4rem;
+}
+
+.logo-marquee__logo {
+	height: 2rem;
+	max-height: 2rem;
+	width: auto;
+	filter: grayscale(1);
+	opacity: 0.6;
+	transition:
+		opacity 0.3s ease,
+		filter 0.3s ease;
+}
+
+@media (min-width: 768px) {
+	.logo-marquee__logo {
+		height: 2.5rem;
+		max-height: 2.5rem;
+	}
+}
+
+.logo-marquee__logo:hover {
+	filter: grayscale(0);
+	opacity: 1;
+}
+
+@keyframes logo-marquee-scroll {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.logo-marquee__track {
+		animation: none;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	.logo-marquee__group:nth-child(2) {
+		display: none;
+	}
+}
+
+/*
+  "Cover"-Sizing für Hintergrund-Video-Iframes. YouTube/Vimeo-Embeds
+  unterstützen object-fit/object-position nicht zuverlässig (iframes sind
+  zwar technisch "replaced elements", Browser wenden object-fit darauf
+  aber nicht konsistent an) – das Video wird deshalb bewusst über die
+  Containergröße hinaus vergrößert und per transform positioniert, mit
+  demselben Verfahren, das Browser intern für object-position verwenden:
+  Element auf top:Y% setzen, dann um -Y% der eigenen Höhe zurückschieben.
+  --video-focus-y verhält sich dadurch wie ein object-position-Y-Wert:
+  50% = zentriert, kleinere Werte zeigen mehr vom oberen Bildrand (Köpfe/
+  Augenpartie bleiben im Bild). Zum Nachjustieren einfach den Wert hier
+  oder inline per style="--video-focus-y: 15%" überschreiben.
+*/
+.video-cover {
+	--video-focus-y: 25%;
+	position: absolute;
+	left: 50%;
+	top: var(--video-focus-y);
+	width: 177.78vh;
+	height: 100vh;
+	min-width: 100%;
+	min-height: 56.25vw;
+	transform: translate(-50%, calc(-1 * var(--video-focus-y))) scale(1.5);
+	pointer-events: none;
+}
+
+@media (max-width: 767.98px) {
+	.video-cover {
+		/* Hochformat-Container: der Video-Ausschnitt wird enger, der
+		   Kopfbereich rutscht ohne Korrektur noch weiter aus dem Bild. */
+		--video-focus-y: 15%;
+	}
 }

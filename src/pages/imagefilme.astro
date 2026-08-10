@@ -4,6 +4,9 @@ import Hero from "../components/Hero.astro";
 import VideoCard from "../components/VideoCard.vue";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getCardEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { categoryContent } from "../data/categories";
+
+const cat = categoryContent.find((c) => c.slug === "imagefilme")!;
 
 const all = await getCollection("projects");
 const projects = all.filter(
@@ -30,8 +33,8 @@ const gridCards = await Promise.all(
 	<Hero
 		videoUrl={hero?.data.videoUrl}
 		caption="TOP-PROJEKT · VOLLFLÄCHIGES VIDEO"
-		scriptLine="cinematisch"
-		headline={["IMAGE", "FILME"]}
+		scriptLine={cat.scriptLine}
+		headline={cat.headline}
 		metaLine={
 			hero
 				? ["IMAGEFILM", hero.data.year, hero.data.duration]
@@ -39,7 +42,7 @@ const gridCards = await Promise.all(
 						.join(" · ")
 				: undefined
 		}
-		body="Für Unternehmen, die zeigen wollen, wer hinter dem Produkt steht."
+		body={cat.body}
 	/>
 
 	<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">
