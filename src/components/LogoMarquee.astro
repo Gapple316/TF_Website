@@ -8,6 +8,15 @@ interface Props {
 }
 
 const { heading, logos, direction = "left" } = Astro.props;
+
+// Der Loop funktioniert nur nahtlos, wenn EINE Gruppe schon breiter ist als
+// der Viewport – sonst sieht man die Lücke/den Sprung, bevor die zweite
+// Gruppe nachrückt (genau das Problem bei "Kunden" mit nur 3 Logos vs.
+// "Ausgestrahlt bei" mit 6). Deshalb wird der Logo-Satz je Gruppe so oft
+// wiederholt, bis mindestens 8 Logos drin sind – unabhängig davon, wie
+// wenige echte Logos es aktuell gibt.
+const repeatCount = Math.max(1, Math.ceil(8 / logos.length));
+const repeatedLogos = Array.from({ length: repeatCount }, () => logos).flat();
 ---
 
 <div class="w-full">
@@ -19,24 +28,23 @@ const { heading, logos, direction = "left" } = Astro.props;
 		>
 			<div class="logo-marquee__group">
 				{
-					logos.map((logo) => (
-						<a
-							href={logo.url}
-							target={logo.url ? "_blank" : undefined}
-							rel={logo.url ? "noopener noreferrer" : undefined}
-							class="shrink-0"
-						>
-							<img src={logo.src} alt={logo.name} class="logo-marquee__logo" />
-						</a>
-					))
+					/* Ohne hinterlegte URL kein <a>: ein Anker ohne href ist kein
+					   Link, nicht fokussierbar und verwirrt Screenreader nur. */
+					repeatedLogos.map((logo) =>
+						logo.url ? (
+							<a href={logo.url} target="_blank" rel="noopener noreferrer" class="shrink-0">
+								<img src={logo.src} alt={logo.name} class="logo-marquee__logo" />
+							</a>
+						) : (
+							<img src={logo.src} alt={logo.name} class="logo-marquee__logo shrink-0" />
+						),
+					)
 				}
 			</div>
 			<div class="logo-marquee__group" aria-hidden="true">
 				{
-					logos.map((logo) => (
-						<a href={logo.url} tabindex={-1} class="shrink-0">
-							<img src={logo.src} alt="" class="logo-marquee__logo" />
-						</a>
+					repeatedLogos.map((logo) => (
+						<img src={logo.src} alt="" class="logo-marquee__logo shrink-0" />
 					))
 				}
 			</div>

@@ -1,0 +1,19 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import ProjectDetail from "../../components/ProjectDetail.astro";
+
+export async function getStaticPaths() {
+	const projects = await getCollection(
+		"projects",
+		(p: CollectionEntry<"projects">) => p.data.category === "doku",
+	);
+	return projects.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+---
+
+<ProjectDetail entry={entry} theme="doku" backHref="/dokumentationen" backLabel="Alle Dokumentationen" />

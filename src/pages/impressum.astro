@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+	title="Impressum"
+	description="Impressum von TRUE FRAME."
+	theme="landing"
+	footerVariant="minimal"
+>
+	<section class="mx-auto max-w-2xl px-6 py-32 md:px-10">
+		<h1 class="font-display text-4xl uppercase tracking-tight text-ink md:text-5xl">
+			Impressum
+		</h1>
+
+		<div class="prose-legal mt-10 font-sans text-ink-muted">
+			<h2>Offenlegung gemäß § 5 ECG, § 25 Mediengesetz</h2>
+			<p>
+				Gabriel Neumayr<br />
+				TRUE FRAME<br />
+				Hofgartenweg 5<br />
+				5163 Mattsee<br />
+				Österreich
+			</p>
+
+			<p>
+				Telefon: <a href="tel:+436605777367">+43 660 577 73 67</a><br />
+				E-Mail: <a href="mailto:mail@true-frame.net">mail@true-frame.net</a>
+			</p>
+
+			<p class="prose-legal-todo">
+				[ TODO – noch zu ergänzen, bevor diese Seite rechtlich vollständig
+				ist: Unternehmensform (z. B. Einzelunternehmen), Gewerbeberechtigung
+				und zuständige Gewerbebehörde, ggf. UID-Nummer, Mitgliedschaft bei
+				der Wirtschaftskammer Österreich. ]
+			</p>
+
+			<h2>Unternehmensgegenstand</h2>
+			<p>Videoproduktion: Imagefilme, Dokumentationen, Magazin & News.</p>
+
+			<h2>Blattlinie</h2>
+			<p>
+				Sachliche, unabhängige Berichterstattung und Produktion von
+				Auftragsinhalten für Kund:innen, Presseagenturen und Sender.
+			</p>
+
+			<h2>EU-Streitschlichtung</h2>
+			<p>
+				Die Europäische Kommission stellt eine Plattform zur
+				Online-Streitbeilegung (OS) bereit:
+				<a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">
+					https://ec.europa.eu/consumers/odr
+				</a>. Wir sind zur Teilnahme an einem Streitbeilegungsverfahren vor
+				einer Verbraucherschlichtungsstelle nicht verpflichtet und nehmen
+				daran nicht teil.
+			</p>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.prose-legal h2 {
+		margin-top: 2rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--color-ink);
+	}
+	.prose-legal h2:first-child {
+		margin-top: 0;
+	}
+	.prose-legal p {
+		margin-top: 0.75rem;
+		line-height: 1.6;
+	}
+	.prose-legal a {
+		color: var(--color-accent);
+		text-decoration: underline;
+	}
+	.prose-legal-todo {
+		border: 1px dashed var(--color-line);
+		padding: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.02em;
+	}
+</style>

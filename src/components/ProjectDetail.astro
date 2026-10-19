@@ -1,0 +1,173 @@
+---
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCardEmbedUrl, getPosterUrl } from "../lib/video";
+
+interface Props {
+	entry: CollectionEntry<"projects">;
+	theme: "doku" | "imagefilm" | "news";
+	backHref: string;
+	backLabel: string;
+}
+
+const { entry, theme, backHref, backLabel } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+// Banner zeigt bei vorhandenem bgClip ein stummes, loopendes <video> (same-
+// origin, kein Iframe-Risiko, siehe .poster-cover in global.css), sonst ein
+// Standbild. Der Play-Button lädt bei echtem Klick eine iframe mit Ton/
+// Autoplay (getCardEmbedUrl, funktioniert zuverlässig, weil ein echter Klick
+// die Autoplay-Regeln der Browser erfüllt) und schickt sie in den Browser-
+// Fullscreen – dort schaut man den Film in voller Länge mit Ton an.
+const fullscreenEmbedUrl = getCardEmbedUrl(data.videoUrl, data.startSeconds);
+const posterUrl = await getPosterUrl(data);
+
+const metaLine = [data.client, data.year, data.duration].filter(Boolean).join(" · ");
+
+// Leere Einträge aussortieren: Tina legt beim Anlegen einer Bilderliste gern
+// einen leeren Platzhalter an, der sonst als <img src=""> landet.
+const stills = data.stills?.filter((src) => src.trim().length > 0) ?? [];
+---
+
+<BaseLayout
+	title={data.title}
+	description={data.description}
+	theme={theme}
+	footerVariant="category"
+>
+	<section class="relative aspect-video w-full overflow-hidden bg-bg" data-video-banner>
+		{
+			data.bgClip ? (
+				<video
+					src={data.bgClip}
+					poster={posterUrl}
+					class="poster-cover"
+					autoplay
+					muted
+					loop
+					playsinline
+				/>
+			) : (
+				posterUrl && <img src={posterUrl} alt="" class="poster-cover" />
+			)
+		}
+		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/70" />
+
+		{
+			data.embeddable === false && data.videoUrl ? (
+				<a
+					href={data.videoUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group absolute inset-0 flex flex-col items-center justify-center gap-2"
+					aria-label={`${data.title} auf der Original-Plattform ansehen (externer Link)`}
+				>
+					<span class="flex h-20 w-20 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent">
+						<svg viewBox="0 0 24 24" class="h-8 w-8 fill-current">
+							<path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z" />
+							<path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" />
+						</svg>
+					</span>
+					<span class="font-mono text-xs tracking-widest text-white/90">
+						AUF DER ORIGINAL-PLATTFORM ANSEHEN
+					</span>
+				</a>
+			) : fullscreenEmbedUrl ? (
+				<button
+					type="button"
+					data-video-play
+					class="group absolute inset-0 flex items-center justify-center"
+					aria-label={`${data.title} abspielen`}
+				>
+					<span class="flex h-20 w-20 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent">
+						<svg viewBox="0 0 24 24" class="ml-1 h-8 w-8 fill-current">
+							<path d="M8 5v14l11-7z" />
+						</svg>
+					</span>
+				</button>
+			) : (
+				<div class="absolute inset-0 flex items-center justify-center">
+					<span class="font-script text-2xl text-accent">Video folgt</span>
+				</div>
+			)
+		}
+
+		{
+			fullscreenEmbedUrl && data.embeddable !== false && (
+				<iframe
+					data-video-frame
+					data-src={fullscreenEmbedUrl}
+					class="hidden absolute inset-0 h-full w-full"
+					title={data.title}
+					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+					allowfullscreen
+				/>
+			)
+		}
+	</section>
+
+	<section class="mx-auto max-w-3xl px-6 py-16 md:px-10">
+		<a
+			href={backHref}
+			class="font-mono text-xs uppercase tracking-widest text-ink-muted transition hover:text-accent"
+		>
+			[ ← {backLabel} ]
+		</a>
+		{
+			data.newsType && (
+				<span class="mt-4 inline-block bg-accent px-2.5 py-1 font-mono text-[10px] font-bold tracking-widest text-white">
+					{data.newsType === "eigene-story" ? "EIGENE STORY" : "PRESSEAGENTUR"}
+				</span>
+			)
+		}
+		<h1 class="mt-4 font-display text-4xl uppercase leading-[0.9] tracking-tight text-ink md:text-6xl">
+			{data.title}
+		</h1>
+		{metaLine && <p class="mt-3 font-mono text-xs tracking-widest text-ink-muted">{metaLine}</p>}
+
+		<p class="mt-8 font-sans text-lg text-ink-muted">{data.description}</p>
+
+		<div class="prose-behind-scenes mt-10 font-sans text-ink">
+			<Content />
+		</div>
+
+		{
+			stills.length > 0 && (
+				<div class="mt-12">
+					<p class="font-mono text-xs tracking-widest text-ink-muted">STILLS AUS DEM VIDEO</p>
+					<div class="mt-4 grid gap-4 sm:grid-cols-2">
+						{stills.map((src) => (
+							<img src={src} alt="" loading="lazy" class="w-full border border-line object-cover" />
+						))}
+					</div>
+				</div>
+			)
+		}
+	</section>
+</BaseLayout>
+
+<script>
+	import "../lib/video-player";
+</script>
+
+<style>
+	.prose-behind-scenes :global(p) {
+		margin-top: 1rem;
+	}
+	.prose-behind-scenes :global(p:first-child) {
+		margin-top: 0;
+	}
+	.prose-behind-scenes :global(h2) {
+		margin-top: 2rem;
+		font-family: var(--font-display);
+		text-transform: uppercase;
+		letter-spacing: -0.01em;
+		font-size: 1.5rem;
+	}
+	.prose-behind-scenes :global(a) {
+		color: var(--color-accent);
+		text-decoration: underline;
+	}
+</style>

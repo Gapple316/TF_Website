@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -26,6 +26,8 @@ export interface WieStep {
 	word: string[];
 	headlineFont?: "display" | "doku" | "news";
 	text: string;
+	/** Wortgruppe aus `text`, die rot unterstrichen wird (wie auf der Kontaktseite). */
+	markWord?: string;
 	image?: string;
 	imageAlt?: string;
 }
@@ -38,11 +40,47 @@ export interface WasStep {
 	headlineFont?: "display" | "doku" | "news";
 	href: string;
 	linkLabel?: string;
-	videoSrc?: string;
+	posterUrl?: string;
+	bgClipUrl?: string;
 	focusY?: string;
+	/** Akzentfarbe der Kategorie (gelb/grün/blau) – auf der Startseite gilt das
+	 *  Landing-Theme, deshalb kommt die Farbe als Wert statt per CSS-Variable. */
+	accent?: string;
 }
 
 const props = defineProps<{ wieSteps: WieStep[]; wasSteps: WasStep[] }>();
+
+// Text einmalig um das hervorzuhebende Stichwort herum zerlegen, damit die
+// Markierung im Template ohne Funktionsaufrufe pro Render auskommt.
+const wieTexte = computed(() =>
+	props.wieSteps.map((step) => {
+		const start = step.markWord ? step.text.indexOf(step.markWord) : -1;
+		if (start === -1 || !step.markWord) {
+			return { vor: step.text, wort: "", nach: "" };
+		}
+		return {
+			vor: step.text.slice(0, start),
+			wort: step.markWord,
+			nach: step.text.slice(start + step.markWord.length),
+		};
+	}),
+);
+
+// Anteil der Scroll-Strecke pro Schritt, in dem ein Panel unverändert mit
+// voller Deckkraft "steht", bevor der Crossfade zum nächsten Panel beginnt
+// (die übrigen 1 - DWELL_FRACTION sind die komplette Übergangszone zwischen
+// zwei benachbarten Panels, während der beide gleichzeitig ein- bzw.
+// ausblenden). Ersetzt die vorherige reine Dreiecksfunktion, bei der jedes
+// Panel ständig in Bewegung war und nie "ankam".
+const DWELL_FRACTION = 0.6;
+
+function stepOpacity(virtual: number, i: number): number {
+	const halfDwell = DWELL_FRACTION / 2;
+	const distance = Math.abs(virtual - i);
+	if (distance <= halfDwell) return 1;
+	const fadeWidth = 1 - DWELL_FRACTION;
+	return Math.max(0, 1 - (distance - halfDwell) / fadeWidth);
+}
 
 // --- Wie ---
 const wieSectionEl = ref<HTMLElement | null>(null);
@@ -60,7 +98,7 @@ function updateWiePanels(progress: number) {
 	const virtual = progress * last;
 	wiePanelEls.value.forEach((el, i) => {
 		if (!el) return;
-		const opacity = Math.max(0, 1 - Math.abs(virtual - i));
+		const opacity = stepOpacity(virtual, i);
 		el.style.opacity = String(opacity);
 		el.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
 	});
@@ -78,7 +116,7 @@ function initWieDesktopPin() {
 		ScrollTrigger.create({
 			trigger: section,
 			start: "top top",
-			end: () => `+=${last * window.innerHeight * 1.15}`,
+			end: () => `+=${last * window.innerHeight * 2.6}`,
 			pin,
 			scrub: true,
 			onUpdate: (self) => updateWiePanels(self.progress),
@@ -103,36 +141,18 @@ function initWieMobileReveal() {
 }
 
 // --- Was ---
+// Kein Video-Iframe (fremde Origin, siehe .poster-cover in global.css für
+// die Begründung): bei vorhandenem bgClipUrl ein selbst gehostetes,
+// stummes <video>, sonst ein Standbild. Beide sind normale same-origin
+// Elemente, daher keine "nur aktives Video lädt"-Logik nötig.
 const wasSectionEl = ref<HTMLElement | null>(null);
 const wasPinEl = ref<HTMLElement | null>(null);
 const wasPanelEls = ref<(HTMLElement | null)[]>([]);
-const wasVideoEls = ref<(HTMLIFrameElement | null)[]>([]);
 let wasCtx: gsap.Context | undefined;
 let wasMobileObserver: IntersectionObserver | undefined;
-let wasLazyObserver: IntersectionObserver | undefined;
-let wasSectionNearViewport = false;
-let wasLastActiveIndex = -1;
 
 function setWasPanelRef(el: Element | null, i: number) {
 	wasPanelEls.value[i] = el instanceof HTMLElement ? el : null;
-}
-
-function setWasVideoRef(el: Element | null, i: number) {
-	wasVideoEls.value[i] = el instanceof HTMLIFrameElement ? el : null;
-}
-
-function setActiveWasVideo(index: number) {
-	wasVideoEls.value.forEach((iframe, i) => {
-		if (!iframe) return;
-		if (i === index) {
-			const src = iframe.dataset.src;
-			if (src && iframe.getAttribute("src") !== src) {
-				iframe.setAttribute("src", src);
-			}
-		} else if (iframe.getAttribute("src")) {
-			iframe.removeAttribute("src");
-		}
-	});
 }
 
 function updateWasPanels(progress: number) {
@@ -140,17 +160,10 @@ function updateWasPanels(progress: number) {
 	const virtual = progress * last;
 	wasPanelEls.value.forEach((el, i) => {
 		if (!el) return;
-		const opacity = Math.max(0, 1 - Math.abs(virtual - i));
+		const opacity = stepOpacity(virtual, i);
 		el.style.opacity = String(opacity);
 		el.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
 	});
-
-	if (!wasSectionNearViewport) return;
-	const nearest = Math.round(virtual);
-	if (nearest !== wasLastActiveIndex) {
-		wasLastActiveIndex = nearest;
-		setActiveWasVideo(nearest);
-	}
 }
 
 function initWasDesktopPin() {
@@ -164,34 +177,20 @@ function initWasDesktopPin() {
 		ScrollTrigger.create({
 			trigger: section,
 			start: "top top",
-			end: () => `+=${(props.wasSteps.length - 1) * window.innerHeight * 1.15}`,
+			end: () => `+=${(props.wasSteps.length - 1) * window.innerHeight * 2.6}`,
 			pin,
 			scrub: true,
 			onUpdate: (self) => updateWasPanels(self.progress),
 		});
 	}, section);
-
-	wasLazyObserver = new IntersectionObserver(
-		(entries) => {
-			if (!wasSectionNearViewport && entries.some((e) => e.isIntersecting)) {
-				wasSectionNearViewport = true;
-				setActiveWasVideo(wasLastActiveIndex === -1 ? 0 : wasLastActiveIndex);
-			}
-		},
-		{ rootMargin: "200px 0px" },
-	);
-	wasLazyObserver.observe(section);
 }
 
 function initWasMobileReveal() {
 	wasMobileObserver = new IntersectionObserver(
 		(entries) => {
 			for (const entry of entries) {
-				const i = wasPanelEls.value.indexOf(entry.target as HTMLElement);
-				if (i === -1) continue;
 				if (entry.isIntersecting) {
 					entry.target.classList.add("step-panel--visible");
-					setActiveWasVideo(i);
 				}
 			}
 		},
@@ -225,7 +224,6 @@ onUnmounted(() => {
 	wasCtx?.revert();
 	wieMobileObserver?.disconnect();
 	wasMobileObserver?.disconnect();
-	wasLazyObserver?.disconnect();
 });
 </script>
 
@@ -271,7 +269,25 @@ onUnmounted(() => {
 									</template>
 								</p>
 								<p class="mt-4 max-w-lg font-sans text-sm text-ink-muted md:text-base">
-									{{ step.text }}
+									<template v-if="wieTexte[i].wort">
+										{{ wieTexte[i].vor
+										}}<span class="marked-word" data-mark="underline"
+											>{{ wieTexte[i].wort
+											}}<svg
+												class="marked-word__mark"
+												viewBox="0 0 320 40"
+												preserveAspectRatio="none"
+												aria-hidden="true"
+											>
+												<path
+													class="mark-main"
+													d="M6,25 C40,15 78,9 124,8 C170,7 226,13 278,22 C292,24 303,27 314,31"
+												/>
+												<path class="mark-echo" d="M30,33 C78,25 140,22 196,25" />
+											</svg></span
+										>{{ wieTexte[i].nach }}
+									</template>
+									<template v-else>{{ step.text }}</template>
 								</p>
 							</div>
 							<div class="relative aspect-[16/10] overflow-hidden border border-line bg-surface">
@@ -291,9 +307,15 @@ onUnmounted(() => {
 
 	<section id="was">
 		<div class="mx-auto max-w-6xl px-6 pt-24 pb-8 md:px-10">
-			<h2 class="font-display text-3xl uppercase tracking-wide md:text-4xl">
-				Drei Arten, Geschichten zu erzählen
-			</h2>
+			<!-- Gleicher Aufbau wie "Wie ich arbeite", "Vertrauen" und "Wer":
+			     Mono-Label, Haarlinie, Zierschrift-Phrase. -->
+			<div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+				<p class="font-mono text-[10px] tracking-[0.26em] text-ink-muted">WAS</p>
+				<div class="h-px min-w-6 flex-1 bg-line"></div>
+				<h2 class="font-script text-2xl text-accent">
+					drei Arten, Geschichten zu erzählen
+				</h2>
+			</div>
 		</div>
 
 		<section ref="wasSectionEl" class="relative">
@@ -304,14 +326,23 @@ onUnmounted(() => {
 					:ref="(el) => setWasPanelRef(el as Element | null, i)"
 					class="step-panel relative h-[100svh] w-full overflow-hidden md:absolute md:inset-0 md:h-full"
 				>
-					<iframe
-						v-if="step.videoSrc"
-						:ref="(el) => setWasVideoRef(el as Element | null, i)"
-						:data-src="step.videoSrc"
-						class="video-cover"
+					<video
+						v-if="step.bgClipUrl"
+						:src="step.bgClipUrl"
+						:poster="step.posterUrl"
+						class="poster-cover"
 						:style="step.focusY ? { '--video-focus-y': step.focusY } : undefined"
-						:title="step.word.join(' ')"
-						allow="autoplay; encrypted-media"
+						autoplay
+						muted
+						loop
+						playsinline
+					/>
+					<img
+						v-else-if="step.posterUrl"
+						:src="step.posterUrl"
+						alt=""
+						class="poster-cover"
+						:style="step.focusY ? { '--video-focus-y': step.focusY } : undefined"
 					/>
 					<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/70" />
 
@@ -320,6 +351,7 @@ onUnmounted(() => {
 						<p
 							class="text-script-accent text-3xl md:text-5xl"
 							:class="step.scriptFont === 'news-script' ? 'font-doku italic font-black' : 'font-script'"
+							:style="step.accent ? { color: step.accent } : undefined"
 						>
 							{{ step.tagline }}
 						</p>

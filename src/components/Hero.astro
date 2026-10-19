@@ -1,11 +1,14 @@
 ---
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import { getBackgroundEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { getThumbnailUrl } from "../lib/video";
 
 interface Props {
 	videoUrl?: string;
-	startSeconds?: number;
+	/** Überschreibt das automatisch geholte Plattform-Standbild – nötig für
+	 *  Beiträge, die nicht auf YouTube/Vimeo liegen. */
+	posterUrlOverride?: string;
+	bgClipUrl?: string;
 	image?: ImageMetadata;
 	imageAlt?: string;
 	caption?: string;
@@ -19,7 +22,8 @@ interface Props {
 
 const {
 	videoUrl,
-	startSeconds,
+	posterUrlOverride,
+	bgClipUrl,
 	image,
 	imageAlt,
 	caption,
@@ -31,32 +35,32 @@ const {
 	body,
 } = Astro.props;
 
-const embedUrl = getBackgroundEmbedUrl(videoUrl, startSeconds);
-// Fallback-Standbild: sichtbar solange der Video-Player lädt (oder falls
-// er aus irgendeinem Grund nicht rendert), statt eines schwarzen Blocks.
-const posterUrl = embedUrl ? await getThumbnailUrl(videoUrl) : undefined;
+// Iframes (YouTube/Vimeo) scheiden als Ambient-Hintergrund aus: YouTube
+// zeigt sein natives Play/Pause-UI, sobald Autoplay im jeweiligen
+// Browser/Kontext fehlschlägt – reproduzierbar, nicht nur ein seltener
+// Rand­fall, und von der einbettenden Seite aus nicht entfernbar (fremde
+// Origin). Bei bgClip (selbst gehosteter, komprimierter Kurzclip) besteht
+// dieses Risiko nicht: same-origin <video autoplay muted loop>, kein
+// fremdes UI kann je durchscheinen. Ohne bgClip fällt es auf ein
+// Standbild (Video-Thumbnail) zurück.
+const posterUrl = posterUrlOverride ?? (videoUrl ? await getThumbnailUrl(videoUrl) : undefined);
 ---
 
 <section id="hero" class="relative flex min-h-screen flex-col overflow-hidden">
 	<div class="absolute inset-0 -z-10 bg-bg">
 		{
-			posterUrl && (
-				<img
-					src={posterUrl}
-					alt=""
-					aria-hidden="true"
-					class="absolute inset-0 h-full w-full object-cover"
+			bgClipUrl ? (
+				<video
+					src={bgClipUrl}
+					poster={posterUrl}
+					class="poster-cover"
+					autoplay
+					muted
+					loop
+					playsinline
 				/>
-			)
-		}
-		{
-			embedUrl ? (
-				<iframe
-					class="video-cover"
-					src={embedUrl}
-					title={caption ?? scriptLine}
-					allow="autoplay; encrypted-media; picture-in-picture"
-				/>
+			) : posterUrl ? (
+				<img src={posterUrl} alt="" aria-hidden="true" class="poster-cover" />
 			) : image ? (
 				<Image
 					src={image}
@@ -68,16 +72,11 @@ const posterUrl = embedUrl ? await getThumbnailUrl(videoUrl) : undefined;
 			) : null
 		}
 		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/70" />
-		{
-			embedUrl && (
-				<div class="absolute inset-0 bg-[radial-gradient(ellipse_65%_35%_at_center,rgba(0,0,0,0.8)_0%,transparent_75%)]" />
-			)
-		}
 	</div>
 
 	{
 		caption && (
-			<p class="absolute left-1/2 top-[26%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.3em] text-white/40">
+			<p class="absolute left-1/2 top-[26%] w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 text-center font-mono text-[10px] tracking-[0.2em] text-white/40 md:w-auto md:max-w-none md:whitespace-nowrap md:tracking-[0.3em]">
 				{caption}
 			</p>
 		)

@@ -1,96 +1,43 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
 defineProps<{
 	title: string;
 	description: string;
 	client?: string;
 	meta?: string;
-	embedUrl?: string;
 	thumbnailUrl?: string;
-	sourceUrl?: string;
-	embeddable?: boolean;
+	badge?: string;
+	detailHref: string;
 }>();
-
-const loaded = ref(false);
 </script>
 
 <template>
-	<div class="group relative aspect-video overflow-hidden bg-surface">
-		<a
-			v-if="embeddable === false && sourceUrl"
-			:href="sourceUrl"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="absolute inset-0 h-full w-full"
-			:aria-label="`${title} auf YouTube ansehen (externer Link)`"
-		>
-			<img
-				v-if="thumbnailUrl"
-				:src="thumbnailUrl"
-				:alt="title"
-				class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-			/>
-			<div v-else class="h-full w-full bg-surface" />
-			<span
-				class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/20 transition group-hover:bg-black/10"
-			>
-				<span
-					class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent"
-				>
-					<svg viewBox="0 0 24 24" class="h-6 w-6 fill-current">
-						<path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z" />
-						<path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" />
-					</svg>
-				</span>
-				<span class="font-mono text-[10px] tracking-widest text-white/90">
-					AUF YOUTUBE ANSEHEN
-				</span>
-			</span>
-		</a>
-		<iframe
-			v-else-if="loaded && embedUrl"
-			:src="embedUrl"
-			class="absolute inset-0 h-full w-full"
-			:title="title"
-			allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-			allowfullscreen
+	<a :href="detailHref" class="group relative block aspect-video overflow-hidden bg-surface">
+		<img
+			v-if="thumbnailUrl"
+			:src="thumbnailUrl"
+			:alt="title"
+			class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
 		/>
-		<button
-			v-else-if="embedUrl"
-			type="button"
-			class="absolute inset-0 h-full w-full"
-			:aria-label="`${title} abspielen`"
-			@click="loaded = true"
+		<div v-else class="h-full w-full bg-surface" />
+		<span
+			v-if="badge"
+			class="absolute left-4 top-4 bg-accent px-2.5 py-1 font-mono text-[10px] font-bold tracking-widest text-white"
 		>
-			<img
-				v-if="thumbnailUrl"
-				:src="thumbnailUrl"
-				:alt="title"
-				class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-			/>
-			<div v-else class="h-full w-full bg-surface" />
+			{{ badge }}
+		</span>
+		<span
+			class="absolute inset-0 flex items-center justify-center bg-black/20 transition group-hover:bg-black/10"
+		>
 			<span
-				class="absolute inset-0 flex items-center justify-center bg-black/20 transition group-hover:bg-black/10"
+				class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent"
 			>
-				<span
-					class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent"
-				>
-					<svg viewBox="0 0 24 24" class="ml-1 h-6 w-6 fill-current">
-						<path d="M8 5v14l11-7z" />
-					</svg>
-				</span>
+				<svg viewBox="0 0 24 24" class="ml-1 h-6 w-6 fill-current">
+					<path d="M8 5v14l11-7z" />
+				</svg>
 			</span>
-		</button>
-		<div
-			v-else
-			class="absolute inset-0 flex flex-col items-center justify-center gap-2 border border-dashed border-line px-6 text-center"
-		>
-			<span class="font-script text-2xl text-accent">Video folgt</span>
-		</div>
+		</span>
 
 		<div
-			v-if="!loaded"
 			class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5"
 		>
 			<p class="font-display text-lg uppercase tracking-wide text-white">
@@ -100,5 +47,5 @@ const loaded = ref(false);
 				{{ [client, meta].filter(Boolean).join(" · ") }}
 			</p>
 		</div>
-	</div>
+	</a>
 </template>

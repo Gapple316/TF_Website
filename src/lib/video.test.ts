@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import {
-	parseVideoUrl,
-	getBackgroundEmbedUrl,
-	getCardEmbedUrl,
-	getThumbnailUrl,
-} from "./video";
+import { parseVideoUrl, getCardEmbedUrl, getThumbnailUrl } from "./video";
 
 describe("parseVideoUrl", () => {
 	it("parses a youtu.be short link", () => {
@@ -33,42 +28,6 @@ describe("parseVideoUrl", () => {
 	});
 });
 
-describe("getBackgroundEmbedUrl", () => {
-	it("builds a muted autoplay loop embed for youtube with no operable controls", () => {
-		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs")).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1",
-		);
-	});
-
-	it("builds a background embed for vimeo", () => {
-		expect(getBackgroundEmbedUrl("https://vimeo.com/1152950764")).toBe(
-			"https://player.vimeo.com/video/1152950764?background=1&autoplay=1&loop=1&muted=1",
-		);
-	});
-
-	it("returns undefined without a url", () => {
-		expect(getBackgroundEmbedUrl(undefined)).toBeUndefined();
-	});
-
-	it("appends a start offset for youtube", () => {
-		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 30)).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1&start=30",
-		);
-	});
-
-	it("appends a start offset for vimeo as a #t= fragment", () => {
-		expect(getBackgroundEmbedUrl("https://vimeo.com/1152950764", 30)).toBe(
-			"https://player.vimeo.com/video/1152950764?background=1&autoplay=1&loop=1&muted=1#t=30s",
-		);
-	});
-
-	it("ignores a start offset of 0", () => {
-		expect(getBackgroundEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 0)).toBe(
-			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&mute=1&loop=1&playlist=w0_fK4r7Yrs&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1",
-		);
-	});
-});
-
 describe("getCardEmbedUrl", () => {
 	it("builds a click-to-play embed for youtube", () => {
 		expect(getCardEmbedUrl("https://youtu.be/w0_fK4r7Yrs")).toBe(
@@ -79,6 +38,24 @@ describe("getCardEmbedUrl", () => {
 	it("builds a click-to-play embed for vimeo", () => {
 		expect(getCardEmbedUrl("https://vimeo.com/1152950764")).toBe(
 			"https://player.vimeo.com/video/1152950764?autoplay=1",
+		);
+	});
+
+	it("appends a start offset for youtube", () => {
+		expect(getCardEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 30)).toBe(
+			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1&start=30",
+		);
+	});
+
+	it("appends a start offset for vimeo as a #t= fragment", () => {
+		expect(getCardEmbedUrl("https://vimeo.com/1152950764", 30)).toBe(
+			"https://player.vimeo.com/video/1152950764?autoplay=1#t=30s",
+		);
+	});
+
+	it("ignores a start offset of 0", () => {
+		expect(getCardEmbedUrl("https://youtu.be/w0_fK4r7Yrs", 0)).toBe(
+			"https://www.youtube-nocookie.com/embed/w0_fK4r7Yrs?autoplay=1",
 		);
 	});
 });

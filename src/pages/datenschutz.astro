@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+	title="Datenschutz"
+	description="Datenschutzerklärung von TRUE FRAME."
+	theme="landing"
+	footerVariant="minimal"
+>
+	<section class="mx-auto max-w-2xl px-6 py-32 md:px-10">
+		<h1 class="font-display text-4xl uppercase tracking-tight text-ink md:text-5xl">
+			Datenschutz
+		</h1>
+
+		<div class="prose-legal mt-10 font-sans text-ink-muted">
+			<h2>Verantwortlicher</h2>
+			<p>
+				Gabriel Neumayr, TRUE FRAME, Hofgartenweg 5, 5163 Mattsee, Österreich<br />
+				E-Mail: <a href="mailto:mail@true-frame.net">mail@true-frame.net</a><br />
+				Telefon: <a href="tel:+436605777367">+43 660 577 73 67</a>
+			</p>
+
+			<h2>Kontaktaufnahme</h2>
+			<p>
+				Diese Website hat kein Kontaktformular. Wenn du per Telefon oder
+				E-Mail Kontakt aufnimmst, verarbeiten wir die dabei übermittelten
+				Daten (z. B. Name, Kontaktdaten, Inhalt der Anfrage) ausschließlich
+				zur Bearbeitung deines Anliegens, auf Grundlage von Art. 6 Abs. 1
+				lit. b DSGVO (vorvertragliche/vertragliche Anfrage).
+			</p>
+
+			<h2>Hosting und Server-Logs</h2>
+			<p>
+				Beim Aufruf dieser Website verarbeitet der Hosting-Anbieter
+				automatisch technische Zugriffsdaten (z. B. IP-Adresse, Datum und
+				Uhrzeit des Zugriffs, aufgerufene Seite, verwendeter Browser), wie
+				das bei jedem Webserver-Betrieb technisch notwendig ist, auf
+				Grundlage unseres berechtigten Interesses an einem sicheren und
+				funktionsfähigen Betrieb der Website (Art. 6 Abs. 1 lit. f DSGVO).
+			</p>
+			<p class="prose-legal-todo">
+				[ TODO – sobald der Hosting-Anbieter feststeht: hier Name und
+				Standort des Anbieters ergänzen (bzw. bei Bedarf einen
+				Auftragsverarbeitungsvertrag mit ihm abschließen). ]
+			</p>
+
+			<h2>Videos (YouTube, Vimeo)</h2>
+			<p>
+				Beim bloßen Aufruf dieser Website wird <strong>keine</strong>
+				Verbindung zu YouTube oder Vimeo hergestellt. Die Vorschaubilder
+				und die kurzen, stummen Hintergrundvideos liegen auf dem Server
+				dieser Website und werden von dort ausgeliefert.
+			</p>
+			<p>
+				Erst wenn du auf einer Projektseite aktiv auf den Play-Button
+				klickst, wird das vollständige Video nachgeladen. Dabei wird eine
+				Verbindung zu Servern von Google (YouTube) bzw. Vimeo aufgebaut und
+				deine IP-Adresse sowie technische Geräteinformationen werden dorthin
+				übertragen; die Anbieter können dabei eigenständig Cookies setzen.
+				YouTube-Videos werden im erweiterten Datenschutzmodus
+				(youtube-nocookie.com) eingebunden. Rechtsgrundlage ist deine
+				Einwilligung durch den Klick (Art. 6 Abs. 1 lit. a DSGVO). Es gelten
+				die Datenschutzerklärungen der jeweiligen Anbieter:
+			</p>
+			<p>
+				<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+					Google/YouTube-Datenschutzerklärung
+				</a><br />
+				<a href="https://vimeo.com/privacy" target="_blank" rel="noopener noreferrer">
+					Vimeo-Datenschutzerklärung
+				</a>
+			</p>
+
+			<h2>Google Maps</h2>
+			<p>
+				Auf der Kontaktseite kann eine Karte von Google Maps angezeigt
+				werden. Sie wird <strong>nicht automatisch</strong> geladen: Beim
+				Seitenaufruf siehst du nur einen Platzhalter. Erst wenn du auf
+				„Karte laden" klickst, wird die Karte von Google nachgeladen und
+				deine IP-Adresse an Google übertragen. Rechtsgrundlage ist deine
+				Einwilligung durch den Klick (Art. 6 Abs. 1 lit. a DSGVO).
+				Anbieter ist Google Ireland Limited, Gordon House, Barrow Street,
+				Dublin 4, Irland.
+			</p>
+
+			<h2>Schriftarten</h2>
+			<p>
+				Alle verwendeten Schriftarten werden vom Server dieser Website
+				ausgeliefert. Es besteht keine Verbindung zu Google Fonts oder
+				einem anderen externen Schriftdienst.
+			</p>
+
+			<h2>Cookies und Tracking</h2>
+			<p>
+				Diese Website selbst setzt keine eigenen Cookies und bindet keine
+				Analyse- oder Marketing-Tools (z. B. Google Analytics) ein. Cookies
+				können ausschließlich durch die oben genannten Dienste gesetzt
+				werden – und auch nur dann, wenn du sie durch einen Klick aktiv
+				lädst.
+			</p>
+
+			<h2>Social-Media-Links</h2>
+			<p>
+				Instagram und YouTube sind auf dieser Website nur als einfache
+				Links (kein eingebettetes Widget) verlinkt. Erst wenn du aktiv
+				darauf klickst, verlässt du diese Website und es gelten die
+				Datenschutzbestimmungen des jeweiligen Anbieters.
+			</p>
+
+			<h2>Deine Rechte</h2>
+			<p>
+				Du hast das Recht auf Auskunft, Berichtigung, Löschung,
+				Einschränkung der Verarbeitung, Datenübertragbarkeit sowie
+				Widerspruch gegen die Verarbeitung deiner personenbezogenen Daten.
+				Wende dich dazu an die oben genannte Kontaktadresse. Außerdem hast
+				du das Recht, dich bei der österreichischen Datenschutzbehörde
+				(<a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer">www.dsb.gv.at</a>)
+				zu beschweren.
+			</p>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.prose-legal h2 {
+		margin-top: 2rem;
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--color-ink);
+	}
+	.prose-legal h2:first-child {
+		margin-top: 0;
+	}
+	.prose-legal p {
+		margin-top: 0.75rem;
+		line-height: 1.6;
+	}
+	.prose-legal a {
+		color: var(--color-accent);
+		text-decoration: underline;
+	}
+	.prose-legal-todo {
+		border: 1px dashed var(--color-line);
+		padding: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.02em;
+	}
+</style>

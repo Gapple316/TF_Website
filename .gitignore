@@ -26,6 +26,10 @@ pnpm-debug.log*
 # local, machine-specific Claude Code permission overrides
 .claude/settings.local.json
 
+# TinaCMS: generated GraphQL client/schema + the built admin UI bundle
+tina/__generated__/
+public/admin/
+
 # subagent-driven-development scratch (progress ledger, briefs, reports)
 .superpowers/
 

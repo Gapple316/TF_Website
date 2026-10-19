@@ -5,9 +5,12 @@ import ScrollProgress from "../components/ScrollProgress.vue";
 import LogoMarquee from "../components/LogoMarquee.astro";
 import { kundenLogos, senderLogos } from "../data/logos";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { getBackgroundEmbedUrl } from "../lib/video";
+import { getPosterUrl } from "../lib/video";
+import { byNewestFirst } from "../lib/projects";
 import { Image, getImage } from "astro:assets";
 import WieWasSections from "../components/WieWasSections.vue";
+import MarkedWord from "../components/MarkedWord.astro";
+import Testimonials from "../components/Testimonials.astro";
 import { categoryContent } from "../data/categories";
 import kapitelDenken from "../assets/photos/home-kapitel-denken.jpg";
 import kapitelHoeren from "../assets/photos/home-kapitel-hoeren.jpg";
@@ -24,7 +27,12 @@ const progressSections = [
 
 const projects = await getCollection("projects");
 const showreel = projects.find((p) => p.data.title === "Showreel");
-const showreelEmbedUrl = getBackgroundEmbedUrl(showreel?.data.videoUrl);
+// Standbild als Fallback, sofern kein selbst gehosteter bgClip existiert:
+// siehe .poster-cover in global.css für die Begründung (YouTube zeigt sein
+// natives Play/Pause-UI, sobald Autoplay fehlschlägt – nicht zuverlässig
+// von der Seite aus entfernbar; bei bgClip besteht dieses Risiko nicht).
+const showreelPosterUrl = showreel ? await getPosterUrl(showreel.data) : undefined;
+const showreelBgClipUrl = showreel?.data.bgClip;
 
 const kapitel = [
 	{
@@ -32,6 +40,7 @@ const kapitel = [
 		tagline: "Recherche",
 		word: "DENKEN",
 		text: "Bevor die Kamera läuft, steht die Idee. Ich recherchiere, lese, telefoniere — und baue daraus ein Konzept, das trägt.",
+		markWord: "ein Konzept, das trägt",
 		image: kapitelDenken,
 	},
 	{
@@ -39,6 +48,7 @@ const kapitel = [
 		tagline: "Zuhören",
 		word: "HÖREN",
 		text: "Was der Kunde sagt — und was er eigentlich meint. Das Gespräch entscheidet, welcher Film am Ende entsteht.",
+		markWord: "was er eigentlich meint",
 		image: kapitelHoeren,
 	},
 	{
@@ -46,6 +56,7 @@ const kapitel = [
 		tagline: "Momente",
 		word: "SEHEN",
 		text: "Drehen heißt warten können. Ich fange die Momente ein, die sich nicht wiederholen lassen — Licht, Blick, Handgriff.",
+		markWord: "warten können",
 		image: kapitelSehen,
 	},
 	{
@@ -53,6 +64,7 @@ const kapitel = [
 		tagline: "Schnitt",
 		word: "ERZÄHLEN",
 		text: "Aus Material wird ein Film: Struktur, Text, Ton, Rhythmus. Dann Feedback — und der letzte Schnitt.",
+		markWord: "der letzte Schnitt",
 		image: kapitelErzaehlen,
 	},
 ];
@@ -65,6 +77,7 @@ const arbeitsweiseSteps = await Promise.all(
 			tagline: k.tagline,
 			word: [k.word],
 			text: k.text,
+			markWord: k.markWord,
 			image: optimized.src,
 			imageAlt: `${k.tagline} – ${k.word}`,
 		};
@@ -73,9 +86,11 @@ const arbeitsweiseSteps = await Promise.all(
 
 const featuredByCategory = Object.fromEntries(
 	categoryContent.map((c) => {
-		const inCategory = projects.filter(
-			(p: CollectionEntry<"projects">) => p.data.category === c.contentCategory,
-		);
+		const inCategory = projects
+			.filter(
+				(p: CollectionEntry<"projects">) => p.data.category === c.contentCategory,
+			)
+			.sort(byNewestFirst);
 		const featured =
 			inCategory.find((p: CollectionEntry<"projects">) => p.data.featured) ??
 			inCategory[0];
@@ -83,27 +98,28 @@ const featuredByCategory = Object.fromEntries(
 	}),
 );
 
-const wasSteps = categoryContent.map((c, i) => {
-	const featured = featuredByCategory[c.slug];
-	return {
-		number: String(i + 1).padStart(2, "0"),
-		tagline: c.scriptLine,
-		scriptFont: c.scriptFont,
-		word: c.headline,
-		headlineFont: c.headlineFont,
-		videoSrc: getBackgroundEmbedUrl(
-			featured?.data.videoUrl,
-			featured?.data.startSeconds,
-		),
-		href: `/${c.slug}`,
-		linkLabel: "mehr erfahren",
-	};
-});
+const wasSteps = await Promise.all(
+	categoryContent.map(async (c, i) => {
+		const featured = featuredByCategory[c.slug];
+		return {
+			number: String(i + 1).padStart(2, "0"),
+			tagline: c.scriptLine,
+			scriptFont: c.scriptFont,
+			word: c.headline,
+			headlineFont: c.headlineFont,
+			posterUrl: featured ? await getPosterUrl(featured.data) : undefined,
+			bgClipUrl: featured?.data.bgClip,
+			accent: c.accent,
+			href: `/${c.slug}`,
+			linkLabel: "mehr erfahren",
+		};
+	}),
+);
 ---
 
 <BaseLayout
 	title="Home"
-	description="TRUE FRAME – Produktionsfirma für Imagefilme, Nachrichtenbeiträge und Dokumentationen."
+	description="TRUE FRAME – Produktionsfirma für Imagefilme, Magazin & News und Dokumentationen."
 	theme="landing"
 	showHeaderLogo={false}
 >
@@ -113,21 +129,23 @@ const wasSteps = categoryContent.map((c, i) => {
 	>
 		<div class="absolute inset-0 -z-10 bg-bg">
 			{
-				showreelEmbedUrl && (
-					<iframe
-						class="video-cover"
-						src={showreelEmbedUrl}
-						title="Showreel Hintergrund"
-						allow="autoplay; encrypted-media; picture-in-picture"
+				showreelBgClipUrl ? (
+					<video
+						src={showreelBgClipUrl}
+						poster={showreelPosterUrl}
+						class="poster-cover"
+						autoplay
+						muted
+						loop
+						playsinline
 					/>
+				) : (
+					showreelPosterUrl && (
+						<img src={showreelPosterUrl} alt="" aria-hidden="true" class="poster-cover" />
+					)
 				)
 			}
 			<div class="absolute inset-0 bg-black/70" />
-			{
-				showreelEmbedUrl && (
-					<div class="absolute inset-0 bg-[radial-gradient(ellipse_65%_35%_at_center,rgba(0,0,0,0.8)_0%,transparent_75%)]" />
-				)
-			}
 		</div>
 
 		<div class="flex flex-col items-center gap-[clamp(1rem,4vmin,2.5rem)]">
@@ -138,10 +156,11 @@ const wasSteps = categoryContent.map((c, i) => {
 					Filme, die bleiben
 				</p>
 				<h1 class="font-display text-[clamp(2rem,7vmin,6rem)] uppercase leading-[0.85] tracking-tight text-white">
-					Ich erzähle<br />deine<br />Geschichte
+					Ich erzähle<br />deine<br />
+					<MarkedWord>Geschichte</MarkedWord>
 				</h1>
 				<p class="max-w-xl font-sans text-[clamp(0.875rem,2vmin,1.125rem)] text-white/70">
-					Produktionsfirma für Imagefilme, Nachrichtenbeiträge und
+					Produktionsfirma für Imagefilme, Magazin & News und
 					Dokumentationen – ehrliche Geschichten, cinematisch erzählt.
 				</p>
 				<p class="mt-2 font-mono text-[10px] tracking-[0.24em] text-white/50">SCROLLEN</p>
@@ -168,6 +187,8 @@ const wasSteps = categoryContent.map((c, i) => {
 			APA) an die jeweilige Redaktion geliefert habe.
 		</p>
 	</section>
+
+	<Testimonials />
 
 	<WieWasSections wieSteps={arbeitsweiseSteps} wasSteps={wasSteps} client:load />
 
@@ -198,7 +219,7 @@ const wasSteps = categoryContent.map((c, i) => {
 				<p class="mt-6 max-w-lg font-sans text-ink-muted md:text-lg">
 					Mit meinen Produktionen gehe ich oft andere Wege, generell gehe
 					ich die extra Meile, um das Produkt zu verbessern. Ich will im
-					Endeffekt mit jedem Projekt einen Film mit Substanz kreieren –
+					Endeffekt mit jedem Projekt einen Film mit <MarkedWord>Substanz</MarkedWord> kreieren –
 					egal ob Magazinbeitrag für Regionalsender oder Werbefilm für
 					Industriekunden. Zukünftig möchte ich hier kreative Ansätze
 					verfolgen. Einen „Standardbeitrag“ gibt es bei mir nicht, dafür

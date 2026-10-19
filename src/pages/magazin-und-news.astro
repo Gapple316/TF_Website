@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import VideoCard from "../components/VideoCard.vue";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getPosterUrl } from "../lib/video";
+import { byNewestFirst } from "../lib/projects";
+import { categoryContent } from "../data/categories";
+
+const cat = categoryContent.find((c) => c.slug === "magazin-und-news")!;
+
+const all = await getCollection("projects");
+const projects = all
+	.filter((p: CollectionEntry<"projects">) => p.data.category === "news")
+	.sort(byNewestFirst);
+
+const hero = projects.find((p) => p.data.featured) ?? projects[0];
+
+const gridCards = await Promise.all(
+	projects.map(async (p) => ({
+		project: p,
+		thumbnailUrl: await getPosterUrl(p.data),
+	})),
+);
+
+// Zwei Blöcke statt einer Liste: selbst produzierte Geschichten und reine
+// Agentur-Zulieferungen sind unterschiedliche Arbeiten und sollen auch so
+// gelesen werden. Ein Block wird nur gerendert, wenn er Beiträge hat –
+// "Eigene Storys" füllt sich erst nach und nach.
+const groups = [
+	{
+		id: "eigene-story" as const,
+		label: "Eigene Storys",
+		note: "Recherche, Kamera und Schnitt aus einer Hand.",
+		badge: "EIGENE STORY",
+	},
+	{
+		id: "presseagentur" as const,
+		label: "Presseagentur",
+		note: "Rohmaterial, vor Ort gedreht und an die Redaktionen geliefert.",
+		badge: "PRESSEAGENTUR",
+	},
+].map((group) => ({
+	...group,
+	cards: gridCards.filter((c) => c.project.data.newsType === group.id),
+}));
+
+// dpa-sonderflug-dubai ist von YouTube-Embedding gesperrt (Content-ID durch
+// den Rechteinhaber Seven.One) - projects[].data.embeddable steuert auf der
+// Detailseite (ProjectDetail.astro), ob dort ein Live-Player oder ein
+// Link-out-Fallback gezeigt wird.
+---
+
+<BaseLayout
+	title="Magazin & News"
+	description="Ganze Beiträge für RTS, Rohmaterial für dpa und APA – Magazin & News von TRUE FRAME."
+	theme="news"
+	footerVariant="category"
+>
+	<Hero
+		videoUrl={hero?.data.videoUrl}
+		posterUrlOverride={hero?.data.thumbnail}
+		bgClipUrl={hero?.data.bgClip}
+		caption="AKTUELLER BEITRAG · VOLLFLÄCHIGES VIDEO"
+		scriptLine={cat.scriptLine}
+		scriptFont={cat.scriptFont}
+		headline={cat.headline}
+		headlineFont={cat.headlineFont}
+		metaLine={
+			hero
+				? [hero.data.client, hero.data.year].filter(Boolean).join(" · ")
+				: undefined
+		}
+		body={cat.body}
+	/>
+
+	<section class="bg-[#1b2c4b] px-6 py-16 md:px-10">
+		<div class="mx-auto grid max-w-5xl gap-10 text-center md:grid-cols-3">
+			<div>
+				<p class="font-display text-4xl text-white">120+</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">BEITRÄGE / JAHR</p>
+			</div>
+			<div>
+				<p class="font-display text-4xl text-white">AM SELBEN TAG</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">LIEFERZEIT</p>
+			</div>
+			<div>
+				<p class="font-doku italic font-black text-4xl text-[#8ab0e8]">aus einer Hand</p>
+				<p class="mt-2 font-mono text-xs tracking-widest text-white/60">
+					RECHERCHE · KAMERA · SCHNITT
+				</p>
+			</div>
+		</div>
+	</section>
+
+	{
+		groups
+			.filter((group) => group.cards.length > 0)
+			.map((group) => (
+				<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">
+					<div class="flex items-baseline gap-4">
+						<h2 class="font-display text-2xl uppercase tracking-tight text-ink md:text-3xl">
+							{group.label}
+						</h2>
+						<div class="h-px flex-1 bg-line" />
+						<p class="font-mono text-xs tracking-widest text-ink-muted">
+							{group.cards.length === 1 ? "1 BEITRAG" : `${group.cards.length} BEITRÄGE`}
+						</p>
+					</div>
+					<p class="mt-2 font-sans text-sm text-ink-muted">{group.note}</p>
+
+					<div class="mt-8 grid gap-8 md:grid-cols-2">
+						{group.cards.map(({ project, thumbnailUrl }) => (
+							<VideoCard
+								client:visible
+								title={project.data.title}
+								description={project.data.description}
+								client={project.data.client}
+								thumbnailUrl={thumbnailUrl}
+								badge={group.badge}
+								detailHref={`/magazin-und-news/${project.id}`}
+							/>
+						))}
+					</div>
+				</section>
+			))
+	}
+
+	<section class="bg-[#1b2c4b] px-6 py-20 text-center md:px-10">
+		<p class="font-news font-extralight uppercase tracking-[0.2em] text-3xl text-white md:text-5xl">
+			Kurzfristig vor Ort?
+		</p>
+		<a
+			href="tel:+436605777367"
+			class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
+		>
+			Jetzt anrufen
+		</a>
+	</section>
+</BaseLayout>

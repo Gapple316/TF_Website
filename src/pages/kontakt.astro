@@ -1,12 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
+import MarkedWord from "../components/MarkedWord.astro";
 import kontaktHero from "../assets/photos/kontakt-hero.jpg";
 ---
 
 <BaseLayout
 	title="Kontakt"
-	description="Kontakt zu TRUE FRAME – Projektanfragen für Imagefilme, Nachrichten und Dokumentationen."
+	description="Kontakt zu TRUE FRAME – Projektanfragen für Imagefilme, Magazin & News und Dokumentationen."
 	theme="landing"
 	footerVariant="minimal"
 >
@@ -60,8 +61,9 @@ import kontaktHero from "../assets/photos/kontakt-hero.jpg";
 				Erstgespräch, unverbindlich
 			</h2>
 			<p class="mt-6 max-w-md font-sans text-ink-muted md:text-lg">
-				Kein Formular. Ruf an oder schreib mir — meist antworte ich am selben
-				Tag. Erzähl mir, was du vorhast, den Rest klären wir im Gespräch.
+				<MarkedWord variant="underline">Kein Formular.</MarkedWord> Ruf an oder
+				schreib mir — meist antworte ich am selben Tag. Erzähl mir, was du
+				vorhast, den Rest klären wir im Gespräch.
 			</p>
 			<a
 				href="tel:+436605777367"
@@ -73,21 +75,46 @@ import kontaktHero from "../assets/photos/kontakt-hero.jpg";
 	</section>
 
 	<section class="pb-24">
-		<a
-			href="https://www.google.com/maps/search/?api=1&query=Hofgartenweg+5,+5163+Mattsee"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="group relative block aspect-[16/5] w-full overflow-hidden"
-			aria-label="Standort auf Google Maps öffnen: Hofgartenweg 5, 5163 Mattsee"
-		>
+		<div class="relative aspect-[4/3] w-full overflow-hidden border-y border-line sm:aspect-[16/7] md:aspect-[16/5]">
 			<iframe
-				src="https://www.google.com/maps?q=Hofgartenweg+5,+5163+Mattsee&output=embed"
+				data-map-frame
+				data-src="https://www.google.com/maps?q=Hofgartenweg+5,+5163+Mattsee&output=embed"
 				title="Standort TRUE FRAME – Hofgartenweg 5, 5163 Mattsee"
 				loading="lazy"
-				tabindex="-1"
-				class="pointer-events-none h-full w-full border-0 grayscale"
+				class="hidden h-full w-full border-0 grayscale"
 			/>
-			<div class="absolute inset-0 bg-black/0 transition group-hover:bg-black/10"></div>
-		</a>
+
+			<button
+				type="button"
+				data-map-load
+				class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface px-6 text-center transition hover:bg-line/40"
+			>
+				<span class="font-mono text-[10px] uppercase tracking-[0.26em] text-ink-muted">
+					Hofgartenweg 5 · 5163 Mattsee
+				</span>
+				<span class="font-display text-xl uppercase tracking-tight text-ink md:text-2xl">
+					Karte laden
+				</span>
+				<span class="max-w-sm font-sans text-xs text-ink-muted">
+					Beim Laden wird eine Verbindung zu Google hergestellt und deine
+					IP-Adresse dorthin übertragen.
+				</span>
+			</button>
+		</div>
+
+		<p class="mx-auto mt-4 max-w-6xl px-6 font-sans text-xs text-ink-muted md:px-10">
+			<a
+				href="https://www.google.com/maps/search/?api=1&query=Hofgartenweg+5,+5163+Mattsee"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="underline transition hover:text-accent"
+			>
+				Route direkt in Google Maps öffnen
+			</a>
+		</p>
 	</section>
+
+	<script>
+		import "../lib/map-consent";
+	</script>
 </BaseLayout>

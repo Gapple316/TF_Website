@@ -3,23 +3,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import VideoCard from "../components/VideoCard.vue";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { getCardEmbedUrl, getThumbnailUrl } from "../lib/video";
+import { getPosterUrl } from "../lib/video";
+import { byNewestFirst } from "../lib/projects";
 import { categoryContent } from "../data/categories";
 
 const cat = categoryContent.find((c) => c.slug === "dokumentationen")!;
 
 const all = await getCollection("projects");
-const projects = all.filter(
-	(p: CollectionEntry<"projects">) => p.data.category === "doku",
-);
+const projects = all
+	.filter((p: CollectionEntry<"projects">) => p.data.category === "doku")
+	.sort(byNewestFirst);
 
 const hero = projects.find((p) => p.data.featured) ?? projects[0];
 
 const gridCards = await Promise.all(
 	projects.map(async (p) => ({
 		project: p,
-		embedUrl: getCardEmbedUrl(p.data.videoUrl),
-		thumbnailUrl: await getThumbnailUrl(p.data.videoUrl),
+		thumbnailUrl: await getPosterUrl(p.data),
 		meta: p.data.duration ?? p.data.tags?.[0],
 	})),
 );
@@ -33,7 +33,8 @@ const gridCards = await Promise.all(
 >
 	<Hero
 		videoUrl={hero?.data.videoUrl}
-		startSeconds={hero?.data.startSeconds}
+		posterUrlOverride={hero?.data.thumbnail}
+		bgClipUrl={hero?.data.bgClip}
 		caption="AKTUELLER FILM · VOLLFLÄCHIGES VIDEO"
 		scriptLine={cat.scriptLine}
 		headline={cat.headline}
@@ -54,15 +55,15 @@ const gridCards = await Promise.all(
 		</p>
 		<div class="mt-8 grid gap-8 md:grid-cols-2">
 			{
-				gridCards.map(({ project, embedUrl, thumbnailUrl, meta }) => (
+				gridCards.map(({ project, thumbnailUrl, meta }) => (
 					<VideoCard
 						client:visible
 						title={project.data.title}
 						description={project.data.description}
 						client={project.data.client}
 						meta={meta}
-						embedUrl={embedUrl}
 						thumbnailUrl={thumbnailUrl}
+						detailHref={`/dokumentationen/${project.id}`}
 					/>
 				))
 			}

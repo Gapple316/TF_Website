@@ -1,14 +1,22 @@
 @import "tailwindcss";
-@import "@fontsource/anton";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
-@import "@fontsource/pinyon-script";
-@import "@fontsource/bodoni-moda/900.css";
-@import "@fontsource/bodoni-moda/900-italic.css";
-@import "@fontsource/archivo/200.css";
-@import "@fontsource/courier-prime";
+
+/*
+  Bewusst die latin-Subsets statt der Paket-Indizes: Letztere ziehen zusätzlich
+  latin-ext, vietnamesisch und (je nach Schrift) kyrillisch mit, die auf einer
+  rein deutschsprachigen Seite nie gebraucht werden. Umlaute und ß stecken im
+  latin-Subset. Gleiches Schriftbild, deutlich weniger zu laden.
+*/
+@import "@fontsource/anton/latin-400.css";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/pinyon-script/latin-400.css";
+@import "@fontsource/bodoni-moda/latin-900.css";
+@import "@fontsource/bodoni-moda/latin-900-italic.css";
+@import "@fontsource/archivo/latin-200.css";
+@import "@fontsource/courier-prime/latin-400.css";
+@import "@fontsource/courier-prime/latin-700.css";
 
 @theme {
 	--font-display: "Anton", sans-serif;
@@ -145,7 +153,7 @@ body {
 
 /*
   Video-zuerst-Hero: der Text-Block ist unsichtbar bis initHeroReveal()
-  die Klasse is-revealed setzt (nach 2s oder beim ersten Scroll).
+  die Klasse is-revealed setzt (nach 3s oder beim ersten Scroll).
 */
 [data-hero-reveal] {
 	opacity: 0;
@@ -163,6 +171,82 @@ body {
 @media (prefers-reduced-motion: reduce) {
 	[data-hero-reveal] {
 		transition: none;
+	}
+}
+
+/*
+  Rote Stift-Markierung um ein Stichwort (MarkedWord.astro). Das SVG liegt
+  über dem Wort und zeichnet sich per stroke-dashoffset ein, sobald es
+  sichtbar wird – im Hero über den Hero-Reveal, sonst per IntersectionObserver
+  (mark-reveal.ts), der .is-drawn setzt.
+*/
+.marked-word {
+	position: relative;
+	display: inline-block;
+}
+
+.marked-word__mark {
+	position: absolute;
+	overflow: visible;
+	pointer-events: none;
+}
+
+.marked-word[data-mark="circle"] .marked-word__mark {
+	/* Höhe bewusst knapp gehalten: Headlines laufen mit leading-[0.85], bei
+	   größerer Überhöhe schneidet der Kreis in die Zeile darüber. Die Breite
+	   braucht etwas mehr Luft, damit das Wort im "bauchigen" Teil der Ellipse
+	   liegt und nicht von den flachen Enden angeschnitten wird. */
+	inset: -18% -13%;
+	width: 126%;
+	height: 136%;
+	transform: rotate(-1.5deg);
+}
+
+.marked-word[data-mark="underline"] .marked-word__mark {
+	left: -4%;
+	right: auto;
+	top: auto;
+	bottom: -32%;
+	width: 108%;
+	height: 44%;
+	transform: rotate(-0.6deg);
+}
+
+.marked-word__mark path {
+	fill: none;
+	stroke: var(--color-accent);
+	/* non-scaling-stroke hält den Strich trotz preserveAspectRatio="none"
+	   rundum gleich dick (sonst werden die Seiten dünner als oben/unten),
+	   die em-Breite lässt ihn mit der Schriftgröße mitwachsen. */
+	vector-effect: non-scaling-stroke;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-dasharray: 1000;
+	stroke-dashoffset: 1000;
+	transition: stroke-dashoffset 1.1s ease-out 0.3s;
+}
+
+/* Zwei Striche statt einem: der dünnere "Nachzieher" über einem Teilstück
+   lässt die Markierung nach Stift aussehen statt nach sauberer Vektorellipse. */
+.marked-word__mark .mark-main {
+	stroke-width: 0.075em;
+}
+
+.marked-word__mark .mark-echo {
+	stroke-width: 0.042em;
+	opacity: 0.75;
+	transition-delay: 0.85s;
+}
+
+[data-hero-reveal].is-revealed .marked-word__mark path,
+.marked-word.is-drawn .marked-word__mark path {
+	stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.marked-word__mark path {
+		transition: none;
+		stroke-dashoffset: 0;
 	}
 }
 
@@ -229,7 +313,7 @@ body {
 
 /*
   Sobald der Hero verlassen wurde (header[data-over-hero="false"], v.a.
-  relevant auf den hellen Unterseiten Imagefilme/Nachrichten): dunkel
+  relevant auf den hellen Unterseiten Imagefilme/Magazin & News): dunkel
   getöntes Glas statt Weiß-auf-Hell, sonst unlesbar.
 */
 header[data-over-hero="false"] .nav-link {
@@ -244,6 +328,27 @@ header[data-over-hero="false"] .nav-link:focus-visible {
 	background: rgba(0, 0, 0, 0.06);
 	border-color: rgba(0, 0, 0, 0.14);
 	text-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+}
+
+/*
+  Burger-Icon (MobileNav): Die Striche erben per bg-current die Textfarbe.
+  Über dem Hero liegt immer ein dunkles Video, dort muss das Icon weiß sein –
+  sonst ist es auf den hellen Themes (Imagefilm, News) dunkel auf dunkel und
+  praktisch unsichtbar. Erst unterhalb des Heros übernimmt die Theme-Farbe.
+  Bei offenem Menü liegt der helle bzw. dunkle Theme-Hintergrund des Overlays
+  dahinter, deshalb dort ebenfalls die Theme-Textfarbe.
+*/
+.nav-burger {
+	color: #ffffff;
+}
+
+body.menu-offen header a[href="/"] {
+	visibility: hidden;
+}
+
+header[data-over-hero="false"] .nav-burger,
+.nav-burger[aria-expanded="true"] {
+	color: var(--color-ink);
 }
 
 header[data-over-hero="false"] .nav-link[data-active="true"] {
@@ -387,35 +492,33 @@ header[data-over-hero="false"] .nav-link[data-active="true"] {
 }
 
 /*
-  "Cover"-Sizing für Hintergrund-Video-Iframes. YouTube/Vimeo-Embeds
-  unterstützen object-fit/object-position nicht zuverlässig (iframes sind
-  zwar technisch "replaced elements", Browser wenden object-fit darauf
-  aber nicht konsistent an) – das Video wird deshalb bewusst über die
-  Containergröße hinaus vergrößert und per transform positioniert, mit
-  demselben Verfahren, das Browser intern für object-position verwenden:
-  Element auf top:Y% setzen, dann um -Y% der eigenen Höhe zurückschieben.
-  --video-focus-y verhält sich dadurch wie ein object-position-Y-Wert:
-  50% = zentriert, kleinere Werte zeigen mehr vom oberen Bildrand (Köpfe/
-  Augenpartie bleiben im Bild). Zum Nachjustieren einfach den Wert hier
-  oder inline per style="--video-focus-y: 15%" überschreiben.
+  "Cover"-Sizing für Ambient-Hintergründe: ein <img> (Standbild-Fallback)
+  oder ein selbst gehostetes <video autoplay muted loop> (bgClip). Beide
+  sind same-origin und unterstützen object-fit/object-position nativ und
+  zuverlässig – anders als YouTube/Vimeo-Iframes, deren natives Play/
+  Pause-UI durchscheint, sobald Autoplay im jeweiligen Browser/Kontext
+  fehlschlägt (kein seltener Sonderfall, sondern reproduzierbar), und
+  das sich von der einbettenden Seite aus weder per Parameter noch per
+  CSS entfernen lässt (fremde Origin, kein Zugriff auf das Iframe-Innere).
+  Iframes werden deshalb hier absichtlich nicht mehr eingesetzt.
+  --video-focus-y verhält sich wie ein object-position-Y-Wert: 50% =
+  zentriert, kleinere Werte zeigen mehr vom oberen Bildrand (Köpfe/
+  Augenpartie bleiben im Bild).
 */
-.video-cover {
+.poster-cover {
 	--video-focus-y: 25%;
 	position: absolute;
-	left: 50%;
-	top: var(--video-focus-y);
-	width: 177.78vh;
-	height: 100vh;
-	min-width: 100%;
-	min-height: 56.25vw;
-	transform: translate(-50%, calc(-1 * var(--video-focus-y))) scale(1.5);
-	pointer-events: none;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: 50% var(--video-focus-y);
 }
 
 @media (max-width: 767.98px) {
-	.video-cover {
-		/* Hochformat-Container: der Video-Ausschnitt wird enger, der
-		   Kopfbereich rutscht ohne Korrektur noch weiter aus dem Bild. */
+	.poster-cover {
+		/* Hochformat-Container: der Ausschnitt wird enger, der Kopfbereich
+		   rutscht ohne Korrektur noch weiter aus dem Bild. */
 		--video-focus-y: 15%;
 	}
 }

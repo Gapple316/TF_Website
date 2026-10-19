@@ -1,4 +1,4 @@
-const REVEAL_DELAY_MS = 5000;
+const REVEAL_DELAY_MS = 3000;
 export const HERO_REVEAL_EVENT = "hero-reveal";
 
 export function initHeroReveal(): void {

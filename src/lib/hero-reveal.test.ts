@@ -24,17 +24,17 @@ describe("initHeroReveal", () => {
 		expect(el.classList.contains("is-revealed")).toBe(false);
 	});
 
-	it("does not reveal automatically before 5000ms", () => {
+	it("does not reveal automatically before 3000ms", () => {
 		initHeroReveal();
 		const el = document.querySelector("[data-hero-reveal]")!;
-		vi.advanceTimersByTime(4999);
+		vi.advanceTimersByTime(2999);
 		expect(el.classList.contains("is-revealed")).toBe(false);
 	});
 
-	it("reveals automatically after 5000ms", () => {
+	it("reveals automatically after 3000ms", () => {
 		initHeroReveal();
 		const el = document.querySelector("[data-hero-reveal]")!;
-		vi.advanceTimersByTime(5000);
+		vi.advanceTimersByTime(3000);
 		expect(el.classList.contains("is-revealed")).toBe(true);
 	});
 
@@ -64,7 +64,7 @@ describe("initHeroReveal", () => {
 		document.body.innerHTML = `<img data-hero-reveal /><div data-hero-reveal></div>`;
 		initHeroReveal();
 		const [img, div] = document.querySelectorAll("[data-hero-reveal]");
-		vi.advanceTimersByTime(5000);
+		vi.advanceTimersByTime(3000);
 		expect(img.classList.contains("is-revealed")).toBe(true);
 		expect(div.classList.contains("is-revealed")).toBe(true);
 	});
@@ -73,7 +73,7 @@ describe("initHeroReveal", () => {
 		initHeroReveal();
 		const listener = vi.fn();
 		window.addEventListener("hero-reveal", listener);
-		vi.advanceTimersByTime(5000);
+		vi.advanceTimersByTime(3000);
 		expect(listener).toHaveBeenCalledTimes(1);
 	});
 

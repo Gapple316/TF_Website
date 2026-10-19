@@ -36,6 +36,10 @@ const fixedBase = ref<{ top: number; left: number; width: number; height: number
 let scrollTrigger: ScrollTrigger | undefined;
 let resizeRaf = 0;
 
+// ~60 Frames ≈ 1 Sekunde: großzügig genug für langsame Geräte, aber endlich,
+// damit die Logo-Box nicht unbegrenzt in der Schwebe bleibt.
+const MAX_FLIP_ATTEMPTS = 60;
+
 function onReveal() {
 	revealed.value = true;
 }
@@ -63,7 +67,7 @@ function measureFixedBase() {
 	fixedBase.value = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
 }
 
-function setupScrollFlip() {
+function setupScrollFlip(attempt = 0) {
 	scrollTrigger?.kill();
 	scrollTrigger = undefined;
 
@@ -73,13 +77,26 @@ function setupScrollFlip() {
 	const header = document.querySelector<HTMLImageElement>(
 		'header a[href="/"] img',
 	);
-	if (!wrapper || !el || !hero || !header) {
+
+	// Start- und Zielbox müssen beide schon eine echte Breite haben, sonst ist
+	// der Scale-Faktor unbrauchbar (0 oder Infinity). Direkt nach dem Mount ist
+	// das Ziel-Logo im Header je nach Timing noch nicht vermessen – das ist ein
+	// vorübergehender Zustand, kein Fehlschlag. Früher wurde hier sofort
+	// gedockt, wodurch das große Hero-Logo nie erschien (reproduzierbar auf
+	// Mobil wie Desktop). Deshalb ein paar Frames nachfassen, bevor aufgegeben
+	// wird.
+	const startRect = wrapper?.getBoundingClientRect();
+	const endRect = header?.getBoundingClientRect();
+	const messbar = !!startRect?.width && !!endRect?.width;
+
+	if (!wrapper || !el || !hero || !header || !messbar) {
+		if (attempt < MAX_FLIP_ATTEMPTS) {
+			requestAnimationFrame(() => setupScrollFlip(attempt + 1));
+			return;
+		}
 		finalizeDock();
 		return;
 	}
-
-	const startRect = wrapper.getBoundingClientRect();
-	const endRect = header.getBoundingClientRect();
 
 	// Ein einziger, uniformer Scale-Faktor (Breite und Höhe verhalten
 	// sich bei gleichem Seitenverhältnis identisch – hier der Fall, da
@@ -116,7 +133,7 @@ function onResize() {
 		// Rects (Start UND Ziel) haben sich durch die Größenänderung
 		// verschoben – FLIP-Deltas müssen neu berechnet werden, sonst
 		// zielt die Bewegung an der Header-Ecke vorbei.
-		requestAnimationFrame(setupScrollFlip);
+		requestAnimationFrame(() => setupScrollFlip());
 	});
 }
 
@@ -137,7 +154,7 @@ onMounted(() => {
 	// FLIP-Rects werden beim Mount gemessen (nicht erst beim Reveal) –
 	// die Bewegung selbst ist an echten Scroll gekoppelt, nicht an einen
 	// Timer, und muss ab dem allerersten Scroll-Pixel korrekt reagieren.
-	requestAnimationFrame(setupScrollFlip);
+	requestAnimationFrame(() => setupScrollFlip());
 });
 
 onUnmounted(() => {
