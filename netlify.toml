@@ -11,6 +11,11 @@
   # Standardversion, unter der der Build fehlschlägt.
   NODE_VERSION = "22"
 
+  # Die Indizierung im Tina-Schritt sprengte die Node-Standardgrenze von 2 GB
+  # ("Reached heap limit"). Netlifys Build-Container hat deutlich mehr RAM,
+  # Node nutzt es ohne diesen Hinweis aber nicht.
+  NODE_OPTIONS = "--max-old-space-size=4096"
+
 # Die Zugangsdaten für TinaCloud (TINA_CLIENT_ID, TINA_TOKEN, TINA_BRANCH)
 # gehören NICHT hierher, sondern in die Netlify-Oberfläche unter
 # Site configuration > Environment variables. Sie landen sonst im Repository.
