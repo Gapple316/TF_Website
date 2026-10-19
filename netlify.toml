@@ -1,0 +1,28 @@
+# Netlify-Konfiguration. Steht bewusst im Repository statt nur in der
+# Weboberfläche: so ist nachvollziehbar, womit gebaut wird, und ein neu
+# angelegtes Netlify-Projekt übernimmt die Einstellungen automatisch.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # package.json verlangt >=22.12. Netlify startet sonst mit einer älteren
+  # Standardversion, unter der der Build fehlschlägt.
+  NODE_VERSION = "22"
+
+# Die Zugangsdaten für TinaCloud (TINA_CLIENT_ID, TINA_TOKEN, TINA_BRANCH)
+# gehören NICHT hierher, sondern in die Netlify-Oberfläche unter
+# Site configuration > Environment variables. Sie landen sonst im Repository.
+
+[[headers]]
+  # Videos und Vorschaubilder ändern sich nur, wenn sie ersetzt werden –
+  # dann unter neuem Namen. Lange Cache-Zeit spart Ladezeit bei Wiederkehrern.
+  for = "/videos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/uploads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
