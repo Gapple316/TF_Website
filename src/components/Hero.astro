@@ -11,6 +11,10 @@ interface Props {
 	bgClipUrl?: string;
 	image?: ImageMetadata;
 	imageAlt?: string;
+	/** Bildausschnitt für `image`. Nötig, weil der Hero querformatig ist: Ein
+	 *  Hochformat-Porträt wird darin stark beschnitten, und mittig zentriert
+	 *  fällt der Kopf aus dem Bild. Erwartet einen object-position-Wert. */
+	imagePosition?: string;
 	caption?: string;
 	scriptLine: string;
 	scriptFont?: "script" | "news-script";
@@ -26,6 +30,7 @@ const {
 	bgClipUrl,
 	image,
 	imageAlt,
+	imagePosition = "center",
 	caption,
 	scriptLine,
 	scriptFont = "script",
@@ -66,6 +71,7 @@ const posterUrl = posterUrlOverride ?? (videoUrl ? await getThumbnailUrl(videoUr
 					src={image}
 					alt={imageAlt ?? ""}
 					class="h-full w-full object-cover"
+					style={`object-position: ${imagePosition}`}
 					widths={[640, 1024, 1600, 2400]}
 					sizes="100vw"
 				/>
