@@ -117,7 +117,15 @@ const groups = [
 								description={project.data.description}
 								client={project.data.client}
 								thumbnailUrl={thumbnailUrl}
-								badge={group.badge}
+								{/*
+								  Die Blocküberschrift sagt bereits, ob es eine eigene
+								  Story oder Agenturmaterial ist – dasselbe auf jeder
+								  Karte zu wiederholen verschenkt den Platz. Dort steht
+								  deshalb die Gattung (Magazin oder News), die sich
+								  sonst nirgends ablesen ließe. Ohne Tag bleibt es
+								  beim Blockabzeichen.
+								*/}
+								badge={(project.data.tags?.[0] ?? group.badge).toUpperCase()}
 								detailHref={`/magazin-und-news/${project.id}`}
 							/>
 						))}
