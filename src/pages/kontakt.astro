@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/Hero.astro";
 import MarkedWord from "../components/MarkedWord.astro";
-import kontaktHero from "../assets/photos/kontakt-hero.jpg";
+import { Image } from "astro:assets";
+import kontaktPortrait from "../assets/photos/kontakt-hero.jpg";
 ---
 
 <BaseLayout
@@ -11,66 +11,92 @@ import kontaktHero from "../assets/photos/kontakt-hero.jpg";
 	theme="landing"
 	footerVariant="minimal"
 >
-	<Hero
-		image={kontaktHero}
-		imageAlt="Gabriel Neumayr bei der Arbeit für TRUE FRAME"
-		imagePosition="center 22%"
-		scriptLine="reden wir"
-		headline={["GABRIEL", "NEUMAYR"]}
-		metaLine="VIDEOJOURNALIST & FILMEMACHER · SALZBURG · ÖSTERREICH"
-	/>
-
-	<section class="mx-auto grid max-w-6xl gap-16 px-6 py-24 md:grid-cols-2 md:px-10">
-		<div class="space-y-6 font-sans">
-			<a href="tel:+436605777367" class="block border-t border-line pt-6">
-				<p class="text-xs uppercase tracking-widest text-ink-muted">Telefon</p>
-				<p class="font-display text-2xl transition-colors hover:text-accent">
-					+43 660 577 73 67
-				</p>
-			</a>
-			<a href="mailto:mail@true-frame.net" class="block border-t border-line pt-6">
-				<p class="text-xs uppercase tracking-widest text-ink-muted">E-Mail</p>
-				<p class="font-display text-xl transition-colors hover:text-accent">
-					mail@true-frame.net
-				</p>
-			</a>
-			<div class="border-t border-line pt-6">
-				<p class="text-xs uppercase tracking-widest text-ink-muted">Adresse</p>
-				<p class="text-lg">Hofgartenweg 5, 5163 Mattsee</p>
-			</div>
-
-			<div class="flex gap-4 pt-4">
-				<a
-					href="https://www.instagram.com/true_frame_net"
-					class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
-				>
-					Instagram
-				</a>
-				<a
-					href="https://www.youtube.com/@True_Frame_net"
-					class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
-				>
-					YouTube
-				</a>
-			</div>
+	{/*
+	  Bewusst ohne <Hero>: Das Porträt steht direkt neben den Kontaktdaten,
+	  statt als Vollbild darüber. Der Seitenkopf folgt daher demselben Muster
+	  wie die Abschnitte der Startseite (Mono-Label, Haarlinie, Schreibschrift).
+	  Ohne #hero löscht header-contrast.ts das data-over-hero-Attribut – die
+	  Navigation bleibt damit weiß, was auf dem dunklen Landing-Theme richtig
+	  ist (die dunkle Glas-Variante gilt nur für die hellen Themes).
+	*/}
+	<section class="mx-auto max-w-6xl px-6 pb-24 pt-32 md:px-10 md:pt-40">
+		<div class="flex items-baseline gap-4">
+			<p class="font-mono text-[10px] tracking-[0.26em] text-ink-muted">KONTAKT</p>
+			<div class="h-px flex-1 bg-line"></div>
+			<p class="font-script text-2xl text-accent">reden wir</p>
 		</div>
 
-		<div>
-			<p class="font-script text-2xl text-accent">einfach anrufen</p>
-			<h2 class="font-display text-4xl uppercase tracking-tight text-ink md:text-5xl">
-				Erstgespräch, unverbindlich
-			</h2>
-			<p class="mt-6 max-w-md font-sans text-ink-muted md:text-lg">
-				<MarkedWord variant="underline">Kein Formular.</MarkedWord> Ruf an oder
-				schreib mir — meist antworte ich am selben Tag. Erzähl mir, was du
-				vorhast, den Rest klären wir im Gespräch.
-			</p>
-			<a
-				href="tel:+436605777367"
-				class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
-			>
-				Jetzt anrufen
-			</a>
+		<div class="mt-12 grid items-start gap-12 md:grid-cols-2 md:gap-16">
+			<div class="aspect-[3/4] overflow-hidden border border-line">
+				<Image
+					src={kontaktPortrait}
+					alt="Gabriel Neumayr bei der Arbeit für TRUE FRAME"
+					class="h-full w-full object-cover"
+					widths={[400, 800, 1200]}
+					sizes="(min-width: 768px) 50vw, 100vw"
+				/>
+			</div>
+
+			<div>
+				<h1 class="font-display text-4xl uppercase tracking-tight text-ink md:text-5xl">
+					Gabriel Neumayr
+				</h1>
+				<p class="mt-2 font-mono text-xs tracking-widest text-ink-muted">
+					VIDEOJOURNALIST &amp; FILMEMACHER · SALZBURG · ÖSTERREICH
+				</p>
+
+				<div class="mt-10 space-y-6 font-sans">
+					<a href="tel:+436605777367" class="block border-t border-line pt-6">
+						<p class="text-xs uppercase tracking-widest text-ink-muted">Telefon</p>
+						<p class="font-display text-2xl transition-colors hover:text-accent">
+							+43 660 577 73 67
+						</p>
+					</a>
+					<a href="mailto:mail@true-frame.net" class="block border-t border-line pt-6">
+						<p class="text-xs uppercase tracking-widest text-ink-muted">E-Mail</p>
+						<p class="font-display text-xl transition-colors hover:text-accent">
+							mail@true-frame.net
+						</p>
+					</a>
+					<div class="border-t border-line pt-6">
+						<p class="text-xs uppercase tracking-widest text-ink-muted">Adresse</p>
+						<p class="text-lg">Hofgartenweg 5, 5163 Mattsee</p>
+					</div>
+				</div>
+
+				<div class="flex gap-4 pt-8">
+					<a
+						href="https://www.instagram.com/true_frame_net"
+						class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
+					>
+						Instagram
+					</a>
+					<a
+						href="https://www.youtube.com/@True_Frame_net"
+						class="border border-line px-5 py-2 text-xs uppercase tracking-widest transition hover:border-accent hover:text-accent"
+					>
+						YouTube
+					</a>
+				</div>
+
+				<div class="mt-12 border-t border-line pt-10">
+					<p class="font-script text-2xl text-accent">einfach anrufen</p>
+					<h2 class="font-display text-3xl uppercase tracking-tight text-ink md:text-4xl">
+						Erstgespräch, unverbindlich
+					</h2>
+					<p class="mt-6 max-w-md font-sans text-ink-muted md:text-lg">
+						<MarkedWord variant="underline">Kein Formular.</MarkedWord> Ruf an
+						oder schreib mir — meist antworte ich am selben Tag. Erzähl mir,
+						was du vorhast, den Rest klären wir im Gespräch.
+					</p>
+					<a
+						href="tel:+436605777367"
+						class="mt-8 inline-block bg-accent px-8 py-4 font-sans text-sm uppercase tracking-widest text-white transition hover:bg-accent-hover"
+					>
+						Jetzt anrufen
+					</a>
+				</div>
+			</div>
 		</div>
 	</section>
 
