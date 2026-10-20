@@ -9,7 +9,7 @@ year: 2026
 duration: '03:19'
 description: 'Frisierte E-Scooter mit 70 km/h und mehr auf Salzburgs Straßen – wie verbreitet das Problem ist und was die Polizei dazu sagt.'
 tags:
-  - Magazin
+  - News
 featured: true
 newsType: eigene-story
 bgClip: /videos/illegale-e-scooter.mp4

@@ -9,7 +9,7 @@ year: 2026
 duration: '03:59'
 description: 'Nachrichtenbeitrag über das ab 1. Oktober geltende E-Mopped-Verbot – was sich für Fahrerinnen und Fahrer ändert.'
 tags:
-  - Magazin
+  - News
 featured: false
 newsType: eigene-story
 bgClip: /videos/e-mopped-verbot.mp4
