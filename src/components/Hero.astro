@@ -11,7 +11,6 @@ interface Props {
 	bgClipUrl?: string;
 	image?: ImageMetadata;
 	imageAlt?: string;
-	caption?: string;
 	scriptLine: string;
 	scriptFont?: "script" | "news-script";
 	headline: string[];
@@ -26,7 +25,6 @@ const {
 	bgClipUrl,
 	image,
 	imageAlt,
-	caption,
 	scriptLine,
 	scriptFont = "script",
 	headline,
@@ -73,14 +71,6 @@ const posterUrl = posterUrlOverride ?? (videoUrl ? await getThumbnailUrl(videoUr
 		}
 		<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/70" />
 	</div>
-
-	{
-		caption && (
-			<p class="absolute left-1/2 top-[26%] w-full max-w-[90vw] -translate-x-1/2 -translate-y-1/2 text-center font-mono text-[10px] tracking-[0.2em] text-white/40 md:w-auto md:max-w-none md:whitespace-nowrap md:tracking-[0.3em]">
-				{caption}
-			</p>
-		)
-	}
 
 	<div data-hero-reveal class="mt-auto flex flex-col gap-3 px-6 pb-16 pt-32 md:px-10 md:pb-20">
 		<p
