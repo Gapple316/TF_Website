@@ -20,6 +20,21 @@
 # gehören NICHT hierher, sondern in die Netlify-Oberfläche unter
 # Site configuration > Environment variables. Sie landen sonst im Repository.
 
+[[redirects]]
+  # "Die Entscheidung" wurde von der Website genommen. Die Adresse war
+  # bereits veröffentlicht, deshalb statt einer Fehlerseite eine dauerhafte
+  # Weiterleitung auf die Übersicht.
+  from = "/dokumentationen/die-entscheidung"
+  to = "/dokumentationen/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/dokumentationen/die-entscheidung/*"
+  to = "/dokumentationen/"
+  status = 301
+  force = true
+
 [[headers]]
   # Videos und Vorschaubilder ändern sich nur, wenn sie ersetzt werden –
   # dann unter neuem Namen. Lange Cache-Zeit spart Ladezeit bei Wiederkehrern.

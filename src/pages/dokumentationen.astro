@@ -20,7 +20,6 @@ const gridCards = await Promise.all(
 	projects.map(async (p) => ({
 		project: p,
 		thumbnailUrl: await getPosterUrl(p.data),
-		meta: p.data.duration ?? p.data.tags?.[0],
 	})),
 );
 ---
@@ -40,27 +39,31 @@ const gridCards = await Promise.all(
 		headlineFont={cat.headlineFont}
 		metaLine={
 			hero
-				? [hero.data.client, hero.data.year, hero.data.duration]
-						.filter(Boolean)
-						.join(" · ")
+				? [hero.data.client, hero.data.year].filter(Boolean).join(" · ")
 				: undefined
 		}
 		body={cat.body}
 	/>
 
 	<section class="mx-auto max-w-6xl px-6 py-16 md:px-10">
-		<p class="font-mono text-xs tracking-widest text-ink-muted">
-			{projects.length} FILME
-		</p>
+		<div class="flex items-baseline gap-4">
+			<h2 class="font-doku text-2xl font-black uppercase tracking-tight text-ink md:text-3xl">
+				Kurz-Doku
+			</h2>
+			<div class="h-px flex-1 bg-line"></div>
+			<p class="font-mono text-xs tracking-widest text-ink-muted">
+				{projects.length === 1 ? "1 FILM" : `${projects.length} FILME`}
+			</p>
+		</div>
+
 		<div class="mt-8 grid gap-8 md:grid-cols-2">
 			{
-				gridCards.map(({ project, thumbnailUrl, meta }) => (
+				gridCards.map(({ project, thumbnailUrl }) => (
 					<VideoCard
 						client:visible
 						title={project.data.title}
 						description={project.data.description}
 						client={project.data.client}
-						meta={meta}
 						thumbnailUrl={thumbnailUrl}
 						detailHref={`/dokumentationen/${project.id}`}
 					/>

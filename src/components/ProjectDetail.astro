@@ -24,7 +24,10 @@ const { Content } = await render(entry);
 const fullscreenEmbedUrl = getCardEmbedUrl(data.videoUrl, data.startSeconds);
 const posterUrl = await getPosterUrl(data);
 
-const metaLine = [data.client, data.year, data.duration].filter(Boolean).join(" · ");
+// Ohne Laufzeit: Die gepflegten Werte stimmten nicht durchgehend (28:00 bei
+// einem Beitrag, der deutlich kürzer ist), und eine falsche Angabe ist
+// schlechter als gar keine.
+const metaLine = [data.client, data.year].filter(Boolean).join(" · ");
 
 // Leere Einträge aussortieren: Tina legt beim Anlegen einer Bilderliste gern
 // einen leeren Platzhalter an, der sonst als <img src=""> landet.

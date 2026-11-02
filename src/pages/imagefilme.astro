@@ -39,9 +39,7 @@ const gridCards = await Promise.all(
 		headline={cat.headline}
 		metaLine={
 			hero
-				? ["IMAGEFILM", hero.data.year, hero.data.duration]
-						.filter(Boolean)
-						.join(" · ")
+				? ["IMAGEFILM", hero.data.year].filter(Boolean).join(" · ")
 				: undefined
 		}
 		body={cat.body}
@@ -59,7 +57,6 @@ const gridCards = await Promise.all(
 						title={project.data.title}
 						description={project.data.description}
 						client={project.data.client}
-						meta={project.data.duration}
 						thumbnailUrl={thumbnailUrl}
 						detailHref={`/imagefilme/${project.id}`}
 					/>
