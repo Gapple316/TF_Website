@@ -65,7 +65,9 @@ const plaetzeProReihe = 11;
 						<p class="kino-rolle__anrede">{anrede}</p>
 						{absaetze.map((a) => <p class="kino-rolle__absatz">{a}</p>)}
 
-						<p class="kino-rolle__schluss">{LICHT_AUS}</p>
+						{/* Der Haken für kino.ts: Sobald diese Zeile die Mitte der
+					    Leinwand erreicht, leuchtet der Weg zum Programm auf. */}
+					<p class="kino-rolle__schluss" data-vorspann-schluss>{LICHT_AUS}</p>
 					</div>
 
 					<p class="kino-pausiert" data-vorspann-pause aria-live="polite">

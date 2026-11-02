@@ -179,6 +179,29 @@ function initVorspann(wurzel: HTMLElement): void {
 	const fertig = () => beenden();
 	rolle.addEventListener("animationend", fertig);
 	aufraeumen.push(() => rolle.removeEventListener("animationend", fertig));
+
+	// Der Hinweis zum Programm soll nicht erst leuchten, wenn die Rolle ganz
+	// durch ist – dann hat man schon gewartet. Er leuchtet, sobald die letzte
+	// Zeile etwa die Mitte der Leinwand erreicht: Ab da ist klar, dass gleich
+	// Schluss ist.
+	//
+	// Der Beobachter mit root = Leinwand und unten abgeschnittener Hälfte
+	// meldet genau diesen Moment, ohne dass irgendwo eine Dauer aus der CSS
+	// nachgebaut werden müsste. Ändert sich dort die Geschwindigkeit, stimmt
+	// das hier weiterhin.
+	const schluss = rolle.querySelector<HTMLElement>("[data-vorspann-schluss]");
+	if (schluss && leinwand) {
+		const ausklang = new IntersectionObserver(
+			([eintrag]) => {
+				if (!eintrag.isIntersecting) return;
+				wurzel.dataset.kinoAusklang = "true";
+				ausklang.disconnect();
+			},
+			{ root: leinwand, rootMargin: "0px 0px -50% 0px", threshold: 0 },
+		);
+		ausklang.observe(schluss);
+		aufraeumen.push(() => ausklang.disconnect());
+	}
 }
 
 // ---------------------------------------------------------------------------
