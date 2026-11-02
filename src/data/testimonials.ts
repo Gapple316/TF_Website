@@ -35,6 +35,8 @@ export const testimonials: Testimonial[] = [
 		],
 		name: "Gerhard Weiss",
 		role: "Geschäftsführer Aqus GmbH",
+		image: "/images/testimonials/gerhard-weiss.jpg",
+		imageAlt: "Gerhard Weiss, Geschäftsführer Aqus GmbH",
 	},
 	{
 		quote: [
