@@ -208,10 +208,15 @@ function initStaub(wurzel: HTMLElement): void {
 		a: 0.12 + Math.random() * 0.3,
 	}));
 
+	// Wird aufgerufen, sobald die Leinwand eine Größe hat – auch erst
+	// nachträglich. Hat sie noch keine, bleibt die alte Größe stehen: Ein
+	// 1x1 großes Canvas über die ganze Leinwand gezogen ergäbe einen hellen
+	// Schleier statt einzelner Staubkörner.
 	const messen = () => {
 		const r = leinwand.getBoundingClientRect();
-		breite = Math.max(1, Math.round(r.width));
-		hoehe = Math.max(1, Math.round(r.height));
+		if (r.width < 2 || r.height < 2) return;
+		breite = Math.round(r.width);
+		hoehe = Math.round(r.height);
 		leinwand.width = breite;
 		leinwand.height = hoehe;
 	};
@@ -239,8 +244,13 @@ function initStaub(wurzel: HTMLElement): void {
 	messen();
 	frame = requestAnimationFrame(zeichnen);
 
-	const beiGroesse = () => messen();
-	window.addEventListener("resize", beiGroesse, { passive: true });
+	// Ein ResizeObserver statt eines resize-Horchers am Fenster: Der Saal ist
+	// beim Laden noch ausgeblendet (man soll am Ticket nicht vorbeiscrollen
+	// können), die Leinwand hat also noch gar keine Größe. Der Beobachter
+	// meldet sich in dem Moment, in dem sie eine bekommt – und zusätzlich bei
+	// jeder späteren Änderung, also auch beim Drehen des Telefons.
+	const groessenBeobachter = new ResizeObserver(() => messen());
+	groessenBeobachter.observe(leinwand);
 
 	// Außerhalb des Bildes nicht rechnen.
 	const beobachter = new IntersectionObserver(([eintrag]) => {
@@ -258,7 +268,7 @@ function initStaub(wurzel: HTMLElement): void {
 	aufraeumen.push(() => {
 		laeuft = false;
 		cancelAnimationFrame(frame);
-		window.removeEventListener("resize", beiGroesse);
+		groessenBeobachter.disconnect();
 		beobachter.disconnect();
 	});
 }
