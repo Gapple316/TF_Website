@@ -1750,6 +1750,60 @@ body:has(.kino-vorfuehrung[data-offen="true"]) .kino-figur {
 	background: var(--kino-gold);
 }
 
+/* --- Ausrüstung ---------------------------------------------------------
+   Direkt unter der Könnensliste, für alle, die danach fragen. Die Geräte
+   stehen als Schildchen nebeneinander statt untereinander: Es ist eine
+   Aufzählung, keine Rangfolge, und so bleibt sie auch bei neun Einträgen
+   ein Block und keine lange Spalte. */
+
+.kino-ausruestung {
+	max-width: 46rem;
+	margin: 4rem auto 0;
+	padding-inline: 1.25rem;
+}
+
+.kino-ausruestung__handschrift {
+	font-family: var(--font-script);
+	font-size: clamp(1.2rem, 3.6vw, 1.8rem);
+	line-height: 1.4;
+	color: var(--kino-gold);
+}
+
+.kino-ausruestung__titel {
+	margin-top: 1.4rem;
+	font-family: var(--font-mono);
+	font-size: 0.58rem;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+	color: rgba(239, 231, 214, 0.45);
+}
+
+.kino-ausruestung__liste {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+	margin-top: 0.8rem;
+	list-style: none;
+}
+
+.kino-ausruestung__liste li {
+	padding: 0.3rem 0.7rem;
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	color: #f6ead2;
+	background: rgba(239, 231, 214, 0.05);
+	border: 1px solid rgba(239, 231, 214, 0.2);
+	border-radius: 2px;
+}
+
+.kino-ausruestung__nachsatz {
+	margin-top: 0.9rem;
+	font-family: var(--font-sans);
+	font-size: 0.9rem;
+	color: rgba(239, 231, 214, 0.6);
+}
+
 .kino-schluss__gefallen {
 	max-width: 24ch;
 	font-family: var(--font-script);

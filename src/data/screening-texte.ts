@@ -329,6 +329,31 @@ export const KOENNEN_REIHENFOLGE: Record<Zielgruppe, (keyof typeof KOENNEN)[]> =
 	sender: ["tv", "dreh", "schnitt", "konzept", "doku", "image"],
 };
 
+/**
+ * Die Ausrüstung, für alle, die danach fragen.
+ *
+ * Die Kameras stehen auch oben im Technik-Kasten (TECHNIK.kamera) – deshalb
+ * kommen sie von dort und nicht aus zwei getrennten Listen, die irgendwann
+ * auseinanderlaufen.
+ *
+ * Der handschriftliche Satz ist bewusst eine Relativierung: Die Liste soll
+ * zeigen, dass das Werkzeug da ist, und nicht, dass es den Film macht.
+ */
+export const AUSRUESTUNG = {
+	handschrift: "Eine gute Kamera macht keinen guten Film, aber …",
+	titel: "Ausrüstung",
+	liste: [
+		...TECHNIK.kamera,
+		"Prime Lenses",
+		"TV-Zoom 28–135",
+		"DJI Ronin",
+		"Slider",
+		"Licht",
+		"Tonangel mit Recorder",
+	],
+	nachsatz: "Und alles, was dazugehört.",
+} as const;
+
 // ---------------------------------------------------------------------------
 // Schluss
 // ---------------------------------------------------------------------------

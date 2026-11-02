@@ -24,6 +24,7 @@ import kapitelHoeren from "../../assets/photos/home-kapitel-hoeren.jpg";
 import kapitelSehen from "../../assets/photos/home-kapitel-sehen.jpg";
 import kapitelErzaehlen from "../../assets/photos/home-kapitel-erzaehlen.jpg";
 import {
+	AUSRUESTUNG,
 	KOENNEN,
 	KOENNEN_REIHENFOLGE,
 	KONTAKT,
@@ -122,6 +123,16 @@ const szenen = SZENEN.map((szene) => ({ ...szene, foto: FOTOS[szene.schluessel] 
 				{koennen.map((k) => <li>{k}</li>)}
 			</ul>
 		</div>
+	</div>
+
+	{/* 5c2 – Für alle, die nach der Ausrüstung fragen */}
+	<div class="kino-ausruestung" data-kino-reveal>
+		<p class="kino-ausruestung__handschrift">{AUSRUESTUNG.handschrift}</p>
+		<p class="kino-ausruestung__titel">{AUSRUESTUNG.titel}</p>
+		<ul class="kino-ausruestung__liste">
+			{AUSRUESTUNG.liste.map((g) => <li>{g}</li>)}
+		</ul>
+		<p class="kino-ausruestung__nachsatz">{AUSRUESTUNG.nachsatz}</p>
 	</div>
 
 	{/* 5d – Schluss */}
