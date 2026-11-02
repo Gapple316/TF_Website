@@ -80,7 +80,7 @@ const stills = data.stills?.filter((src) => src.trim().length > 0) ?? [];
 			) : fullscreenEmbedUrl ? (
 				<button
 					type="button"
-					data-video-play
+					data-video-play={entry.id}
 					class="group absolute inset-0 flex items-center justify-center"
 					aria-label={`${data.title} abspielen`}
 				>
@@ -100,7 +100,7 @@ const stills = data.stills?.filter((src) => src.trim().length > 0) ?? [];
 		{
 			fullscreenEmbedUrl && data.embeddable !== false && (
 				<iframe
-					data-video-frame
+					data-video-frame={entry.id}
 					data-src={fullscreenEmbedUrl}
 					class="hidden absolute inset-0 h-full w-full"
 					title={data.title}

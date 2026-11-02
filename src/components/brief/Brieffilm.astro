@@ -1,0 +1,101 @@
+---
+// Ein Film im Brief. Folgt dem bewährten Muster der Projektseiten
+// (ProjectDetail.astro): Standbild als Hintergrund, Play-Knopf darüber, die
+// iframe lädt erst beim Klick und geht dann in den echten Browser-Fullscreen.
+// So wird beim Öffnen des Briefs kein einziges Video geladen.
+//
+// Gepaart wird über dieselbe Kennung auf Knopf und iframe – video-player.ts
+// bedient damit alle Filme einer Seite unabhängig voneinander.
+
+interface Props {
+	id: string;
+	titel: string;
+	meta?: string;
+	posterUrl?: string;
+	/** Fehlt, wenn das Video (noch) nicht eingebettet werden kann. */
+	embedUrl?: string;
+	/** false = Einbettung vom Rechteinhaber gesperrt, dann Link zur Plattform. */
+	embeddable?: boolean;
+	videoUrl?: string;
+	notiz?: string;
+}
+
+const { id, titel, meta, posterUrl, embedUrl, embeddable, videoUrl, notiz } = Astro.props;
+
+const gesperrt = embeddable === false && !!videoUrl;
+---
+
+<article data-brief-reveal>
+	<div class="relative aspect-video w-full overflow-hidden border border-line bg-surface">
+		{posterUrl && <img src={posterUrl} alt="" aria-hidden="true" loading="lazy" class="poster-cover" />}
+		<div class="absolute inset-0 bg-black/30"></div>
+
+		{
+			gesperrt ? (
+				<a
+					href={videoUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group absolute inset-0 flex flex-col items-center justify-center gap-2"
+					aria-label={`${titel} auf der Original-Plattform ansehen (externer Link)`}
+				>
+					<span class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent md:h-20 md:w-20">
+						<svg viewBox="0 0 24 24" class="h-6 w-6 fill-current md:h-8 md:w-8">
+							<path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z" />
+							<path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7z" />
+						</svg>
+					</span>
+					<span class="font-mono text-[10px] tracking-widest text-white/90">
+						AUF DER ORIGINAL-PLATTFORM ANSEHEN
+					</span>
+				</a>
+			) : embedUrl ? (
+				<button
+					type="button"
+					data-video-play={id}
+					class="group absolute inset-0 flex items-center justify-center"
+					aria-label={`${titel} abspielen`}
+				>
+					<span class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/90 text-white transition group-hover:bg-accent md:h-20 md:w-20">
+						<svg viewBox="0 0 24 24" class="ml-1 h-6 w-6 fill-current md:h-8 md:w-8">
+							<path d="M8 5v14l11-7z" />
+						</svg>
+					</span>
+				</button>
+			) : (
+				<div class="absolute inset-0 flex items-center justify-center">
+					<span class="font-script text-2xl text-accent">Video folgt</span>
+				</div>
+			)
+		}
+
+		{
+			embedUrl && !gesperrt && (
+				<iframe
+					data-video-frame={id}
+					data-src={embedUrl}
+					class="hidden absolute inset-0 h-full w-full"
+					title={titel}
+					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+					allowfullscreen
+				/>
+			)
+		}
+	</div>
+
+	<div class="mt-5">
+		<h3 class="font-display text-xl uppercase tracking-tight text-ink md:text-2xl">
+			{titel}
+		</h3>
+		{meta && (
+			<p class="mt-1 font-mono text-[10px] tracking-[0.24em] text-ink-muted">{meta}</p>
+		)}
+		{
+			notiz && (
+				<p class="mt-4 border-l-2 border-accent/40 pl-4 font-sans text-base italic leading-relaxed text-ink-muted md:text-lg">
+					{notiz}
+				</p>
+			)
+		}
+	</div>
+</article>

@@ -522,3 +522,127 @@ header[data-over-hero="false"] .nav-link[data-active="true"] {
 		--video-focus-y: 15%;
 	}
 }
+
+/* ===========================================================================
+   Persönliche Briefe (/fuer/[slug])
+   Nur hier verwendet; die Seiten liegen außerhalb der normalen Navigation.
+   =========================================================================== */
+
+/*
+  Vorspann: Zwei Balken bedecken anfangs den ganzen Schirm und fahren
+  auseinander, bis ein Cinemascope-Fenster übrig bleibt. Animiert wird die
+  Höhe statt eines Transforms, weil beide Balken am jeweiligen Bildrand
+  verankert bleiben sollen – ein translate würde sie aus dem Bild schieben
+  statt sie zu verkürzen.
+*/
+.brief-balken {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 20;
+	height: 50vh;
+	background: #000;
+	animation: brief-balken-oeffnen 1.8s cubic-bezier(0.76, 0, 0.24, 1) 0.25s forwards;
+}
+
+.brief-balken--oben {
+	top: 0;
+}
+
+.brief-balken--unten {
+	bottom: 0;
+}
+
+@keyframes brief-balken-oeffnen {
+	to {
+		height: 10vh;
+	}
+}
+
+/* Titelkarte und Scrollhinweis erscheinen erst, wenn das Fenster offen ist. */
+.brief-titelkarte,
+.brief-scrollhinweis {
+	opacity: 0;
+	animation: brief-einblenden 1s ease forwards;
+}
+
+.brief-titelkarte {
+	animation-delay: 1.5s;
+}
+
+.brief-scrollhinweis {
+	animation-delay: 2.2s;
+}
+
+@keyframes brief-einblenden {
+	to {
+		opacity: 1;
+	}
+}
+
+/*
+  Briefabsätze, Filme und Unterschrift blenden beim Scrollen auf. Die Klasse
+  .is-sichtbar setzt brief-reveal.ts, sobald das Element im Bild ist – gleiche
+  Mechanik wie bei den roten Markierungen (mark-reveal.ts).
+
+  Alle Regeln hängen an html[data-brief-animiert]. Dieses Attribut setzt das
+  Inline-Skript im Seitenkopf (BriefLayout.astro). Ohne JavaScript wird es nie
+  gesetzt – dann steht der Brief einfach vollständig da, statt unsichtbar zu
+  bleiben.
+*/
+html[data-brief-animiert] [data-brief-reveal] {
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity 0.7s ease,
+		transform 0.7s ease;
+}
+
+html[data-brief-animiert] [data-brief-reveal].is-sichtbar {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/*
+  Unterschrift: wird von links nach rechts freigelegt, das kommt dem
+  Schreiben nahe. Zwischenlösung, bis Gabriels echte Unterschrift als
+  SVG-Pfad vorliegt – dann übernimmt stroke-dashoffset.
+*/
+html[data-brief-animiert] .brief-signatur {
+	clip-path: inset(0 100% 0 0);
+	transition: clip-path 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+}
+
+html[data-brief-animiert] .brief-signatur.is-sichtbar {
+	clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	/*
+	  Ohne Bewegung: Balken sofort in Endstellung, alles andere sichtbar.
+	  Wichtig ist, dass nichts unsichtbar hängen bleibt – deshalb hier
+	  ausdrücklich opacity und clip-path zurücksetzen, nicht nur die
+	  Animationen abschalten.
+	*/
+	.brief-balken {
+		animation: none;
+		height: 10vh;
+	}
+
+	.brief-titelkarte,
+	.brief-scrollhinweis {
+		animation: none;
+		opacity: 1;
+	}
+
+	html[data-brief-animiert] [data-brief-reveal] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	html[data-brief-animiert] .brief-signatur {
+		clip-path: none;
+		transition: none;
+	}
+}

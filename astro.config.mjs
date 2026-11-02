@@ -6,6 +6,12 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  // Nötig für absolute URLs. Open-Graph-Bilder (Link-Vorschau in Mail und
+  // WhatsApp, siehe src/layouts/BriefLayout.astro) werden von den meisten
+  // Diensten nur ausgewertet, wenn sie absolut angegeben sind – relative
+  // Pfade bleiben dort leer. Astro.site liefert diesen Wert.
+  site: 'https://true-frame.net',
+
   integrations: [vue()],
 
   // Astros Dev-Server/Static-Handling löst /admin (ohne Dateiendung) nicht
