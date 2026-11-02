@@ -11,17 +11,39 @@
 @import "@fontsource/inter/latin-500.css";
 @import "@fontsource/inter/latin-600.css";
 @import "@fontsource/inter/latin-700.css";
-@import "@fontsource/pinyon-script/latin-400.css";
 @import "@fontsource/bodoni-moda/latin-900.css";
 @import "@fontsource/bodoni-moda/latin-900-italic.css";
 @import "@fontsource/archivo/latin-200.css";
 @import "@fontsource/courier-prime/latin-400.css";
 @import "@fontsource/courier-prime/latin-700.css";
 
+/*
+  Gabriels eigene Handschrift (aus Calligraphr) als Zierschrift – sie ersetzt
+  Pinyon Script, das vorher hier stand.
+
+  Liegt als TTF unter public/fonts: Bei 19 KB lohnt die Umwandlung nach WOFF2
+  nicht, zumal Netlify beim Ausliefern ohnehin komprimiert. Selbst gehostet
+  wie alle anderen Schriften, damit beim Seitenaufruf keine Anfrage an einen
+  fremden Server geht.
+
+  Die Schrift enthält 78 Zeichen: a-z, A-Z, Umlaute, ß, Anführungszeichen und
+  . , ! ? ' – aber KEINE Ziffern, keinen Bindestrich und keine Klammern.
+  Fehlende Zeichen fallen auf die generische Systemschrift zurück und fallen
+  dann optisch auf. Zierschrift-Zeilen deshalb ohne Zahlen und Bindestriche
+  formulieren.
+*/
+@font-face {
+	font-family: "Gabriel Handschrift";
+	src: url("/fonts/gabriel-handschrift.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 @theme {
 	--font-display: "Anton", sans-serif;
 	--font-sans: "Inter", sans-serif;
-	--font-script: "Pinyon Script", cursive;
+	--font-script: "Gabriel Handschrift", cursive;
 	--font-mono: "Courier Prime", monospace;
 
 	/* Zierschriften je Kategorie-Identität */
