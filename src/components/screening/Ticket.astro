@@ -89,6 +89,11 @@ const kante = risskante(slug);
 			<p class="kino-hinweis__text">{TICKET.abreissen}</p>
 		</div>
 
-		<a class="kino-direktlink" href="#programm">{TICKET.direktZuFilmen}</a>
+		{/* Der Weg an der ganzen Vorstellung vorbei, für alle, die einfach die
+		    Filme sehen wollen. kino.ts hängt sich davor: Der Saal ist in dieser
+		    Szene ausgeblendet, ein reiner Sprung auf #programm liefe ins Leere. */}
+		<a class="kino-direktlink" href="#programm" data-ticket-direkt>
+			{TICKET.direktZuFilmen}
+		</a>
 	</div>
 </section>

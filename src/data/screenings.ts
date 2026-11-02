@@ -102,6 +102,39 @@ export const screenings: Screening[] = [
 			"Sie haben erwähnt, dass Sie für die nächste Doku-Reihe jemanden suchen, der auch allein losziehen kann. Genau so habe ich die letzten Jahre gearbeitet – mit dem Vorteil, dass am Schnittplatz niemand erst erklären muss, warum eine Einstellung fehlt.",
 	},
 
+	// Peter Wildling – echtes Screening, vier eigene Filme mit Notizen.
+	{
+		slug: "peter-wildling-yfo2",
+		zielgruppe: "produktion",
+		anrede: "du",
+		geschlecht: "m",
+		vorname: "Peter",
+		nachname: "Wildling",
+		persoenlicherAbsatz: [
+			"Vor unserem ersten Telefonat lag in der Redaktionssitzung beim RTS der SN-Artikel über euer neues Doku-Projekt auf dem Tisch. Da musste ich die Gelegenheit einfach nutzen.",
+			"Unser Nachrichtenbeitrag hat sich aufs Frühjahr verschoben – darauf freue ich mich trotzdem. Bis dahin vier Produktionen, die ich für euch ausgesucht habe.",
+		],
+		projekte: [
+			{
+				id: "r9-instrumentenbau",
+				notiz: "Zwei Drehtage, allein unterwegs – und eine meiner liebsten Geschichten.",
+			},
+			{
+				id: "zeichen-der-vergangenheit",
+				notiz: "Hier bin ich zum ersten Mal kreativer mit dem Ton umgegangen. Ein Drehtag, wieder allein.",
+			},
+			{
+				id: "die-wegewarter",
+				notiz: "Noch bei RTS entstanden, mit altem Equipment. Die Geschichte mag ich trotzdem – wegen der alten Typen.",
+			},
+			{
+				id: "wapotec-jubilaeumsfilm",
+				notiz: "Qualitativ das Beste, was ich bisher rausgeholt habe. Wir waren zu dritt am Set, und das hat mir die Augen geöffnet: Größere Produktionen machen mir Spaß.",
+			},
+		],
+		ps: "Du bist bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Den Kaffee im Frühjahr zahle ich.",
+	},
+
 	// Sender, Du-Form, ohne eigene Auswahl.
 	{
 		slug: "lena-brandstaetter-q9f3",

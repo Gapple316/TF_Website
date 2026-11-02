@@ -137,6 +137,37 @@ function initTicket(wurzel: HTMLElement): void {
 	aufraeumen.push(ab);
 }
 
+/**
+ * "Direkt zu den Filmen": der Weg an der ganzen Vorstellung vorbei.
+ *
+ * Er braucht eine eigene Behandlung, seit am Ticket nicht mehr vorbeigescrollt
+ * werden kann: Alles unterhalb der Begrüßung ist dann ausgeblendet, ein reiner
+ * Sprung auf #programm landete also im Nichts. Deshalb wird hier erst der Saal
+ * aufgemacht – ohne Vorlauf, ohne Countdown – und dann gesprungen.
+ *
+ * Ohne JavaScript bleibt es ein gewöhnlicher Anker, der auch funktioniert:
+ * Dann ist ohnehin nichts ausgeblendet.
+ */
+function initDirektlink(wurzel: HTMLElement): void {
+	const link = wurzel.querySelector<HTMLAnchorElement>("[data-ticket-direkt]");
+	if (!link) return;
+
+	const direkt = (e: MouseEvent) => {
+		e.preventDefault();
+		wurzel.dataset.kinoRiss = "fertig";
+		wurzel.dataset.kinoVorspann = "fertig";
+		betreteSaal(wurzel, true);
+		// Erst im nächsten Bild springen: Vorher steht das Programm noch auf
+		// display:none und hat damit keine Position, auf die man springen könnte.
+		requestAnimationFrame(() => {
+			wurzel.querySelector("#programm")?.scrollIntoView({ block: "start" });
+		});
+	};
+
+	link.addEventListener("click", direkt);
+	aufraeumen.push(() => link.removeEventListener("click", direkt));
+}
+
 // ---------------------------------------------------------------------------
 // Vorspann auf der Leinwand
 // ---------------------------------------------------------------------------
@@ -394,6 +425,7 @@ export function initKino(): void {
 	if (figur) aufraeumen.push(figur.aufraeumen);
 
 	initTicket(wurzel);
+	initDirektlink(wurzel);
 	initVorspann(wurzel);
 	initStaub(wurzel);
 	initEinblenden(wurzel);
