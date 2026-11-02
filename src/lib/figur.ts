@@ -5,7 +5,7 @@
 // Grenzen hier hart im Code und nicht in der Gestaltung:
 //
 //   * höchstens eine Blase gleichzeitig
-//   * nach fünf Sekunden verschwindet sie von selbst, mit × sofort
+//   * sie bleibt stehen, bis die nächste kommt, und geht mit × sofort weg
 //   * nie, solange eine Vorführung läuft
 //   * höchstens sechs Kommentare pro Besuch
 //   * ein Klick auf die Figur schickt sie dauerhaft ins Ruhe-Eck
@@ -17,7 +17,6 @@ const STUMM_SCHLUESSEL = "tf-screening-figur-stumm";
 
 export interface FigurOptionen {
 	maxKommentare: number;
-	dauerMs: number;
 	wenigerBewegung: boolean;
 }
 
@@ -55,12 +54,10 @@ export function initFigur(
 	if (!figur || !blase || !textFeld || !knopf) return undefined;
 
 	let gesagt = 0;
-	let versteckTimer = 0;
 	let stumm = istStumm();
 	figur.dataset.stumm = stumm ? "true" : "false";
 
 	const verstecke = () => {
-		window.clearTimeout(versteckTimer);
 		blase.dataset.offen = "false";
 		blase.setAttribute("aria-hidden", "true");
 	};
@@ -75,10 +72,10 @@ export function initFigur(
 		textFeld.textContent = text;
 		blase.dataset.offen = "true";
 		blase.setAttribute("aria-hidden", "false");
-
-		window.clearTimeout(versteckTimer);
-		versteckTimer = window.setTimeout(verstecke, optionen.dauerMs);
 	};
+	// Kein Zeitgeber: Die Blase bleibt stehen, bis der nächste Anlass ins Bild
+	// scrollt. Vorher war sie nach fünf Sekunden weg – wer noch las oder
+	// gerade ein Video anschaute, hatte sie verpasst.
 
 	const umschalten = () => {
 		stumm = !stumm;
@@ -111,7 +108,6 @@ export function initFigur(
 	return {
 		sage,
 		aufraeumen: () => {
-			window.clearTimeout(versteckTimer);
 			beobachter.disconnect();
 			knopf.removeEventListener("click", umschalten);
 			zuKnopf?.removeEventListener("click", verstecke);

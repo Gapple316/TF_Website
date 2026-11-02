@@ -77,13 +77,53 @@ function betreteSaal(wurzel: HTMLElement, sofort: boolean): void {
 	for (const [phase, dauer] of PHASEN) {
 		const t = window.setTimeout(() => {
 			wurzel.dataset.kinoPhase = phase;
-			// Sobald der Spot auf dem reservierten Platz liegt, meldet sich
-			// die Figur vom Nachbarplatz.
-			if (phase === "spot") figur?.sage(wurzel.dataset.figurSpot ?? "");
+			// Sobald das Licht ausgeht, meldet sich die Figur vom Nachbarplatz.
+			if (phase === "spot") figur?.sage(wurzel.dataset.figurSaalstart ?? "");
 		}, verzoegerung);
 		aufraeumen.push(() => window.clearTimeout(t));
 		verzoegerung += dauer;
 	}
+}
+
+/**
+ * Begrüßung zwischen Foyer und Saal: Gabriel steht groß im Bild und lädt ein,
+ * sich danebenzusetzen.
+ *
+ * Sie ist der Grund, warum die Figur später überhaupt verständlich ist – ohne
+ * diesen Zwischenschritt saß im Saal unerklärt jemand neben einem. Hängen
+ * bleiben kann hier niemand: Der Knopf führt weiter, und nach GRUSS_DAUER geht
+ * es auch von allein weiter.
+ */
+const GRUSS_DAUER = 7000;
+
+function begruesse(wurzel: HTMLElement): void {
+	const abschnitt = wurzel.querySelector<HTMLElement>("[data-kino-begruessung]");
+	const knopf = wurzel.querySelector<HTMLButtonElement>("[data-begruessung-weiter]");
+
+	if (!abschnitt) {
+		betreteSaal(wurzel, false);
+		return;
+	}
+
+	wurzel.dataset.kinoSzene = "begruessung";
+	// Der Knopf ist das erste Bedienelement der neuen Szene – wer mit der
+	// Tastatur unterwegs ist, soll nicht erst suchen müssen.
+	knopf?.focus({ preventScroll: true });
+
+	let schonWeiter = false;
+	const weiter = () => {
+		if (schonWeiter) return;
+		schonWeiter = true;
+		window.clearTimeout(vonAllein);
+		betreteSaal(wurzel, false);
+	};
+
+	const vonAllein = window.setTimeout(weiter, GRUSS_DAUER);
+	knopf?.addEventListener("click", weiter);
+	aufraeumen.push(() => {
+		window.clearTimeout(vonAllein);
+		knopf?.removeEventListener("click", weiter);
+	});
 }
 
 function initTicket(wurzel: HTMLElement, slug: string): void {
@@ -93,6 +133,9 @@ function initTicket(wurzel: HTMLElement, slug: string): void {
 			merkeGesehen(slug);
 
 			if (wenigerBewegung()) {
+				// Ohne Bewegungswunsch keine Zwischenszene mit Zeitgeber: Die
+				// Begrüßung bleibt als normaler Text über dem Saal stehen,
+				// dafür sorgt screening.css.
 				betreteSaal(wurzel, true);
 				return;
 			}
@@ -109,7 +152,7 @@ function initTicket(wurzel: HTMLElement, slug: string): void {
 			const uebernahme = window.setTimeout(() => {
 				wurzel.dataset.kinoRiss = "fertig";
 				delete wurzel.dataset.kinoAbblende;
-				betreteSaal(wurzel, false);
+				begruesse(wurzel);
 			}, 700);
 			aufraeumen.push(() => {
 				window.clearTimeout(abblende);
@@ -341,7 +384,6 @@ export function initKino(): void {
 
 	figur = initFigur(wurzel, {
 		maxKommentare: Number(wurzel.dataset.figurMax ?? 6),
-		dauerMs: Number(wurzel.dataset.figurDauer ?? 5000),
 		wenigerBewegung: wenigerBewegung(),
 	});
 	if (figur) aufraeumen.push(figur.aufraeumen);

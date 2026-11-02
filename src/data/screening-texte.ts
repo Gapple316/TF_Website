@@ -179,8 +179,25 @@ export const ZIELGRUPPEN_BLOCK = {
 /** Mehr Sprechblasen wären Belästigung statt Begleitung. */
 export const MAX_KOMMENTARE = 6;
 
-/** So lange steht eine Sprechblase, dann geht sie von selbst. */
-export const KOMMENTAR_DAUER_MS = 5000;
+/**
+ * Begrüßung direkt nach dem Abreißen: Gabriel steht groß im Bild und erklärt
+ * in zwei Sätzen, was gleich passiert. Ohne das war unklar, warum da jemand
+ * im Saal sitzt und später in der Ecke auftaucht.
+ */
+export const BEGRUESSUNG = {
+	hallo: {
+		du: "Schön, dass du da bist.",
+		sie: "Schön, dass Sie da sind.",
+	} satisfies AnredeFassung,
+	einladung: {
+		du: "Setz dich doch neben mich in die erste Reihe. Ich bleib die ganze Vorstellung dabei und sag ab und zu was dazu.",
+		sie: "Nehmen Sie doch neben mir in der ersten Reihe Platz. Ich bleibe die ganze Vorstellung über dabei und sage ab und zu etwas dazu.",
+	} satisfies AnredeFassung,
+	knopf: {
+		du: "Platz nehmen",
+		sie: "Platz nehmen",
+	} satisfies AnredeFassung,
+} as const;
 
 export const FIGUR = {
 	/** Klick auf die Figur schickt sie ins Ruhe-Eck. */
@@ -189,9 +206,11 @@ export const FIGUR = {
 	blaseSchliessen: "Schließen",
 
 	kommentare: {
-		spot: {
-			du: "Psst – da vorn. Ich sitz gleich daneben.",
-			sie: "Psst – da vorn. Ich sitze gleich daneben.",
+		/* Im Saal, sobald das Licht ausgeht. Dass wir nebeneinander sitzen,
+		   ist bei der Begrüßung schon gesagt – hier braucht es das nicht mehr. */
+		saalstart: {
+			du: "Licht aus. Jetzt gilt's.",
+			sie: "Licht aus. Jetzt gilt es.",
 		},
 		programmstart: {
 			du: "So. Jetzt wird's spannend.",
@@ -217,34 +236,38 @@ export const FIGUR = {
 // ---------------------------------------------------------------------------
 
 /**
- * Die vier Zeichentrickszenen. Inhalt und Reihenfolge folgen dem "Wie" der
- * Startseite (src/pages/index.astro) – die Bildunterschriften sind daraus
+ * Die vier Stationen im Filmstreifen. Inhalt und Reihenfolge folgen dem "Wie"
+ * der Startseite (src/pages/index.astro), die Bildunterschriften sind daraus
  * auf je einen Satz verdichtet.
+ *
+ * Es sind dieselben Fotos wie auf der Startseite, keine Zeichnungen: Die
+ * gezeichneten Szenen wirkten neben dem echten Material billig, und die Fotos
+ * zeigen ohnehin genau diese vier Schritte.
  */
 export const SZENEN = [
 	{
-		datei: "/screening/cartoon/01-drehbuch.svg",
+		schluessel: "denken",
 		titel: "Drehbuch",
 		unterschrift: "Bevor die Kamera läuft, steht die Idee.",
-		alt: "Zeichnung: Gabriel am Schreibtisch mit Notizen und Kaffee, später Abend",
+		alt: "Gabriel am Schreibtisch über einem Laptop, Stift in der Hand",
 	},
 	{
-		datei: "/screening/cartoon/02-interview.svg",
+		schluessel: "hoeren",
 		titel: "Nachrichten",
 		unterschrift: "Was jemand sagt – und was er eigentlich meint.",
-		alt: "Zeichnung: Gabriel mit Kamera auf der Schulter und Mikrofon bei einem Interview",
+		alt: "Gabriel von hinten, ein Reportermikrofon in der Hand",
 	},
 	{
-		datei: "/screening/cartoon/03-werbung.svg",
+		schluessel: "sehen",
 		titel: "Werbung",
 		unterschrift: "Drehen heißt warten können.",
-		alt: "Zeichnung: Gabriel an einem ausgeleuchteten Set mit Softboxen und Slider",
+		alt: "Gabriel hinter der Kamera, das rote Aufnahmelicht leuchtet",
 	},
 	{
-		datei: "/screening/cartoon/04-schnitt.svg",
+		schluessel: "erzaehlen",
 		titel: "Schnitt",
 		unterschrift: "Aus Material wird ein Film.",
-		alt: "Zeichnung: Gabriel am Schnittplatz mit zwei Monitoren und Kopfhörern",
+		alt: "Gabriel am Schnittplatz, auf dem Laptop läuft die Timeline",
 	},
 ] as const;
 

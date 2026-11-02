@@ -8,6 +8,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import ScreeningLayout from "../../layouts/ScreeningLayout.astro";
 import Ticket from "../../components/screening/Ticket.astro";
+import Begruessung from "../../components/screening/Begruessung.astro";
 import Kinosaal from "../../components/screening/Kinosaal.astro";
 import Marquee from "../../components/screening/Marquee.astro";
 import Programmzettel from "../../components/screening/Programmzettel.astro";
@@ -17,7 +18,6 @@ import Figur from "../../components/screening/Figur.astro";
 import { screenings, type Screening } from "../../data/screenings";
 import {
 	FIGUR,
-	KOMMENTAR_DAUER_MS,
 	MAX_KOMMENTARE,
 	KONTAKT,
 	OG_BESCHREIBUNG,
@@ -27,7 +27,6 @@ import {
 import {
 	anredeZeile,
 	genreStempel,
-	kurzeAnrede,
 	mailBetreff,
 	ogTitel,
 	programmText,
@@ -85,9 +84,8 @@ const ps = screening.ps ?? SCHLUSS.ps[screening.anrede];
 		data-kino-riss="bereit"
 		data-kino-phase="dunkel"
 		data-kino-vorspann="laeuft"
-		data-figur-spot={FIGUR.kommentare.spot[screening.anrede]}
+		data-figur-saalstart={FIGUR.kommentare.saalstart[screening.anrede]}
 		data-figur-max={MAX_KOMMENTARE}
-		data-figur-dauer={KOMMENTAR_DAUER_MS}
 	>
 		<Ticket
 			name={vollerName(screening)}
@@ -100,12 +98,15 @@ const ps = screening.ps ?? SCHLUSS.ps[screening.anrede];
 		{/* Kurzes Schwarz zwischen Foyer und Saal. */}
 		<div class="kino-blende" aria-hidden="true"></div>
 
+		{/* Erst die Begrüßung, dann der Saal: Ohne sie war im Saal nicht zu
+		    verstehen, warum dort jemand neben einem sitzt. */}
+		<Begruessung anrede={screening.anrede} />
+
 		<Kinosaal
 			name={vollerName(screening)}
 			anrede={anredeZeile(screening)}
 			absaetze={vorspannAbsaetze(screening)}
 			willkommenZurueck={willkommenZurueck(screening)}
-			platzkarte={kurzeAnrede(screening)}
 		/>
 
 		<section

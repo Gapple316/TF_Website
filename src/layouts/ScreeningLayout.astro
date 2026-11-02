@@ -82,9 +82,10 @@ const seitenUrl = new URL(Astro.url.pathname, Astro.site).href;
 		{/* video-player.ts wird hier NICHT geladen: Die Filme laufen in der
 		    eigenen Vorführung mit Vorhängen und "Licht an"-Knopf, nicht im
 		    Browser-Vollbild der Projektseiten. */}
+		{/* Nur kino.ts: Der Filmstreifen braucht kein GSAP mehr, seit die
+		    Kader als Raster stehen statt festgehalten durchzulaufen. */}
 		<script>
 			import "../lib/kino";
-			import "../lib/filmstreifen";
 		</script>
 	</body>
 </html>

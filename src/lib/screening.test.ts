@@ -361,11 +361,11 @@ describe("Koennensliste je Zielgruppe", () => {
 	});
 });
 
-describe("Die vier Zeichentrickszenen", () => {
-	it("liegen als austauschbare Dateien vor", () => {
-		for (const s of SZENEN) {
-			expect(s.datei).toMatch(/^\/screening\/cartoon\/\d\d-[a-z]+\.svg$/);
-		}
+describe("Die vier Szenen im Streifen", () => {
+	// Der Schlüssel verbindet den Text mit dem Foto; Vorstellung.astro bildet
+	// ihn auf die Bilddatei ab. Stimmt er nicht, bliebe der Kader leer.
+	it("nennen je ein Kapitel der Startseite", () => {
+		expect(SZENEN.map((s) => s.schluessel)).toEqual(["denken", "hoeren", "sehen", "erzaehlen"]);
 	});
 
 	it("haben Bildunterschrift und Alternativtext", () => {

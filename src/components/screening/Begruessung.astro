@@ -1,0 +1,40 @@
+---
+// Zwischenschritt nach dem Abreißen: Gabriel steht groß im Bild und erklärt
+// in zwei Sätzen, was gleich passiert.
+//
+// Grund: Ohne diese Erklärung war unverständlich, warum im Saal jemand neben
+// einem sitzt und später klein in der Ecke auftaucht. Jetzt wird man begrüßt
+// und ausdrücklich eingeladen, sich danebenzusetzen – ab da ergibt die Figur
+// von selbst Sinn.
+//
+// Der Knopf führt weiter; nach sechs Sekunden geht es auch von allein weiter,
+// damit niemand hängen bleibt.
+
+import { BEGRUESSUNG } from "../../data/screening-texte";
+
+interface Props {
+	anrede: "du" | "sie";
+}
+
+const { anrede } = Astro.props;
+---
+
+<section class="kino-begruessung" data-kino-begruessung>
+	<div class="kino-begruessung__inner">
+		<img
+			src="/screening/cartoon/figur-klein.svg"
+			alt="Gabriel Neumayr als Zeichenfigur"
+			width="96"
+			height="120"
+			class="kino-begruessung__figur"
+		/>
+
+		<div class="kino-begruessung__text">
+			<p class="kino-begruessung__hallo">{BEGRUESSUNG.hallo[anrede]}</p>
+			<p class="kino-begruessung__einladung">{BEGRUESSUNG.einladung[anrede]}</p>
+			<button type="button" class="kino-begruessung__knopf" data-begruessung-weiter>
+				{BEGRUESSUNG.knopf[anrede]}
+			</button>
+		</div>
+	</div>
+</section>

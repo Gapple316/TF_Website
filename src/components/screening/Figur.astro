@@ -6,8 +6,11 @@
 // laufenden Video – darum kümmert sich figur.ts, das bei offener Vorführung
 // gar nichts sagt, und die CSS, die sie dort ausblendet.
 //
-// PLATZHALTER-HINWEIS: Die Zeichnung ist stilistisch passend, aber kein
-// Abbild von Gabriel. Zum Austauschen reicht es, figur-klein.svg zu ersetzen.
+// Die Zeichnung orientiert sich am Kontaktfoto – Haar, Gesichtsform, dunkle
+// Jacke –, bleibt aber eine Zeichnung und kein Portrait. Zum Austauschen
+// reicht es, figur-klein.svg zu ersetzen; am Code ändert sich nichts.
+//
+// Vor dem Saal ist sie nicht zu sehen: Wer sie ist, klärt erst die Begrüßung.
 
 import { FIGUR } from "../../data/screening-texte";
 ---
@@ -32,7 +35,7 @@ import { FIGUR } from "../../data/screening-texte";
 			alt=""
 			aria-hidden="true"
 			width="96"
-			height="110"
+			height="120"
 			class="kino-figur__bild"
 		/>
 		<span class="sr-only">{FIGUR.ruheEck}</span>

@@ -2,15 +2,24 @@
 // Szene 6: "Meine kleine Vorstellung" – das Wortspiel aus Kinovorstellung und
 // Sich-Vorstellen. Ersetzt den früheren Credits-Abspann.
 //
-// Aufbau: Titelkarte, vier Zeichentrickszenen als Filmstreifen, Übergang auf
-// das echte Foto, Schluss mit Aufruf und Post-Credits-Szene.
+// Aufbau: Titelkarte, vier Szenen als Filmstreifen, Übergang auf das echte
+// Foto, Schluss mit Aufruf und Post-Credits-Szene.
 //
-// Der Filmstreifen läuft am Rechner waagrecht beim Scrollen durch (Pinning
-// über GSAP, dasselbe Muster wie die WIE-Sektion der Startseite) und am Handy
-// schlicht untereinander – dort wäre waagrechtes Scrollen eine Zumutung.
+// Im Streifen stehen die vier Fotos der Startseite, keine Zeichnungen: Die
+// gezeichneten Szenen wirkten neben dem echten Material billig, und es sind
+// dieselben vier Kapitel – Denken, Hören, Sehen, Erzählen.
+//
+// Der Streifen wird nicht mehr festgehalten und waagrecht durchgeschoben: Ein
+// gepinnter Abschnitt ließ den Teil darunter darüberlaufen, sodass nichts
+// davon zu lesen war. Jetzt ist er ein Kader-Raster, das von allein stehen
+// bleibt – vier Bilder in einer Reihe, am Handy untereinander.
 
 import { Image } from "astro:assets";
 import kontaktFoto from "../../assets/photos/kontakt-hero.jpg";
+import kapitelDenken from "../../assets/photos/home-kapitel-denken.jpg";
+import kapitelHoeren from "../../assets/photos/home-kapitel-hoeren.jpg";
+import kapitelSehen from "../../assets/photos/home-kapitel-sehen.jpg";
+import kapitelErzaehlen from "../../assets/photos/home-kapitel-erzaehlen.jpg";
 import {
 	KOENNEN,
 	KOENNEN_REIHENFOLGE,
@@ -33,6 +42,18 @@ interface Props {
 const { anrede, zielgruppe, ps, ctaHref, figurSagt } = Astro.props;
 
 const koennen = KOENNEN_REIHENFOLGE[zielgruppe].map((k) => KOENNEN[k]);
+
+// Die Zuordnung steht hier und nicht in screening-texte.ts: Die Texte sollen
+// keine Bild-Importe kennen, sonst lädt jeder, der sie importiert, die Fotos
+// mit. Der Schlüssel in SZENEN verbindet beides.
+const FOTOS = {
+	denken: kapitelDenken,
+	hoeren: kapitelHoeren,
+	sehen: kapitelSehen,
+	erzaehlen: kapitelErzaehlen,
+};
+
+const szenen = SZENEN.map((szene) => ({ ...szene, foto: FOTOS[szene.schluessel] }));
 ---
 
 <section class="kino-vorstellung" data-figur-sagt={figurSagt}>
@@ -41,28 +62,28 @@ const koennen = KOENNEN_REIHENFOLGE[zielgruppe].map((k) => KOENNEN[k]);
 		<p class="kino-titelkarte__text">{VORSTELLUNG.titelkarte}</p>
 	</div>
 
-	{/* 5b – Vier Szenen als Filmstreifen */}
-	<div class="kino-streifen" data-filmstreifen>
-		<div class="kino-streifen__bahn" data-filmstreifen-bahn>
-			{
-				SZENEN.map((szene, i) => (
-					<figure class="kino-szene" data-kino-reveal>
-						<div class="kino-szene__rahmen">
-							<p class="kino-szene__nummer">{String(i + 1).padStart(2, "0")}</p>
-							{/* Bewusst ohne loading="lazy": Am Rechner liegen die Szenen
-							    waagrecht nebeneinander außerhalb des Bildes, und der
-							    Browser holt verzögerte Bilder dort nicht nach. Es sind
-							    fünf kleine SVG-Dateien, das Nachladen spart nichts. */}
-							<img src={szene.datei} alt={szene.alt} width="400" height="300" />
-						</div>
-						<figcaption class="kino-szene__text">
-							<span class="kino-szene__titel">{szene.titel}</span>
-							{szene.unterschrift}
-						</figcaption>
-					</figure>
-				))
-			}
-		</div>
+	{/* 5b – Vier Kader in einer Reihe */}
+	<div class="kino-streifen">
+		{
+			szenen.map((szene, i) => (
+				<figure class="kino-szene" data-kino-reveal>
+					<div class="kino-szene__rahmen">
+						<p class="kino-szene__nummer">{String(i + 1).padStart(2, "0")}</p>
+						<Image
+							src={szene.foto}
+							alt={szene.alt}
+							widths={[320, 640]}
+							sizes="(min-width: 1024px) 15rem, (min-width: 768px) 22rem, 90vw"
+							loading="lazy"
+						/>
+					</div>
+					<figcaption class="kino-szene__text">
+						<span class="kino-szene__titel">{szene.titel}</span>
+						{szene.unterschrift}
+					</figcaption>
+				</figure>
+			))
+		}
 	</div>
 
 	{/* 5c – Das echte Ich */}

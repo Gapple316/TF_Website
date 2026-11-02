@@ -1,121 +1,99 @@
 ---
 // Szene 3: Der Kinosaal, von hinten gesehen.
 //
-// Sieben Stuhlreihen, nach vorn kleiner werdend. In der vordersten Reihe ein
-// beleuchteter Platz mit Namenskärtchen, daneben sitzt die Figur. Alles im
-// Code gebaut, kein Stockfoto.
+// Der Vorhang hängt um die Leinwand, nicht über den ganzen Saal: Vorher lief
+// er von der Decke bis zum Boden und nahm damit den Platz ein, den das Bild
+// braucht. Jetzt schließt er genau über der Leinwand – ein Bühnenvorhang, wie
+// er im Kino hängt – und der Querbehang ist eine schmale Blende darüber.
+//
+// Die Sitzreihen stehen UNTER der Leinwand und liegen hinter ihr, sodass sie
+// nichts verdecken. Spot und Namenskärtchen am Sitz sind ersatzlos entfallen:
+// Ohne Erklärung war nicht zu verstehen, was sie bedeuten, und sie lagen über
+// dem Bild. Wer neben wem sitzt, klärt jetzt die Begrüßung davor.
 //
 // Die Tiefe entsteht über Skalierung in 2D, nicht über perspective: Ein
 // 3D-Transform auf einem Vorfahren würde die Leinwand zum eigenen
 // Koordinatensystem machen und den rollenden Text unscharf rendern.
-//
-// Ablauf nach dem Abreißen, gesteuert über data-kino-* in kino.ts:
-//   Saal dunkel → Spot (0,5s) → Kamerafahrt (1,5s) → Vorhang (1s)
-//   → Countdown (1,5s) → Text.  Zusammen unter fünf Sekunden.
 
 import { LICHT_AUS, VORSPANN, VORSPANN_KOPF } from "../../data/screening-texte";
-import FigurSitzend from "./FigurSitzend.astro";
 
 interface Props {
 	name: string;
 	anrede: string;
 	absaetze: string[];
 	willkommenZurueck: string;
-	/** Steht auf dem Kärtchen an der Lehne, z.B. "Maria" oder "Frau Huber". */
-	platzkarte: string;
 }
 
-const { name, anrede, absaetze, willkommenZurueck, platzkarte } = Astro.props;
+const { name, anrede, absaetze, willkommenZurueck } = Astro.props;
 
-// Reihe 1 ist vorn (klein, nah an der Leinwand), Reihe 7 hinten bei uns.
-const reihen = [1, 2, 3, 4, 5, 6, 7];
-const plaetzeProReihe = 9;
+// Reihe 1 ist vorn an der Leinwand, Reihe 6 hinten bei uns.
+const reihen = [1, 2, 3, 4, 5, 6];
+const plaetzeProReihe = 11;
 ---
 
 <section class="kino-saal" data-kino-saal>
 	<div class="kino-saal__raum">
+		<div class="kino-lichtkegel" aria-hidden="true"></div>
+
 		<div class="kino-saal__buehne">
-			<div class="kino-leinwand" data-leinwand>
-				<canvas class="kino-staub" data-staub aria-hidden="true"></canvas>
+			<div class="kino-rahmen">
+				<div class="kino-leinwand" data-leinwand>
+					<canvas class="kino-staub" data-staub aria-hidden="true"></canvas>
 
-				<div class="kino-countdown" aria-hidden="true">
-					<svg viewBox="0 0 100 100" class="kino-countdown__kreis">
-						<circle cx="50" cy="50" r="46" />
-						<line x1="50" y1="50" x2="50" y2="4" class="kino-countdown__zeiger" />
-					</svg>
-					<span class="kino-countdown__zahl kino-countdown__zahl--3">3</span>
-					<span class="kino-countdown__zahl kino-countdown__zahl--2">2</span>
-					<span class="kino-countdown__zahl kino-countdown__zahl--1">1</span>
+					<div class="kino-countdown" aria-hidden="true">
+						<svg viewBox="0 0 100 100" class="kino-countdown__kreis">
+							<circle cx="50" cy="50" r="46" />
+							<line x1="50" y1="50" x2="50" y2="4" class="kino-countdown__zeiger" />
+						</svg>
+						<span class="kino-countdown__zahl kino-countdown__zahl--3">3</span>
+						<span class="kino-countdown__zahl kino-countdown__zahl--2">2</span>
+						<span class="kino-countdown__zahl kino-countdown__zahl--1">1</span>
+					</div>
+
+					<p class="kino-willkommen" data-kino-willkommen>{willkommenZurueck}</p>
+
+					<div class="kino-rolle" data-vorspann-rolle>
+						<p class="kino-rolle__haus">{VORSPANN_KOPF.haus}</p>
+						<p class="kino-rolle__klein">{VORSPANN_KOPF.praesentiert}</p>
+
+						<p class="kino-rolle__klein kino-rolle__abstand">
+							{VORSPANN_KOPF.eineVorstellungFuer}
+						</p>
+						<p class="kino-rolle__name">{name}</p>
+
+						<p class="kino-rolle__klein kino-rolle__abstand">
+							{VORSPANN_KOPF.nachWahrerGeschichte}
+						</p>
+
+						<p class="kino-rolle__anrede">{anrede}</p>
+						{absaetze.map((a) => <p class="kino-rolle__absatz">{a}</p>)}
+
+						<p class="kino-rolle__schluss">{LICHT_AUS}</p>
+					</div>
+
+					<p class="kino-pausiert" data-vorspann-pause aria-live="polite">
+						{VORSPANN.pausiert}
+					</p>
 				</div>
 
-				<p class="kino-willkommen" data-kino-willkommen>{willkommenZurueck}</p>
-
-				<div class="kino-rolle" data-vorspann-rolle>
-					<p class="kino-rolle__haus">{VORSPANN_KOPF.haus}</p>
-					<p class="kino-rolle__klein">{VORSPANN_KOPF.praesentiert}</p>
-
-					<p class="kino-rolle__klein kino-rolle__abstand">
-						{VORSPANN_KOPF.eineVorstellungFuer}
-					</p>
-					<p class="kino-rolle__name">{name}</p>
-
-					<p class="kino-rolle__klein kino-rolle__abstand">
-						{VORSPANN_KOPF.nachWahrerGeschichte}
-					</p>
-
-					<p class="kino-rolle__anrede">{anrede}</p>
-					{absaetze.map((a) => <p class="kino-rolle__absatz">{a}</p>)}
-
-					<p class="kino-rolle__schluss">{LICHT_AUS}</p>
+				{/* Vorhang und Blende liegen über der Leinwand, aber nur über ihr. */}
+				<div class="kino-vorhang kino-vorhang--links" aria-hidden="true"></div>
+				<div class="kino-vorhang kino-vorhang--rechts" aria-hidden="true"></div>
+				<div class="kino-behang" aria-hidden="true">
+					<span class="kino-behang__fransen"></span>
 				</div>
-
-				{/* Hinweis im Stopp-Zustand, unten auf der Leinwand. */}
-				<p class="kino-pausiert" data-vorspann-pause aria-live="polite">
-					{VORSPANN.pausiert}
-				</p>
-			</div>
-
-			{/* Vorhang: öffnet aus der Mitte nach beiden Seiten. */}
-			<div class="kino-vorhang kino-vorhang--links" aria-hidden="true"></div>
-			<div class="kino-vorhang kino-vorhang--rechts" aria-hidden="true"></div>
-			<div class="kino-behang" aria-hidden="true">
-				<span class="kino-behang__fransen"></span>
 			</div>
 		</div>
 
-		{/* Lichtkegel vom Projektor hinten oben. */}
-		<div class="kino-lichtkegel" aria-hidden="true"></div>
-
+		{/* Sitzreihen: unter der Leinwand, nach hinten größer werdend. */}
 		<div class="kino-reihen" aria-hidden="true">
 			{
 				reihen.map((r) => (
 					<div class="kino-reihe" style={`--reihe: ${r}`}>
-						{
-							Array.from({ length: plaetzeProReihe }, (_, i) => {
-								const mitte = Math.floor(plaetzeProReihe / 2);
-								const istReserviert = r === 1 && i === mitte;
-								const istGabriel = r === 1 && i === mitte + 1;
-								return (
-									<span
-										class="kino-sitz"
-										class:list={[
-											istReserviert && "kino-sitz--reserviert",
-											istGabriel && "kino-sitz--gabriel",
-										]}
-									>
-										{istReserviert && (
-											<span class="kino-platzkarte">Reserviert · {platzkarte}</span>
-										)}
-										{istGabriel && <span class="kino-platzkarte">Gabriel</span>}
-										{istGabriel && <FigurSitzend />}
-									</span>
-								);
-							})
-						}
+						{Array.from({ length: plaetzeProReihe }, () => <span class="kino-sitz" />)}
 					</div>
 				))
 			}
-			<div class="kino-spot"></div>
 		</div>
 	</div>
 
