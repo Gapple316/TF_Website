@@ -1283,6 +1283,24 @@ html[data-kino-animiert] [data-kino-szene="begruessung"] .kino-begruessung {
 }
 
 /*
+  Am Ticket und in der Begrüßung gibt es weiter unten nichts zu holen: Alles,
+  was nach der Begrüßung steht, ist ausgeblendet. Sonst konnte man am Ticket
+  einfach vorbeiscrollen und landete mitten im Vorspann, ohne je abgerissen zu
+  haben – die Seite war dann einen Bildschirm zu lang und der Riss umsonst.
+
+  Es ist kein Scroll-Schloss: Die Seite ist in diesen beiden Szenen schlicht
+  genau einen Bildschirm hoch, es gibt also gar nichts zu scrollen. Weiter
+  kommt man nur über das Ticket und den Knopf.
+
+  Der Geschwisterselektor nimmt alles mit, was nach der Begrüßung steht –
+  auch Abschnitte, die später dazukommen.
+*/
+html[data-kino-animiert] [data-kino-szene="foyer"] .kino-begruessung ~ *,
+html[data-kino-animiert] [data-kino-szene="begruessung"] .kino-begruessung ~ * {
+	display: none;
+}
+
+/*
   In Foyer und Begrüßung keine Figur in der Ecke. Vorher saß dort jemand
   herum, bevor überhaupt gesagt war, wer das ist – genau die Verwirrung, die
   die Begrüßung auflösen soll. Und während der Begrüßung wäre Gabriel zweimal
