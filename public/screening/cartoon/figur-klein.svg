@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Die Figur im Kinosessel, leicht zur Seite gelehnt. Begleitet den Besucher
+  durch das Programm und den Vorstellungsteil.
+
+  PLATZHALTER: Stilistisch passend (reduzierte Formen, klare Linien, Farben
+  aus der Seitenpalette), aber bewusst kein Abbild von Gabriel. Zum
+  Austauschen genügt es, diese Datei zu ersetzen – Größe 96x110, Figur steht
+  auf der Grundlinie.
+
+  Der "Line Boil" lässt die Linien minimal zittern wie bei handgezeichneter
+  Animation. Der Startwert des Rauschens springt alle 120 ms weiter.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 110" width="96" height="110" role="img">
+  <title>Gabriel als Zeichenfigur im Kinosessel</title>
+
+  <defs>
+    <filter id="boil-figur" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="2" result="rauschen">
+        <animate attributeName="seed" values="2;6;3;9;5;2" dur="0.72s"
+                 calcMode="discrete" repeatCount="indefinite" />
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="rauschen" scale="1.5"
+                         xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+  <style>
+    /* Der Line Boil und die Dauerschleifen laufen ueber CSS bzw. einen
+       Filter. Beides laesst sich hier abschalten - entscheidend, weil diese
+       Datei als Bild eingebunden ist und JavaScript von aussen nicht
+       hineinreicht. Die Medienabfrage wertet der Browser trotzdem aus. */
+    .boil { filter: url(#boil-figur); }
+    .blink { animation: tf-blink 1.1s steps(1, end) infinite; }
+    .tally { animation: tf-tally 1.6s steps(1, end) infinite; }
+    .flicker { animation: tf-flicker 6s ease-in-out infinite; }
+    .steam { animation: tf-steam 3.4s ease-in-out infinite; }
+    .playhead { animation: tf-playhead 7s linear infinite; }
+
+    @keyframes tf-blink { 0%, 50% { opacity: 1 } 50.01%, 100% { opacity: 0 } }
+    @keyframes tf-tally { 0%, 70% { opacity: 1 } 70.01%, 85% { opacity: 0.15 } 85.01%, 100% { opacity: 1 } }
+    @keyframes tf-flicker { 0%, 100% { opacity: 0.1 } 40% { opacity: 0.2 } 46% { opacity: 0.08 } }
+    @keyframes tf-steam { 0%, 100% { opacity: 0.7 } 50% { opacity: 0.2 } }
+    @keyframes tf-playhead { 0% { transform: translateX(0) } 50% { transform: translateX(142px) } 100% { transform: translateX(0) } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boil { filter: none; }
+      .blink, .tally, .flicker, .steam, .playhead { animation: none; }
+    }
+  </style>
+
+  <g class="boil">
+    <!-- Sessel -->
+    <path d="M10 108 L10 70 C10 62 16 58 24 58 L72 58 C80 58 86 62 86 70 L86 108 Z"
+          fill="#5c1512" />
+    <path d="M10 76 L86 76" stroke="#7d1f1a" stroke-width="3" />
+    <!-- Lehne links, leicht nach vorn gekippt -->
+    <path d="M6 108 L6 78 C6 72 10 70 14 71 L14 108 Z" fill="#431010" />
+
+    <!-- Körper -->
+    <path d="M30 108 L30 72 C30 64 36 60 48 60 C60 60 66 64 66 72 L66 108 Z"
+          fill="#15110e" />
+    <!-- Arm, über die Lehne gelegt -->
+    <path d="M64 76 C74 74 80 70 82 66" stroke="#15110e" stroke-width="7"
+          stroke-linecap="round" fill="none" />
+
+    <!-- Kopf -->
+    <ellipse cx="48" cy="40" rx="17" ry="19" fill="#efe7d6" />
+    <!-- Haare -->
+    <path d="M31 36 C32 24 39 19 48 19 C57 19 64 24 65 36 C62 30 57 27 48 28 C40 29 35 31 31 36 Z"
+          fill="#1b1813" />
+    <path d="M33 30 C38 23 45 21 51 22" stroke="#1b1813" stroke-width="2.4"
+          stroke-linecap="round" fill="none" />
+    <!-- Augen und Mund, bewusst minimal -->
+    <circle cx="42" cy="41" r="1.9" fill="#1b1813" />
+    <circle cx="54" cy="41" r="1.9" fill="#1b1813" />
+    <path d="M43 49 C46 52 50 52 53 49" stroke="#1b1813" stroke-width="1.8"
+          stroke-linecap="round" fill="none" />
+
+    <!-- Lichtkante von der Leinwand -->
+    <path d="M64 33 C67 38 67 46 64 51" stroke="#c9a227" stroke-width="2"
+          stroke-linecap="round" fill="none" opacity="0.65" />
+  </g>
+</svg>

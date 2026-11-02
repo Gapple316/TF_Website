@@ -1,0 +1,40 @@
+---
+// Die Figur, die während der Vorstellung dabeibleibt: am Rechner unten links,
+// am Handy unten. Dazu die Sprechblase in Handschrift.
+//
+// Die Figur sitzt fest am Bildrand, aber NIE über einem Knopf oder einem
+// laufenden Video – darum kümmert sich figur.ts, das bei offener Vorführung
+// gar nichts sagt, und die CSS, die sie dort ausblendet.
+//
+// PLATZHALTER-HINWEIS: Die Zeichnung ist stilistisch passend, aber kein
+// Abbild von Gabriel. Zum Austauschen reicht es, figur-klein.svg zu ersetzen.
+
+import { FIGUR } from "../../data/screening-texte";
+---
+
+<aside class="kino-figur" data-figur data-stumm="false">
+	<div class="kino-figur__blase" data-figur-blase data-offen="false" aria-hidden="true">
+		<p class="kino-figur__text" data-figur-text></p>
+		<button type="button" class="kino-figur__zu" data-figur-zu aria-label={FIGUR.blaseSchliessen}>
+			×
+		</button>
+	</div>
+
+	<button
+		type="button"
+		class="kino-figur__knopf"
+		data-figur-knopf
+		aria-pressed="false"
+		title={FIGUR.ruheEck}
+	>
+		<img
+			src="/screening/cartoon/figur-klein.svg"
+			alt=""
+			aria-hidden="true"
+			width="96"
+			height="110"
+			class="kino-figur__bild"
+		/>
+		<span class="sr-only">{FIGUR.ruheEck}</span>
+	</button>
+</aside>

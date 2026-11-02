@@ -7,6 +7,12 @@
 //
 // Läuft über astro:page-load, weil die Seite View Transitions nutzt.
 
+import { initTicketRiss } from "./ticket-riss";
+import { initFigur, type FigurSteuerung } from "./figur";
+
+/** Von initKino gesetzt, damit die Szenen der Figur etwas sagen lassen können. */
+let figur: FigurSteuerung | undefined;
+
 const SPEICHER_SCHLUESSEL = "tf-screening-gesehen";
 
 let aufraeumen: (() => void)[] = [];
@@ -41,46 +47,77 @@ function merkeGesehen(slug: string): void {
 // Szenenwechsel
 // ---------------------------------------------------------------------------
 
+/**
+ * Der Ablauf im Saal. Jede Phase schaltet nur ein Attribut weiter, die
+ * Bewegung selbst steckt in screening.css.
+ *
+ *   dunkel → spot (0,5s) → fahrt (1,5s) → vorhang (1s) → countdown (1,5s) → text
+ *
+ * Macht 4,5 Sekunden vom Abreißen bis zur ersten Textzeile – das Zeitbudget
+ * aus der Vorgabe.
+ */
+const PHASEN: [string, number][] = [
+	["spot", 450],
+	["fahrt", 1300],
+	["vorhang", 900],
+	["countdown", 1200],
+	["text", 0],
+];
+
 function betreteSaal(wurzel: HTMLElement, sofort: boolean): void {
 	wurzel.dataset.kinoSzene = "saal";
+
 	if (sofort || wenigerBewegung()) {
-		wurzel.dataset.kinoCountdown = "fertig";
+		// Kein Vorlauf: Vorhang offen, Licht an, Text steht.
+		wurzel.dataset.kinoPhase = "text";
 		return;
 	}
 
-	// Countdown läuft rein über CSS; hier wird nur der Zustand umgeschaltet.
-	wurzel.dataset.kinoCountdown = "laeuft";
-	const t = window.setTimeout(() => {
-		wurzel.dataset.kinoCountdown = "fertig";
-	}, 2000);
-	aufraeumen.push(() => window.clearTimeout(t));
+	let verzoegerung = 0;
+	for (const [phase, dauer] of PHASEN) {
+		const t = window.setTimeout(() => {
+			wurzel.dataset.kinoPhase = phase;
+			// Sobald der Spot auf dem reservierten Platz liegt, meldet sich
+			// die Figur vom Nachbarplatz.
+			if (phase === "spot") figur?.sage(wurzel.dataset.figurSpot ?? "");
+		}, verzoegerung);
+		aufraeumen.push(() => window.clearTimeout(t));
+		verzoegerung += dauer;
+	}
 }
 
 function initTicket(wurzel: HTMLElement, slug: string): void {
-	const knopf = wurzel.querySelector<HTMLButtonElement>("[data-ticket-knopf]");
-	if (!knopf) return;
+	const ab = initTicketRiss(wurzel, {
+		wenigerBewegung: wenigerBewegung(),
+		beiRiss: () => {
+			merkeGesehen(slug);
 
-	const abreissen = () => {
-		if (wurzel.dataset.kinoSzene === "saal") return;
-		merkeGesehen(slug);
+			if (wenigerBewegung()) {
+				betreteSaal(wurzel, true);
+				return;
+			}
 
-		if (wenigerBewegung()) {
-			wurzel.dataset.kinoRiss = "fertig";
-			betreteSaal(wurzel, true);
-			return;
-		}
-
-		wurzel.dataset.kinoRiss = "laeuft";
-		// 1,6 s: Streifen reißt und fällt, Rest zoomt weg, Bild wird schwarz.
-		const t = window.setTimeout(() => {
-			wurzel.dataset.kinoRiss = "fertig";
-			betreteSaal(wurzel, false);
-		}, 1600);
-		aufraeumen.push(() => window.clearTimeout(t));
-	};
-
-	knopf.addEventListener("click", abreissen);
-	aufraeumen.push(() => knopf.removeEventListener("click", abreissen));
+			// Erst fliegt der Streifen und das Ticket wackelt nach, dann
+			// dimmt das Licht, dann übernimmt der Saal. In dieser Reihenfolge,
+			// sonst verdeckt das Schwarz genau den Moment, auf den es ankommt.
+			// 700 ms reichen, um den Streifen fliegen und das Ticket nachwackeln
+			// zu sehen. Zusammen mit den Saalphasen bleibt der Weg bis zur
+			// ersten Textzeile bei rund 4,5 Sekunden – das Budget der Vorgabe.
+			const abblende = window.setTimeout(() => {
+				wurzel.dataset.kinoAbblende = "true";
+			}, 420);
+			const uebernahme = window.setTimeout(() => {
+				wurzel.dataset.kinoRiss = "fertig";
+				delete wurzel.dataset.kinoAbblende;
+				betreteSaal(wurzel, false);
+			}, 700);
+			aufraeumen.push(() => {
+				window.clearTimeout(abblende);
+				window.clearTimeout(uebernahme);
+			});
+		},
+	});
+	aufraeumen.push(ab);
 }
 
 // ---------------------------------------------------------------------------
@@ -103,29 +140,24 @@ function initVorspann(wurzel: HTMLElement): void {
 	}
 
 	if (wenigerBewegung()) {
-		// Kein Autoscroll: Der Brief steht still auf der Leinwand und ist
+		// Kein Autoscroll: Der Text steht still auf der Leinwand und ist
 		// ganz normal lesbar.
 		wurzel.dataset.kinoVorspann = "statisch";
 		return;
 	}
 
-	// Pausieren, solange der Zeiger über der Leinwand liegt bzw. getippt wird.
+	// Anhalten und Weiterlaufen per Klick bzw. Tippen – auf allen Geräten
+	// gleich. Kein Hover mehr: Am Handy gibt es keinen, und am Rechner hielt
+	// der Text schon an, wenn man die Maus nur abgelegt hatte.
 	const ziel = leinwand ?? rolle;
-	const an = () => rolle.style.setProperty("animation-play-state", "paused");
-	const aus = () => rolle.style.setProperty("animation-play-state", "running");
 	const umschalten = () => {
-		const pausiert = rolle.style.animationPlayState === "paused";
-		rolle.style.setProperty("animation-play-state", pausiert ? "running" : "paused");
+		if (wurzel.dataset.kinoVorspann === "fertig") return;
+		wurzel.dataset.kinoVorspann =
+			wurzel.dataset.kinoVorspann === "pausiert" ? "laeuft" : "pausiert";
 	};
 
-	ziel.addEventListener("mouseenter", an);
-	ziel.addEventListener("mouseleave", aus);
 	ziel.addEventListener("click", umschalten);
-	aufraeumen.push(() => {
-		ziel.removeEventListener("mouseenter", an);
-		ziel.removeEventListener("mouseleave", aus);
-		ziel.removeEventListener("click", umschalten);
-	});
+	aufraeumen.push(() => ziel.removeEventListener("click", umschalten));
 
 	const fertig = () => beenden();
 	rolle.addEventListener("animationend", fertig);
@@ -253,12 +285,19 @@ function initVorfuehrung(wurzel: HTMLElement): void {
 	if (!overlay || !rahmen || !schliessen) return;
 
 	let zuletztFokussiert: HTMLElement | null = null;
+	let schonGespielt = false;
 
 	const zu = () => {
 		overlay.dataset.offen = "false";
 		overlay.setAttribute("aria-hidden", "true");
 		rahmen.removeAttribute("src");
 		zuletztFokussiert?.focus();
+
+		// Nach dem ersten Film einmal nachfragen – danach nicht mehr.
+		if (!schonGespielt) {
+			schonGespielt = true;
+			window.setTimeout(() => figur?.sage(overlay.dataset.figurNachFilm ?? ""), 600);
+		}
 	};
 
 	const beiTaste = (e: KeyboardEvent) => {
@@ -299,6 +338,13 @@ export function initKino(): void {
 	if (!wurzel) return;
 
 	const slug = wurzel.dataset.slug ?? "";
+
+	figur = initFigur(wurzel, {
+		maxKommentare: Number(wurzel.dataset.figurMax ?? 6),
+		dauerMs: Number(wurzel.dataset.figurDauer ?? 5000),
+		wenigerBewegung: wenigerBewegung(),
+	});
+	if (figur) aufraeumen.push(figur.aufraeumen);
 
 	initTicket(wurzel, slug);
 	initVorspann(wurzel);

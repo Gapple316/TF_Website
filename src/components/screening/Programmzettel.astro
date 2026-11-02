@@ -17,27 +17,21 @@ interface Props {
 	/** false = Einbettung gesperrt, dann Link zur Plattform statt Vorführung. */
 	embeddable?: boolean;
 	videoUrl?: string;
+	/**
+	 * Wird zur Sprechblase der Figur, sobald der Film ins Bild scrollt –
+	 * deshalb steht sie nicht mehr als Text unter der Karte.
+	 */
 	notiz?: string;
-	notizLabel: string;
 }
 
-const {
-	nummer,
-	titel,
-	stempel,
-	posterUrl,
-	embedUrl,
-	embeddable,
-	videoUrl,
-	notiz,
-	notizLabel,
-} = Astro.props;
+const { nummer, titel, stempel, posterUrl, embedUrl, embeddable, videoUrl, notiz } =
+	Astro.props;
 
 const gesperrt = embeddable === false && !!videoUrl;
 const abspielbar = !!embedUrl && !gesperrt;
 ---
 
-<article class="kino-zettel" data-kino-reveal>
+<article class="kino-zettel" data-kino-reveal data-figur-sagt={notiz}>
 	<div class="kino-zettel__bild">
 		{posterUrl && <img src={posterUrl} alt="" aria-hidden="true" loading="lazy" />}
 		<span class="kino-zettel__stempel">{stempel}</span>
@@ -73,14 +67,5 @@ const abspielbar = !!embedUrl && !gesperrt;
 	<div class="kino-zettel__text">
 		<p class="kino-zettel__nummer">{nummer}</p>
 		<h3 class="kino-zettel__titel">{titel}</h3>
-
-		{
-			notiz && (
-				<div class="kino-zettel__notiz">
-					<p class="kino-zettel__notizlabel">{notizLabel}</p>
-					<p class="kino-zettel__notiztext">{notiz}</p>
-				</div>
-			)
-		}
 	</div>
 </article>

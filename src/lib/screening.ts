@@ -74,6 +74,72 @@ export function ticketNummer(slug: string): string {
 	return String(100000 + (Math.abs(h) % 900000));
 }
 
+/**
+ * Zufallsgenerator mit festem Startwert. Gleicher Startwert, gleiche Folge –
+ * gebraucht für die Risskante, damit ein Ticket bei jedem Build identisch
+ * reißt und die beiden Hälften zusammenpassen.
+ */
+function wuerfelAus(startwert: number): () => number {
+	let z = startwert >>> 0;
+	return () => {
+		// xorshift32: kurz, schnell, für Gestaltungszwecke völlig ausreichend.
+		z ^= z << 13;
+		z ^= z >>> 17;
+		z ^= z << 5;
+		z >>>= 0;
+		return z / 4294967296;
+	};
+}
+
+function hashe(text: string): number {
+	let h = 2166136261;
+	for (let i = 0; i < text.length; i++) {
+		h ^= text.charCodeAt(i);
+		h = Math.imul(h, 16777619);
+	}
+	return h >>> 0;
+}
+
+/** Breite der Risszone in Pixeln – so weit franst das Papier aus. */
+export const RISS_ZONE = 9;
+
+/** Anzahl der Zacken über die Ticket-Höhe. */
+const RISS_ZACKEN = 26;
+
+/**
+ * Zwei zueinander passende clip-path-Angaben für den Riss.
+ *
+ * Der Riss verläuft entlang der Perforation. Für jede Zacke i wird ein
+ * Versatz a(i) zwischen 0 und RISS_ZONE gewürfelt:
+ *
+ *   Hauptteil  endet rechts bei  100% - a(i)
+ *   Abriss     beginnt links bei RISS_ZONE - a(i)
+ *
+ * Weil der Abrissstreifen um RISS_ZONE nach links verbreitert ist, ergeben
+ * beide Kanten zusammen genau die Papierbreite – die Zacken greifen also
+ * ineinander statt sich zu überlappen oder eine Lücke zu lassen.
+ */
+export function risskante(slug: string): { haupt: string; abriss: string } {
+	const wuerfel = wuerfelAus(hashe(slug) || 1);
+
+	const versatz = Array.from({ length: RISS_ZACKEN + 1 }, (_, i) => {
+		// Oben und unten sauber abschließen, sonst steht eine Ecke über.
+		if (i === 0 || i === RISS_ZACKEN) return RISS_ZONE / 2;
+		return Math.round(wuerfel() * RISS_ZONE * 10) / 10;
+	});
+
+	const y = (i: number) => `${Math.round((i / RISS_ZACKEN) * 1000) / 10}%`;
+
+	const hauptKante = versatz.map((a, i) => `calc(100% - ${a}px) ${y(i)}`);
+	const abrissKante = versatz.map((a, i) => `${Math.round((RISS_ZONE - a) * 10) / 10}px ${y(i)}`);
+
+	return {
+		haupt: `polygon(0% 0%, ${hauptKante.join(", ")}, 0% 100%)`,
+		// Von unten nach oben, damit der Umriss im Uhrzeigersinn geschlossen bleibt.
+		abriss: `polygon(100% 0%, 100% 100%, ${[...abrissKante].reverse().join(", ")})`,
+	};
+}
+
 /** "Mo, 2. November 2026" – Datum der Vorstellung auf dem Ticket. */
 export function vorstellungsDatum(d: Date): string {
 	return `${WOCHENTAGE[d.getDay()]}, ${d.getDate()}. ${MONATE[d.getMonth()]} ${d.getFullYear()}`;

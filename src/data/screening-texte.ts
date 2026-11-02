@@ -119,6 +119,8 @@ export const VORSPANN = {
 	programmAnkuendigung: PROGRAMM_ANKUENDIGUNG,
 	popcorn: POPCORN,
 	ueberspringen: "Vorspann überspringen ⏭",
+	/** Erscheint auf der Leinwand, solange der Text angehalten ist. */
+	pausiert: "‖ angehalten – klicken zum Weiterlaufen",
 	/** Nach dem Vorspann bzw. bei Wiederkehr. */
 	willkommenZurueck: "Willkommen zurück",
 	scrollHinweis: "Weiter zum Programm ↓",
@@ -134,10 +136,9 @@ export const PROGRAMM = {
 		du: "Handverlesen für dich. Nicht alles, was ich gedreht habe – nur das, was du sehen solltest.",
 		sie: "Handverlesen für Sie. Nicht alles, was ich gedreht habe – nur das, was Sie sehen sollten.",
 	} satisfies AnredeFassung,
-	notizLabel: {
-		du: "Warum ich dir den zeigen will:",
-		sie: "Warum ich Ihnen den zeigen möchte:",
-	} satisfies AnredeFassung,
+	/* Das frühere Label "Warum ich dir den zeigen will" entfällt: Die Notiz
+	   zu einem Film ist jetzt ein Kommentar der Figur und erscheint als
+	   Sprechblase, sobald der Film ins Bild scrollt. */
 	/** Schließen-Knopf der Vorführung. */
 	lichtAn: "Licht an",
 	/** Genre-Stempel, wenn das Projekt keiner Kategorie zugeordnet ist. */
@@ -172,18 +173,129 @@ export const ZIELGRUPPEN_BLOCK = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Abspann
+// Die Figur, die danebensitzt
 // ---------------------------------------------------------------------------
 
-export const ABSPANN = [
-	["Regie", "Gabriel Neumayr"],
-	["Kamera", "Gabriel Neumayr"],
-	["Schnitt", "Gabriel Neumayr"],
-	["Ton", "Gabriel Neumayr"],
-	["Catering", "leider auch Gabriel Neumayr"],
-	["Gedreht mit", "Sony FX6 · Sony ZV-E1"],
-	["Ein Film von", "True Frame, Salzburg"],
+/** Mehr Sprechblasen wären Belästigung statt Begleitung. */
+export const MAX_KOMMENTARE = 6;
+
+/** So lange steht eine Sprechblase, dann geht sie von selbst. */
+export const KOMMENTAR_DAUER_MS = 5000;
+
+export const FIGUR = {
+	/** Klick auf die Figur schickt sie ins Ruhe-Eck. */
+	ruheEck: "Ins Ruhe-Eck schicken",
+	zurueckholen: "Gabriel zurückholen",
+	blaseSchliessen: "Schließen",
+
+	kommentare: {
+		spot: {
+			du: "Psst – da vorn. Ich sitz gleich daneben.",
+			sie: "Psst – da vorn. Ich sitze gleich daneben.",
+		},
+		programmstart: {
+			du: "So. Jetzt wird's spannend.",
+			sie: "So. Jetzt wird es spannend.",
+		},
+		nachErstemFilm: {
+			du: "Und? Ehrlich sein.",
+			sie: "Und? Ganz ehrlich jetzt.",
+		},
+		popcorn: {
+			du: "Popcorn? … Ah. Hab ich vergessen.",
+			sie: "Popcorn? … Ah. Habe ich vergessen.",
+		},
+		vorVorstellung: {
+			du: "Jetzt kommt der Teil, wo ich mich vorstell. Kurz, versprochen.",
+			sie: "Jetzt kommt der Teil, wo ich mich vorstelle. Kurz, versprochen.",
+		},
+	} satisfies Record<string, AnredeFassung>,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Meine kleine Vorstellung
+// ---------------------------------------------------------------------------
+
+/**
+ * Die vier Zeichentrickszenen. Inhalt und Reihenfolge folgen dem "Wie" der
+ * Startseite (src/pages/index.astro) – die Bildunterschriften sind daraus
+ * auf je einen Satz verdichtet.
+ */
+export const SZENEN = [
+	{
+		datei: "/screening/cartoon/01-drehbuch.svg",
+		titel: "Drehbuch",
+		unterschrift: "Bevor die Kamera läuft, steht die Idee.",
+		alt: "Zeichnung: Gabriel am Schreibtisch mit Notizen und Kaffee, später Abend",
+	},
+	{
+		datei: "/screening/cartoon/02-interview.svg",
+		titel: "Nachrichten",
+		unterschrift: "Was jemand sagt – und was er eigentlich meint.",
+		alt: "Zeichnung: Gabriel mit Kamera auf der Schulter und Mikrofon bei einem Interview",
+	},
+	{
+		datei: "/screening/cartoon/03-werbung.svg",
+		titel: "Werbung",
+		unterschrift: "Drehen heißt warten können.",
+		alt: "Zeichnung: Gabriel an einem ausgeleuchteten Set mit Softboxen und Slider",
+	},
+	{
+		datei: "/screening/cartoon/04-schnitt.svg",
+		titel: "Schnitt",
+		unterschrift: "Aus Material wird ein Film.",
+		alt: "Zeichnung: Gabriel am Schnittplatz mit zwei Monitoren und Kopfhörern",
+	},
 ] as const;
+
+export const VORSTELLUNG = {
+	titelkarte: "Und jetzt: eine kleine Vorstellung.",
+
+	echtIch: {
+		du: "Und in echt schau ich so aus.",
+		sie: "Und in echt schaue ich so aus.",
+	} satisfies AnredeFassung,
+
+	bildunterschrift: "GABRIEL NEUMAYR · TRUE FRAME · SALZBURG",
+
+	statement: {
+		du: "Ich glaub nicht an Filme, die man vergisst, bevor das Licht angeht.",
+		sie: "Ich glaube nicht an Filme, die man vergisst, bevor das Licht angeht.",
+	} satisfies AnredeFassung,
+
+	werIchBin: {
+		du: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt hab ich beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt – meistens alles aus einer Hand.",
+		sie: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt habe ich beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt – meistens alles aus einer Hand.",
+	} satisfies AnredeFassung,
+
+	koennenTitel: "Was ich kann",
+
+	schluss: {
+		du: "Ich hoffe, dir hat meine kleine Vorstellung gefallen.",
+		sie: "Ich hoffe, Ihnen hat meine kleine Vorstellung gefallen.",
+	} satisfies AnredeFassung,
+} as const;
+
+/** Die Punkte selbst, unabhängig von der Reihenfolge. */
+export const KOENNEN = {
+	konzept: "Konzept & Drehbuch",
+	dreh: "Dreh: Interviews, Reportage, Doku, Commercial",
+	schnitt: "Schnitt & Color Grading",
+	image: "Imagefilme & Werbung",
+	doku: "Dokumentationen",
+	tv: "TV-Beiträge & Agenturmaterial",
+} as const;
+
+/** Was zuerst steht, richtet sich danach, wer zusieht. */
+export const KOENNEN_REIHENFOLGE: Record<Zielgruppe, (keyof typeof KOENNEN)[]> = {
+	werbekunde: ["image", "konzept", "dreh", "schnitt", "doku", "tv"],
+	produktion: ["dreh", "schnitt", "konzept", "doku", "image", "tv"],
+	sender: ["tv", "dreh", "schnitt", "konzept", "doku", "image"],
+};
+
+// ---------------------------------------------------------------------------
+// Schluss
+// ---------------------------------------------------------------------------
 
 export const SCHLUSS = {
 	cta: "Nächste Vorstellung: Wir zwei. Ein Kaffee. Salzburg.",

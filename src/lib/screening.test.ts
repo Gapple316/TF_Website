@@ -1,10 +1,16 @@
 import { describe, it, expect } from "vitest";
 import type { Screening } from "../data/screenings";
 import {
+	FIGUR,
+	KOENNEN,
+	KOENNEN_REIHENFOLGE,
 	MAX_FILME,
 	PROGRAMM,
+	SCHLUSS,
 	STANDARD_PROJEKTE,
 	VORSPANN,
+	SZENEN,
+	VORSTELLUNG,
 	ZIELGRUPPEN_ABSATZ,
 } from "../data/screening-texte";
 import {
@@ -18,6 +24,8 @@ import {
 	vollerName,
 	vorspannAbsaetze,
 	vorstellungsDatum,
+	risskante,
+	RISS_ZONE,
 	waehleProjekte,
 	willkommenZurueck,
 } from "./screening";
@@ -189,8 +197,13 @@ describe("Sie-Fassung ist neu formuliert, nicht nur ersetzt", () => {
 			VORSPANN.programmAnkuendigung.sie,
 			VORSPANN.popcorn.sie,
 			PROGRAMM.ueberleitung.sie,
-			PROGRAMM.notizLabel.sie,
 			...Object.values(ZIELGRUPPEN_ABSATZ).map((z) => z.sie),
+			...Object.values(FIGUR.kommentare).map((k) => k.sie),
+			VORSTELLUNG.echtIch.sie,
+			VORSTELLUNG.statement.sie,
+			VORSTELLUNG.werIchBin.sie,
+			VORSTELLUNG.schluss.sie,
+			SCHLUSS.ps.sie,
 		];
 		for (const t of sieTexte) {
 			expect(t).not.toMatch(/\b(du|dich|dir|dein|deine)\b/i);
@@ -269,5 +282,107 @@ describe("Hilfsangaben", () => {
 
 	it("nennt im Mailbetreff den vollen Namen", () => {
 		expect(mailBetreff(s())).toBe("Nächste Vorstellung – Maria Huber");
+	});
+});
+
+describe("risskante", () => {
+	it("liefert fuer denselben Slug immer dieselbe Kante", () => {
+		expect(risskante("maria-huber-x7k2")).toEqual(risskante("maria-huber-x7k2"));
+	});
+
+	it("reisst bei verschiedenen Slugs verschieden", () => {
+		expect(risskante("maria-huber-x7k2").haupt).not.toBe(risskante("vorlage").haupt);
+	});
+
+	it("erzeugt gueltige clip-path-Angaben", () => {
+		const k = risskante("test-ab12");
+		expect(k.haupt.startsWith("polygon(")).toBe(true);
+		expect(k.abriss.startsWith("polygon(")).toBe(true);
+		expect(k.haupt.endsWith(")")).toBe(true);
+		expect(k.abriss.endsWith(")")).toBe(true);
+	});
+
+	it("laesst die beiden Haelften exakt ineinandergreifen", () => {
+		// Entscheidend: An jeder Hoehe muessen sich die Versaetze beider
+		// Kanten zur Breite der Risszone ergaenzen - sonst klafft eine Luecke
+		// oder die Haelften ueberlappen sich.
+		const k = risskante("maria-huber-x7k2");
+
+		const haupt = [...k.haupt.matchAll(/calc\(100% - ([\d.]+)px\) ([\d.]+)%/g)].map((m) => [
+			Number(m[1]),
+			Number(m[2]),
+		]);
+		const abriss = [...k.abriss.matchAll(/([\d.]+)px ([\d.]+)%/g)].map((m) => [
+			Number(m[1]),
+			Number(m[2]),
+		]);
+
+		expect(haupt.length).toBeGreaterThan(10);
+		expect(abriss.length).toBe(haupt.length);
+
+		// abriss ist rueckwaerts notiert, damit der Umriss geschlossen bleibt.
+		const abrissSortiert = [...abriss].reverse();
+		for (let i = 0; i < haupt.length; i++) {
+			expect(abrissSortiert[i][1]).toBeCloseTo(haupt[i][1], 5);
+			expect(haupt[i][0] + abrissSortiert[i][0]).toBeCloseTo(RISS_ZONE, 5);
+		}
+	});
+
+	it("schliesst oben und unten buendig ab", () => {
+		const k = risskante("vorlage");
+		const werte = [...k.haupt.matchAll(/calc\(100% - ([\d.]+)px\)/g)].map((m) => Number(m[1]));
+		expect(werte[0]).toBe(RISS_ZONE / 2);
+		expect(werte[werte.length - 1]).toBe(RISS_ZONE / 2);
+	});
+
+	it("bleibt innerhalb der Risszone", () => {
+		for (const slug of ["a", "vorlage", "maria-huber-x7k2", "lena-brandstaetter-q9f3"]) {
+			const werte = [...risskante(slug).haupt.matchAll(/calc\(100% - ([\d.]+)px\)/g)].map((m) =>
+				Number(m[1]),
+			);
+			expect(Math.min(...werte)).toBeGreaterThanOrEqual(0);
+			expect(Math.max(...werte)).toBeLessThanOrEqual(RISS_ZONE);
+		}
+	});
+});
+
+describe("Koennensliste je Zielgruppe", () => {
+	it("enthaelt immer alle Punkte, nur anders sortiert", () => {
+		const alle = Object.keys(KOENNEN).sort();
+		for (const zg of ["werbekunde", "produktion", "sender"] as const) {
+			expect([...KOENNEN_REIHENFOLGE[zg]].sort()).toEqual(alle);
+		}
+	});
+
+	it("stellt der Zielgruppe das Passende voran", () => {
+		expect(KOENNEN_REIHENFOLGE.werbekunde[0]).toBe("image");
+		expect(KOENNEN_REIHENFOLGE.produktion[0]).toBe("dreh");
+		expect(KOENNEN_REIHENFOLGE.sender[0]).toBe("tv");
+	});
+});
+
+describe("Die vier Zeichentrickszenen", () => {
+	it("liegen als austauschbare Dateien vor", () => {
+		for (const s of SZENEN) {
+			expect(s.datei).toMatch(/^\/screening\/cartoon\/\d\d-[a-z]+\.svg$/);
+		}
+	});
+
+	it("haben Bildunterschrift und Alternativtext", () => {
+		for (const s of SZENEN) {
+			expect(s.unterschrift.length).toBeGreaterThan(10);
+			// Ein Satz, nicht drei.
+			expect(s.unterschrift.split(".").filter(Boolean).length).toBe(1);
+			expect(s.alt.length).toBeGreaterThan(20);
+		}
+	});
+
+	it("folgen der Reihenfolge des WIE auf der Startseite", () => {
+		expect(SZENEN.map((s) => s.titel)).toEqual([
+			"Drehbuch",
+			"Nachrichten",
+			"Werbung",
+			"Schnitt",
+		]);
 	});
 });

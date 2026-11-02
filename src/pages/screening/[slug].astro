@@ -12,12 +12,22 @@ import Kinosaal from "../../components/screening/Kinosaal.astro";
 import Marquee from "../../components/screening/Marquee.astro";
 import Programmzettel from "../../components/screening/Programmzettel.astro";
 import Zielgruppe from "../../components/screening/Zielgruppe.astro";
-import Abspann from "../../components/screening/Abspann.astro";
+import Vorstellung from "../../components/screening/Vorstellung.astro";
+import Figur from "../../components/screening/Figur.astro";
 import { screenings, type Screening } from "../../data/screenings";
-import { KONTAKT, OG_BESCHREIBUNG, PROGRAMM, SCHLUSS } from "../../data/screening-texte";
+import {
+	FIGUR,
+	KOMMENTAR_DAUER_MS,
+	MAX_KOMMENTARE,
+	KONTAKT,
+	OG_BESCHREIBUNG,
+	PROGRAMM,
+	SCHLUSS,
+} from "../../data/screening-texte";
 import {
 	anredeZeile,
 	genreStempel,
+	kurzeAnrede,
 	mailBetreff,
 	ogTitel,
 	programmText,
@@ -73,14 +83,18 @@ const ps = screening.ps ?? SCHLUSS.ps[screening.anrede];
 		data-slug={screening.slug}
 		data-kino-szene="foyer"
 		data-kino-riss="bereit"
-		data-kino-countdown="bereit"
+		data-kino-phase="dunkel"
 		data-kino-vorspann="laeuft"
+		data-figur-spot={FIGUR.kommentare.spot[screening.anrede]}
+		data-figur-max={MAX_KOMMENTARE}
+		data-figur-dauer={KOMMENTAR_DAUER_MS}
 	>
 		<Ticket
 			name={vollerName(screening)}
 			datum={vorstellungsDatum(new Date())}
 			programm={programmText(filme.length)}
 			nummer={ticketNummer(screening.slug)}
+			slug={screening.slug}
 		/>
 
 		{/* Kurzes Schwarz zwischen Foyer und Saal. */}
@@ -91,27 +105,38 @@ const ps = screening.ps ?? SCHLUSS.ps[screening.anrede];
 			anrede={anredeZeile(screening)}
 			absaetze={vorspannAbsaetze(screening)}
 			willkommenZurueck={willkommenZurueck(screening)}
+			platzkarte={kurzeAnrede(screening)}
 		/>
 
-		<section id="programm" class="kino-programm">
+		<section
+			id="programm"
+			class="kino-programm"
+			data-figur-sagt={FIGUR.kommentare.programmstart[screening.anrede]}
+		>
 			<Marquee text={PROGRAMM.marquee} untertitel={PROGRAMM.ueberleitung[screening.anrede]} />
 
 			<div class="kino-programm__liste">
-				{
-					filme.map((film) => (
-						<Programmzettel {...film} notizLabel={PROGRAMM.notizLabel[screening.anrede]} />
-					))
-				}
+				{filme.map((film) => <Programmzettel {...film} />)}
 			</div>
 		</section>
 
-		<Zielgruppe zielgruppe={screening.zielgruppe} />
+		<div data-figur-sagt={FIGUR.kommentare.popcorn[screening.anrede]}>
+			<Zielgruppe zielgruppe={screening.zielgruppe} />
+		</div>
 
-		<Abspann anrede={screening.anrede} ps={ps} ctaHref={ctaHref} />
+		<Vorstellung
+			anrede={screening.anrede}
+			zielgruppe={screening.zielgruppe}
+			ps={ps}
+			ctaHref={ctaHref}
+			figurSagt={FIGUR.kommentare.vorVorstellung[screening.anrede]}
+		/>
+
+		<Figur />
 
 		{/* Vorführung: ein Overlay für alle Filme. Die iframe bekommt ihre
 		    Adresse erst beim Öffnen – vorher wird kein Video angefragt. */}
-		<div class="kino-vorfuehrung" data-vorfuehrung data-offen="false" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Vorführung">
+		<div class="kino-vorfuehrung" data-vorfuehrung data-offen="false" data-figur-nach-film={FIGUR.kommentare.nachErstemFilm[screening.anrede]} aria-hidden="true" role="dialog" aria-modal="true" aria-label="Vorführung">
 			<div class="kino-vorfuehrung__vorhang kino-vorfuehrung__vorhang--links" aria-hidden="true"></div>
 			<div class="kino-vorfuehrung__vorhang kino-vorfuehrung__vorhang--rechts" aria-hidden="true"></div>
 

@@ -10,20 +10,33 @@
 // prefers-reduced-motion-Abschaltungen stehen.
 
 import { TICKET } from "../../data/screening-texte";
+import { risskante } from "../../lib/screening";
 
 interface Props {
 	name: string;
 	datum: string;
 	programm: string;
 	nummer: string;
+	/** Bestimmt, wie das Papier reißt – gleicher Slug, gleiche Kante. */
+	slug: string;
 }
 
-const { name, datum, programm, nummer } = Astro.props;
+const { name, datum, programm, nummer, slug } = Astro.props;
+
+// Die beiden Kanten entstehen beim Bauen und passen zusammen wie die
+// Hälften eines echten Risses. Angewendet werden sie erst beim Reißen.
+const kante = risskante(slug);
 ---
 
 <section class="kino-foyer" data-kino-foyer>
 	<div class="kino-foyer__inner">
-		<button type="button" class="kino-ticket" data-ticket-knopf aria-label={`Ticket abreißen und Vorstellung starten für ${name}`}>
+		<button
+			type="button"
+			class="kino-ticket"
+			data-ticket-knopf
+			style={`--riss-haupt: ${kante.haupt}; --riss-abriss: ${kante.abriss};`}
+			aria-label={`Ticket abreißen und Vorstellung starten für ${name}`}
+		>
 			<span class="kino-ticket__haupt">
 				<span class="kino-ticket__haus">{TICKET.haus}</span>
 				<span class="kino-ticket__titel">{TICKET.titel}</span>
@@ -43,7 +56,10 @@ const { name, datum, programm, nummer } = Astro.props;
 
 			<span class="kino-ticket__perfo" aria-hidden="true"></span>
 
+			{/* Der Streifen lässt sich anfassen und wegziehen; touch-action in
+			    der CSS verhindert, dass der Browser daraus ein Scrollen macht. */}
 			<span class="kino-ticket__abriss" data-ticket-abriss>
+				<span class="kino-ticket__faser" aria-hidden="true"></span>
 				<span class="kino-ticket__abrisstext">
 					{TICKET.abschnitt} · Platz 1 · {TICKET.nummer} {nummer}
 				</span>
