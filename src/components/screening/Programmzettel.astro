@@ -18,7 +18,7 @@ interface Props {
 	embeddable?: boolean;
 	videoUrl?: string;
 	/**
-	 * Wird zur Sprechblase der Figur, sobald der Film ins Bild scrollt –
+	 * Wird zur Sprechblase der Figur, sobald der Film ins Bild scrollt,
 	 * deshalb steht sie nicht mehr als Text unter der Karte.
 	 */
 	notiz?: string;
@@ -31,7 +31,10 @@ const gesperrt = embeddable === false && !!videoUrl;
 const abspielbar = !!embedUrl && !gesperrt;
 ---
 
-<article class="kino-zettel" data-kino-reveal data-figur-sagt={notiz}>
+{/* data-figur-wichtig: Der Satz zu diesem Film ist der Grund, warum er im
+    Programm steht. Er wird auch dann gezeigt, wenn die allgemeinen Sprüche
+    ihre Obergrenze schon erreicht haben. */}
+<article class="kino-zettel" data-kino-reveal data-figur-sagt={notiz} data-figur-wichtig>
 	<div class="kino-zettel__bild">
 		{posterUrl && <img src={posterUrl} alt="" aria-hidden="true" loading="lazy" />}
 		<span class="kino-zettel__stempel">{stempel}</span>

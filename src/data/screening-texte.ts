@@ -39,14 +39,6 @@ export const STANDARD_PROJEKTE: Record<Zielgruppe, string[]> = {
 	sender: ["illegale-e-scooter", "borkenkaefer-salzburg", "zeichen-der-vergangenheit"],
 };
 
-/** Technik-Block für die Zielgruppe "produktion". Frei änderbar. */
-export const TECHNIK = {
-	kamera: ["Sony FX6", "Sony ZV-E1"],
-	schnitt: ["Premiere Pro", "DaVinci Resolve"],
-	arbeitsweise: "Recherche, Dreh und Schnitt aus einer Hand.",
-	verfuegbarkeit: "Kurzfristig buchbar, auch für mehrtägige Drehs.",
-} as const;
-
 // ---------------------------------------------------------------------------
 // Ticket
 // ---------------------------------------------------------------------------
@@ -79,14 +71,14 @@ export const VORSPANN_KOPF = {
 
 // Vor dem Zielgruppen-Absatz.
 const PLATZ_GENOMMEN: AnredeFassung = {
-	du: "schön, dass du Platz genommen hast. Reihe 1, Platz 1 – der beste im Haus. Den hab ich für dich reserviert.",
-	sie: "schön, dass Sie Platz genommen haben. Reihe 1, Platz 1 – der beste im Haus. Den habe ich für Sie reserviert.",
+	du: "schön, dass du Platz genommen hast. Reihe 1, Platz 1, der beste im Haus. Den hab ich für dich reserviert.",
+	sie: "schön, dass Sie Platz genommen haben. Reihe 1, Platz 1, der beste im Haus. Den habe ich für Sie reserviert.",
 };
 
 // Nach dem persönlichen Absatz.
 const PROGRAMM_ANKUENDIGUNG: AnredeFassung = {
-	du: "Ich hab dir ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen – eher ein Kurzfilmabend. Lehn dich zurück.",
-	sie: "Ich habe Ihnen ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen – eher ein Kurzfilmabend. Lehnen Sie sich zurück.",
+	du: "Ich hab dir ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen. Eher ein Kurzfilmabend. Lehn dich zurück.",
+	sie: "Ich habe Ihnen ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen. Eher ein Kurzfilmabend. Lehnen Sie sich zurück.",
 };
 
 const POPCORN: AnredeFassung = {
@@ -100,16 +92,16 @@ export const LICHT_AUS = "Licht aus. Film ab.";
 // Zielgruppen-Absätze. Zwei davon sprechen den Leser gar nicht direkt an und
 // sind deshalb in beiden Fassungen gleich; nur "produktion" verkürzt im Du.
 const ZG_WERBEKUNDE =
-	"Ich mache Filme für Unternehmen, die mehr zu erzählen haben als ihr Prospekt. Keine Werbung, deren Namen man schon beim Rausgehen vergessen hat – sondern Geschichten, über die man im Foyer noch redet.";
+	"Ich mache Filme für Unternehmen, die mehr zu erzählen haben als ihr Prospekt. Keine Werbung, deren Namen man schon beim Rausgehen vergessen hat, sondern Geschichten, über die man im Foyer noch redet.";
 
 const ZG_SENDER =
-	"Ich liefere Beiträge für RTS und R9 und Material für APA und dpa – Recherche, Dreh und Schnitt aus einer Hand. Kino ist schön, aber ich weiß auch, wie sich Sendeschluss anfühlt. Und dass eine gute Geschichte trotzdem keine Abkürzung nimmt.";
+	"Ich liefere Beiträge für RTS und R9 und Material für APA und dpa. Recherche, Dreh und Schnitt aus einer Hand. Kino ist schön, aber ich weiß auch, wie sich Sendeschluss anfühlt. Und dass eine gute Geschichte trotzdem keine Abkürzung nimmt.";
 
 export const ZIELGRUPPEN_ABSATZ: Record<Zielgruppe, AnredeFassung> = {
 	werbekunde: { du: ZG_WERBEKUNDE, sie: ZG_WERBEKUNDE },
 	produktion: {
-		du: "Gelernt hab ich mein Handwerk beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt's nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden – hinter der Kamera und am Schnittplatz.",
-		sie: "Gelernt habe ich mein Handwerk beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt es nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden – hinter der Kamera und am Schnittplatz.",
+		du: "Gelernt hab ich mein Handwerk beim Regionalfernsehen, vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt's nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden, hinter der Kamera und am Schnittplatz.",
+		sie: "Gelernt habe ich mein Handwerk beim Regionalfernsehen, vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt es nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden, hinter der Kamera und am Schnittplatz.",
 	},
 	sender: { du: ZG_SENDER, sie: ZG_SENDER },
 };
@@ -120,7 +112,7 @@ export const VORSPANN = {
 	popcorn: POPCORN,
 	ueberspringen: "Vorspann überspringen ⏭",
 	/** Erscheint auf der Leinwand, solange der Text angehalten ist. */
-	pausiert: "‖ angehalten – klicken zum Weiterlaufen",
+	pausiert: "‖ angehalten, klicken zum Weiterlaufen",
 	scrollHinweis: "Weiter zum Programm ↓",
 } as const;
 
@@ -131,8 +123,8 @@ export const VORSPANN = {
 export const PROGRAMM = {
 	marquee: "HEUTE IM PROGRAMM",
 	ueberleitung: {
-		du: "Handverlesen für dich. Nicht alles, was ich gedreht habe – nur das, was du sehen solltest.",
-		sie: "Handverlesen für Sie. Nicht alles, was ich gedreht habe – nur das, was Sie sehen sollten.",
+		du: "Handverlesen für dich. Nicht alles, was ich gedreht habe. Nur das, was du sehen solltest.",
+		sie: "Handverlesen für Sie. Nicht alles, was ich gedreht habe. Nur das, was Sie sehen sollten.",
 	} satisfies AnredeFassung,
 	/* Das frühere Label "Warum ich dir den zeigen will" entfällt: Die Notiz
 	   zu einem Film ist jetzt ein Kommentar der Figur und erscheint als
@@ -153,17 +145,12 @@ export const PROGRAMM = {
 // ---------------------------------------------------------------------------
 
 export const ZIELGRUPPEN_BLOCK = {
-	produktion: {
-		titel: "Technik im Vorführraum",
-		kamera: "Kamera",
-		schnitt: "Schnitt",
-		arbeitsweise: "Arbeitsweise",
-		verfuegbarkeit: "Verfügbarkeit",
-	},
+	// Für "produktion" steht hier nichts: Der frühere Technik-Kasten zählte
+	// genau das auf, was weiter unten in der Ausrüstungsliste steht.
 	sender: {
 		titel: "Ausgestrahlt bei",
 		absatz:
-			"Recherche, Dreh und Schnitt aus einer Hand – vom ersten Anruf bis zur fertigen Sendefassung.",
+			"Recherche, Dreh und Schnitt aus einer Hand, vom ersten Anruf bis zur fertigen Sendefassung.",
 	},
 	werbekunde: {
 		titel: "Gemeinsam entstanden",
@@ -257,7 +244,7 @@ export const SZENEN = [
 	{
 		schluessel: "hoeren",
 		titel: "Nachrichten",
-		unterschrift: "Was jemand sagt – und was er eigentlich meint.",
+		unterschrift: "Was jemand sagt, und was er eigentlich meint.",
 		schlagworte: ["Tagesaktuell", "RTS", "DPA", "APA"],
 		alt: "Gabriel von hinten, ein Reportermikrofon in der Hand",
 	},
@@ -271,7 +258,7 @@ export const SZENEN = [
 	{
 		schluessel: "erzaehlen",
 		titel: "Schnitt",
-		unterschrift: "Ob Nachrichten-MAZ unter Zeitdruck oder S-Log-Grading – alles dabei.",
+		unterschrift: "Ob Nachrichten-MAZ unter Zeitdruck oder S-Log-Grading, alles dabei.",
 		schlagworte: [],
 		alt: "Gabriel am Schnittplatz, auf dem Laptop läuft die Timeline",
 	},
@@ -299,8 +286,8 @@ export const VORSTELLUNG = {
 	} satisfies AnredeFassung,
 
 	werIchBin: {
-		du: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt hab ich beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt – meistens alles aus einer Hand.",
-		sie: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt habe ich beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt – meistens alles aus einer Hand.",
+		du: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt hab ich beim Regionalfernsehen, vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt, meistens alles aus einer Hand.",
+		sie: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt habe ich beim Regionalfernsehen, vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt, meistens alles aus einer Hand.",
 	} satisfies AnredeFassung,
 
 	// Nicht noch einmal "Was ich kann": Das steht jetzt über dem Abschnitt.
@@ -330,11 +317,8 @@ export const KOENNEN_REIHENFOLGE: Record<Zielgruppe, (keyof typeof KOENNEN)[]> =
 };
 
 /**
- * Die Ausrüstung, für alle, die danach fragen.
- *
- * Die Kameras stehen auch oben im Technik-Kasten (TECHNIK.kamera) – deshalb
- * kommen sie von dort und nicht aus zwei getrennten Listen, die irgendwann
- * auseinanderlaufen.
+ * Die Ausrüstung, für alle, die danach fragen. Seit der Technik-Kasten oben
+ * weg ist, steht sie nur noch hier.
  *
  * Der handschriftliche Satz ist bewusst eine Relativierung: Die Liste soll
  * zeigen, dass das Werkzeug da ist, und nicht, dass es den Film macht.
@@ -343,7 +327,8 @@ export const AUSRUESTUNG = {
 	handschrift: "Eine gute Kamera macht keinen guten Film, aber …",
 	titel: "Ausrüstung",
 	liste: [
-		...TECHNIK.kamera,
+		"Sony FX6",
+		"Sony ZV-E1",
 		"Prime Lenses",
 		"TV-Zoom 28–135",
 		"DJI Ronin",
@@ -368,8 +353,8 @@ export const SCHLUSS = {
 	} satisfies AnredeFassung,
 	postCredits: "– Post-Credits-Szene –",
 	ps: {
-		du: "Du bist bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für dich – sie steht in keinem Programmheft.",
-		sie: "Sie sind bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für Sie – sie steht in keinem Programmheft.",
+		du: "Du bist bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für dich, sie steht in keinem Programmheft.",
+		sie: "Sie sind bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für Sie, sie steht in keinem Programmheft.",
 	} satisfies AnredeFassung,
 } as const;
 
@@ -378,6 +363,6 @@ export const SCHLUSS = {
 // ---------------------------------------------------------------------------
 
 export const OG_BESCHREIBUNG = {
-	du: "Reihe 1, Platz 1 – reserviert für dich. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
-	sie: "Reihe 1, Platz 1 – für Sie reserviert. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
+	du: "Reihe 1, Platz 1, reserviert für dich. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
+	sie: "Reihe 1, Platz 1, für Sie reserviert. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
 } satisfies AnredeFassung;

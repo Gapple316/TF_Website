@@ -1656,6 +1656,10 @@ body:has(.kino-vorfuehrung[data-offen="true"]) .kino-figur {
 	/* Gleiches Format für alle vier, damit die Kader eine Reihe bilden. */
 	aspect-ratio: 4 / 3;
 	object-fit: cover;
+	/* Drei der vier Fotos sind ohnehin schwarzweiß; beim Schnittplatz leuchtet
+	   die Timeline am Laptop bunt heraus. Die Regel steht an allen vieren,
+	   damit auch ein ausgetauschtes Foto von selbst passt. */
+	filter: grayscale(1);
 }
 
 .kino-szene__nummer {

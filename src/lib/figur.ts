@@ -7,8 +7,12 @@
 //   * höchstens eine Blase gleichzeitig
 //   * sie bleibt stehen, bis die nächste kommt, und geht mit × sofort weg
 //   * nie, solange eine Vorführung läuft
-//   * höchstens sechs Kommentare pro Besuch
+//   * höchstens sechs allgemeine Kommentare pro Besuch
 //   * ein Klick auf die Figur schickt sie dauerhaft ins Ruhe-Eck
+//
+// Die Obergrenze gilt nur für die allgemeinen Sprüche. Was Gabriel zu einem
+// einzelnen Film sagt, ist der Grund, warum dieser Film im Programm steht –
+// das darf nicht ausfallen, nur weil vorher genug geredet wurde.
 //
 // Was gesagt wird, steht nicht hier, sondern als data-figur-sagt im Markup –
 // so bleiben alle Texte in screening-texte.ts.
@@ -21,7 +25,8 @@ export interface FigurOptionen {
 }
 
 export interface FigurSteuerung {
-	sage: (text: string) => void;
+	/** wichtig = zählt nicht gegen die Obergrenze (Notizen zu den Filmen). */
+	sage: (text: string, wichtig?: boolean) => void;
 	aufraeumen: () => void;
 }
 
@@ -62,13 +67,13 @@ export function initFigur(
 		blase.setAttribute("aria-hidden", "true");
 	};
 
-	const sage = (text: string) => {
+	const sage = (text: string, wichtig = false) => {
 		if (stumm || !text) return;
-		if (gesagt >= optionen.maxKommentare) return;
+		if (!wichtig && gesagt >= optionen.maxKommentare) return;
 		// Nie über einer laufenden Vorführung.
 		if (wurzel.querySelector('[data-vorfuehrung][data-offen="true"]')) return;
 
-		gesagt += 1;
+		if (!wichtig) gesagt += 1;
 		textFeld.textContent = text;
 		blase.dataset.offen = "true";
 		blase.setAttribute("aria-hidden", "false");
@@ -95,7 +100,7 @@ export function initFigur(
 				if (!e.isIntersecting) continue;
 				const el = e.target as HTMLElement;
 				beobachter.unobserve(el);
-				sage(el.dataset.figurSagt ?? "");
+				sage(el.dataset.figurSagt ?? "", el.dataset.figurWichtig !== undefined);
 			}
 		},
 		{ rootMargin: "0px 0px -25% 0px", threshold: 0 },

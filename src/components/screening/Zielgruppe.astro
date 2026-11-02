@@ -2,12 +2,16 @@
 // Szene 5: Ein Block, der sich nach der Zielgruppe richtet.
 //
 // Sender und Werbekunden bekommen die bestehenden Logo-Slider der Startseite
-// (LogoMarquee mit senderLogos bzw. kundenLogos) – kein neues Bauteil, keine
-// doppelte Datenpflege. Produktionsfirmen bekommen stattdessen die Technik.
+// (LogoMarquee mit senderLogos bzw. kundenLogos), kein neues Bauteil und
+// keine doppelte Datenpflege.
+//
+// Produktionsfirmen bekommen hier gar nichts mehr: Der Technik-Kasten stand
+// genau das, was die Ausrüstungsliste weiter unten ohnehin aufzählt. Dann
+// entfällt der ganze Abschnitt, statt eine leere Hülle stehen zu lassen.
 
 import LogoMarquee from "../LogoMarquee.astro";
 import { kundenLogos, senderLogos } from "../../data/logos";
-import { TECHNIK, ZIELGRUPPEN_BLOCK, type Zielgruppe } from "../../data/screening-texte";
+import { ZIELGRUPPEN_BLOCK, type Zielgruppe } from "../../data/screening-texte";
 
 interface Props {
 	zielgruppe: Zielgruppe;
@@ -16,53 +20,31 @@ interface Props {
 const { zielgruppe } = Astro.props;
 ---
 
-<section class="kino-zielgruppe" data-kino-reveal>
-	{
-		zielgruppe === "produktion" && (
-			<div class="kino-zielgruppe__inner">
-				<h2 class="kino-abschnitt__titel">{ZIELGRUPPEN_BLOCK.produktion.titel}</h2>
-				<dl class="kino-technik">
-					<div>
-						<dt>{ZIELGRUPPEN_BLOCK.produktion.kamera}</dt>
-						<dd>{TECHNIK.kamera.join(" · ")}</dd>
+{
+	zielgruppe !== "produktion" && (
+		<section class="kino-zielgruppe" data-kino-reveal>
+			{
+				zielgruppe === "sender" && (
+					<div class="kino-zielgruppe__inner">
+						<h2 class="kino-abschnitt__titel">{ZIELGRUPPEN_BLOCK.sender.titel}</h2>
+						<p class="kino-zielgruppe__absatz">{ZIELGRUPPEN_BLOCK.sender.absatz}</p>
+						<div class="kino-zielgruppe__slider">
+							<LogoMarquee heading="Sender" logos={senderLogos} direction="left" />
+						</div>
 					</div>
-					<div>
-						<dt>{ZIELGRUPPEN_BLOCK.produktion.schnitt}</dt>
-						<dd>{TECHNIK.schnitt.join(" · ")}</dd>
-					</div>
-					<div>
-						<dt>{ZIELGRUPPEN_BLOCK.produktion.arbeitsweise}</dt>
-						<dd>{TECHNIK.arbeitsweise}</dd>
-					</div>
-					<div>
-						<dt>{ZIELGRUPPEN_BLOCK.produktion.verfuegbarkeit}</dt>
-						<dd>{TECHNIK.verfuegbarkeit}</dd>
-					</div>
-				</dl>
-			</div>
-		)
-	}
+				)
+			}
 
-	{
-		zielgruppe === "sender" && (
-			<div class="kino-zielgruppe__inner">
-				<h2 class="kino-abschnitt__titel">{ZIELGRUPPEN_BLOCK.sender.titel}</h2>
-				<p class="kino-zielgruppe__absatz">{ZIELGRUPPEN_BLOCK.sender.absatz}</p>
-				<div class="kino-zielgruppe__slider">
-					<LogoMarquee heading="Sender" logos={senderLogos} direction="left" />
-				</div>
-			</div>
-		)
-	}
-
-	{
-		zielgruppe === "werbekunde" && (
-			<div class="kino-zielgruppe__inner">
-				<h2 class="kino-abschnitt__titel">{ZIELGRUPPEN_BLOCK.werbekunde.titel}</h2>
-				<div class="kino-zielgruppe__slider">
-					<LogoMarquee heading="Kunden" logos={kundenLogos} direction="left" />
-				</div>
-			</div>
-		)
-	}
-</section>
+			{
+				zielgruppe === "werbekunde" && (
+					<div class="kino-zielgruppe__inner">
+						<h2 class="kino-abschnitt__titel">{ZIELGRUPPEN_BLOCK.werbekunde.titel}</h2>
+						<div class="kino-zielgruppe__slider">
+							<LogoMarquee heading="Kunden" logos={kundenLogos} direction="left" />
+						</div>
+					</div>
+				)
+			}
+		</section>
+	)
+}

@@ -51,12 +51,12 @@ export const screenings: Screening[] = [
 		nachname: "Nachname",
 		firma: "Beispiel GmbH",
 		persoenlicherAbsatz: [
-			"Hier steht der persönliche Absatz – der Teil, der diese Vorstellung von jeder anderen unterscheidet. Zwei, drei Sätze darüber, woher man sich kennt, was das Unternehmen gerade beschäftigt oder warum ich glaube, dass wir zusammenpassen.",
+			"Hier steht der persönliche Absatz, der Teil, der diese Vorstellung von jeder anderen unterscheidet. Zwei, drei Sätze darüber, woher man sich kennt, was das Unternehmen gerade beschäftigt oder warum ich glaube, dass wir zusammenpassen.",
 			"Ein zweiter Absatz ist möglich, wenn es mehr zu sagen gibt.",
 		],
 		projekte: [
 			{ id: "wapotec-jubilaeumsfilm", notiz: "Hier steht eine Notiz: warum genau dieser Film zu dieser Person passt." },
-			{ id: "showreel", notiz: "Der schnellste Überblick – eineinhalb Minuten quer durch alles." },
+			{ id: "showreel", notiz: "Der schnellste Überblick, eineinhalb Minuten quer durch alles." },
 			{ id: "zeichen-der-vergangenheit" },
 		],
 	},
@@ -71,11 +71,11 @@ export const screenings: Screening[] = [
 		nachname: "Huber",
 		firma: "Huber Bau GmbH",
 		persoenlicherAbsatz:
-			"Nach unserem Gespräch auf der Baustelle in Mattsee ist mir der Satz hängengeblieben, dass euch niemand glaubt, wie viel Handarbeit in einem Rohbau steckt. Genau solche Sachen lassen sich filmisch zeigen – man muss nur lange genug danebenstehen, bis die Leute die Kamera vergessen.",
+			"Nach unserem Gespräch auf der Baustelle in Mattsee ist mir der Satz hängengeblieben, dass euch niemand glaubt, wie viel Handarbeit in einem Rohbau steckt. Genau solche Sachen lassen sich filmisch zeigen. Man muss nur lange genug danebenstehen, bis die Leute die Kamera vergessen.",
 		projekte: [
 			{
 				id: "wapotec-jubilaeumsfilm",
-				notiz: "Auch ein Familienbetrieb, auch ein Jubiläum – und niemand musste einen Text aufsagen.",
+				notiz: "Auch ein Familienbetrieb, auch ein Jubiläum, und niemand musste einen Text aufsagen.",
 			},
 			{
 				id: "r9-instrumentenbau",
@@ -99,7 +99,7 @@ export const screenings: Screening[] = [
 		nachname: "Berger",
 		firma: "Berger Film",
 		persoenlicherAbsatz:
-			"Sie haben erwähnt, dass Sie für die nächste Doku-Reihe jemanden suchen, der auch allein losziehen kann. Genau so habe ich die letzten Jahre gearbeitet – mit dem Vorteil, dass am Schnittplatz niemand erst erklären muss, warum eine Einstellung fehlt.",
+			"Sie haben erwähnt, dass Sie für die nächste Doku-Reihe jemanden suchen, der auch allein losziehen kann. Genau so habe ich die letzten Jahre gearbeitet, mit dem Vorteil, dass am Schnittplatz niemand erst erklären muss, warum eine Einstellung fehlt.",
 	},
 
 	// Peter Wildling – echtes Screening, vier eigene Filme mit Notizen.
@@ -112,12 +112,12 @@ export const screenings: Screening[] = [
 		nachname: "Wildling",
 		persoenlicherAbsatz: [
 			"Vor unserem ersten Telefonat lag in der Redaktionssitzung beim RTS der SN-Artikel über euer neues Doku-Projekt auf dem Tisch. Da musste ich die Gelegenheit einfach nutzen.",
-			"Unser Nachrichtenbeitrag hat sich aufs Frühjahr verschoben – darauf freue ich mich trotzdem. Bis dahin vier Produktionen, die ich für euch ausgesucht habe.",
+			"Unser Nachrichtenbeitrag hat sich aufs Frühjahr verschoben, darauf freue ich mich trotzdem. Bis dahin vier Produktionen, die ich für euch ausgesucht habe.",
 		],
 		projekte: [
 			{
 				id: "r9-instrumentenbau",
-				notiz: "Zwei Drehtage, allein unterwegs – und eine meiner liebsten Geschichten.",
+				notiz: "Zwei Drehtage, allein unterwegs, und eine meiner liebsten Geschichten.",
 			},
 			{
 				id: "zeichen-der-vergangenheit",
@@ -125,7 +125,7 @@ export const screenings: Screening[] = [
 			},
 			{
 				id: "die-wegewarter",
-				notiz: "Noch bei RTS entstanden, mit altem Equipment. Die Geschichte mag ich trotzdem – wegen der alten Typen.",
+				notiz: "Noch bei RTS entstanden, mit altem Equipment. Die Geschichte mag ich trotzdem, wegen der alten Typen.",
 			},
 			{
 				id: "wapotec-jubilaeumsfilm",
@@ -145,6 +145,6 @@ export const screenings: Screening[] = [
 		nachname: "Brandstätter",
 		firma: "Redaktion Aktuell",
 		persoenlicherAbsatz:
-			"Du hast gesagt, ihr braucht jemanden im Flachgau, der auch kurzfristig rausfahren kann. Ich wohne in Mattsee – zehn Minuten von der Autobahn, zwanzig von der Stadt.",
+			"Du hast gesagt, ihr braucht jemanden im Flachgau, der auch kurzfristig rausfahren kann. Ich wohne in Mattsee, zehn Minuten von der Autobahn, zwanzig von der Stadt.",
 	},
 ];
