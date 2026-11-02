@@ -1,6 +1,9 @@
 ---
-// Szene 6: "Meine kleine Vorstellung" – das Wortspiel aus Kinovorstellung und
-// Sich-Vorstellen. Ersetzt den früheren Credits-Abspann.
+// Szene 6: "Was ich kann". Ersetzt den früheren Credits-Abspann.
+//
+// Hieß einmal "Meine kleine Vorstellung" – das Wortspiel aus Kinovorstellung
+// und Sich-Vorstellen. Das Wort steht aber schon im Ticket, im Vorspann und
+// im Schluss; hier heißt der Abschnitt deshalb nach dem, was er zeigt.
 //
 // Aufbau: Titelkarte, vier Szenen als Filmstreifen, Übergang auf das echte
 // Foto, Schluss mit Aufruf und Post-Credits-Szene.
@@ -80,6 +83,15 @@ const szenen = SZENEN.map((szene) => ({ ...szene, foto: FOTOS[szene.schluessel] 
 					<figcaption class="kino-szene__text">
 						<span class="kino-szene__titel">{szene.titel}</span>
 						{szene.unterschrift}
+						{
+							szene.schlagworte.length > 0 && (
+								<span class="kino-szene__schlagworte">
+									{szene.schlagworte.map((w) => (
+										<span class="kino-szene__schlagwort">{w}</span>
+									))}
+								</span>
+							)
+						}
 					</figcaption>
 				</figure>
 			))

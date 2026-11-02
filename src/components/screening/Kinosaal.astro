@@ -21,10 +21,9 @@ interface Props {
 	name: string;
 	anrede: string;
 	absaetze: string[];
-	willkommenZurueck: string;
 }
 
-const { name, anrede, absaetze, willkommenZurueck } = Astro.props;
+const { name, anrede, absaetze } = Astro.props;
 
 // Reihe 1 ist vorn an der Leinwand, Reihe 6 hinten bei uns.
 const reihen = [1, 2, 3, 4, 5, 6];
@@ -49,8 +48,6 @@ const plaetzeProReihe = 11;
 						<span class="kino-countdown__zahl kino-countdown__zahl--2">2</span>
 						<span class="kino-countdown__zahl kino-countdown__zahl--1">1</span>
 					</div>
-
-					<p class="kino-willkommen" data-kino-willkommen>{willkommenZurueck}</p>
 
 					<div class="kino-rolle" data-vorspann-rolle>
 						<p class="kino-rolle__haus">{VORSPANN_KOPF.haus}</p>

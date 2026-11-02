@@ -7,9 +7,14 @@
 // und ausdrücklich eingeladen, sich danebenzusetzen – ab da ergibt die Figur
 // von selbst Sinn.
 //
-// Der Knopf führt weiter; nach sechs Sekunden geht es auch von allein weiter,
-// damit niemand hängen bleibt.
+// Es ist ein Foto, keine Zeichnung: Eine gezeichnete Figur blieb immer eine
+// Behauptung von Ähnlichkeit. Dasselbe Bild sitzt später klein in der Ecke,
+// damit man denselben Menschen wiedererkennt.
+//
+// Weiter geht es nur über den Knopf, nie von allein.
 
+import { Image } from "astro:assets";
+import portrait from "../../assets/photos/gabriel-figur.jpg";
 import { BEGRUESSUNG } from "../../data/screening-texte";
 
 interface Props {
@@ -21,11 +26,11 @@ const { anrede } = Astro.props;
 
 <section class="kino-begruessung" data-kino-begruessung>
 	<div class="kino-begruessung__inner">
-		<img
-			src="/screening/cartoon/figur-klein.svg"
-			alt="Gabriel Neumayr als Zeichenfigur"
-			width="96"
-			height="120"
+		<Image
+			src={portrait}
+			alt="Gabriel Neumayr"
+			widths={[240, 480]}
+			sizes="(min-width: 768px) 15rem, 8.5rem"
 			class="kino-begruessung__figur"
 		/>
 

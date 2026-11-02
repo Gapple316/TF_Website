@@ -27,7 +27,6 @@ import {
 	risskante,
 	RISS_ZONE,
 	waehleProjekte,
-	willkommenZurueck,
 } from "./screening";
 
 const s = (over: Partial<Screening> = {}): Screening => ({
@@ -65,17 +64,14 @@ describe("anredeZeile", () => {
 	});
 });
 
-describe("kurzeAnrede und willkommenZurueck", () => {
+describe("kurzeAnrede", () => {
 	it("nennt beim Du den Vornamen", () => {
 		expect(kurzeAnrede(s({ anrede: "du" }))).toBe("Maria");
-		expect(willkommenZurueck(s({ anrede: "du" }))).toBe("Willkommen zurück, Maria");
 	});
 
 	it("nennt beim Sie Anrede und Nachnamen", () => {
 		expect(kurzeAnrede(s({ anrede: "sie", geschlecht: "m" }))).toBe("Herr Huber");
-		expect(willkommenZurueck(s({ anrede: "sie", geschlecht: "w" }))).toBe(
-			"Willkommen zurück, Frau Huber",
-		);
+		expect(kurzeAnrede(s({ anrede: "sie", geschlecht: "w" }))).toBe("Frau Huber");
 	});
 });
 
@@ -379,7 +375,7 @@ describe("Die vier Szenen im Streifen", () => {
 
 	it("folgen der Reihenfolge des WIE auf der Startseite", () => {
 		expect(SZENEN.map((s) => s.titel)).toEqual([
-			"Drehbuch",
+			"Konzept & Drehbuch",
 			"Nachrichten",
 			"Werbung",
 			"Schnitt",

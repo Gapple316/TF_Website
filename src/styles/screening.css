@@ -354,13 +354,20 @@ html[data-kino-animiert] .kino-hinweis__text {
 	max-width: 46rem;
 }
 
-/* Hier ist die Figur groß – überall sonst ist sie klein in der Ecke. */
+/*
+  Hier ist das Foto groß – dasselbe sitzt später klein in der Ecke. Rund und
+  mit schmalem Rand, damit es im dunklen Saal nicht als Kasten im Nichts hängt.
+*/
 .kino-begruessung__figur {
 	flex: 0 0 auto;
 	width: clamp(8.5rem, 26vw, 15rem);
 	height: auto;
-	/* Sie steht im Licht der Leinwand, von rechts. */
-	filter: drop-shadow(-8px 0 24px rgba(0, 0, 0, 0.8));
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow:
+		0 0 0 1px rgba(239, 231, 214, 0.25),
+		0 18px 50px rgba(0, 0, 0, 0.75);
 }
 
 .kino-begruessung__text {
@@ -592,18 +599,6 @@ html[data-kino-animiert] .kino-vorhang {
 	font-family: "Staatliches", var(--font-display);
 	font-size: clamp(3rem, 11vw, 6rem);
 	opacity: 0;
-}
-
-.kino-willkommen {
-	position: absolute;
-	inset-inline: 0;
-	top: 8%;
-	display: none;
-	text-align: center;
-	font-family: var(--font-script);
-	font-size: clamp(1.1rem, 3.4vw, 1.9rem);
-	color: var(--kino-gold);
-	z-index: 2;
 }
 
 /* Der Vorspann rollt von unten nach oben über die Leinwand. */
@@ -1378,11 +1373,6 @@ html[data-kino-animiert] [data-kino-vorspann="fertig"] .kino-skip {
 	}
 }
 
-/* Willkommen zurück nur bei Wiederkehr. */
-html[data-kino-animiert] [data-kino-wiederkehr="true"] .kino-willkommen {
-	display: block;
-}
-
 /* Leichtes Helligkeitsflackern der Leinwand. */
 html[data-kino-animiert] [data-kino-szene="saal"] .kino-leinwand {
 	animation: kino-flackern 5.5s steps(1, end) infinite;
@@ -1454,6 +1444,12 @@ html[data-kino-animiert] .kino-marquee.is-sichtbar i {
 	display: block;
 	width: clamp(3.4rem, 7vw, 5rem);
 	height: auto;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow:
+		0 0 0 1px rgba(239, 231, 214, 0.22),
+		0 6px 18px rgba(0, 0, 0, 0.7);
 	transform-origin: bottom center;
 	transition:
 		opacity 0.4s ease,
@@ -1626,6 +1622,28 @@ body:has(.kino-vorfuehrung[data-offen="true"]) .kino-figur {
 	color: rgba(239, 231, 214, 0.75);
 }
 
+/*
+  Marken und Stichworte unter einem Kader. Sie stehen nur dort, wo sie etwas
+  einordnen, was der Satz darüber nicht schon sagt – ein Kader ohne sie lässt
+  die Zeile einfach weg.
+*/
+.kino-szene__schlagworte {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	margin-top: 0.6rem;
+}
+
+.kino-szene__schlagwort {
+	padding: 0.12rem 0.45rem;
+	font-family: var(--font-mono);
+	font-size: 0.58rem;
+	letter-spacing: 0.14em;
+	color: rgba(239, 231, 214, 0.72);
+	border: 1px solid rgba(239, 231, 214, 0.22);
+	border-radius: 2px;
+}
+
 .kino-szene__titel {
 	display: block;
 	font-family: "Staatliches", var(--font-display);
@@ -1664,11 +1682,12 @@ body:has(.kino-vorfuehrung[data-offen="true"]) .kino-figur {
 	background-size: 7px 7px, 11px 11px;
 }
 
+/* Schwarzweiß wie die vier Kader: Auf dieser Seite ist nur der Samt farbig. */
 .kino-aushang img {
 	display: block;
 	width: 100%;
 	height: auto;
-	filter: saturate(0.85) contrast(1.05);
+	filter: grayscale(1) contrast(1.05);
 }
 
 .kino-aushang figcaption {

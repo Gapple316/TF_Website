@@ -2,16 +2,18 @@
 // Die Figur, die während der Vorstellung dabeibleibt: am Rechner unten links,
 // am Handy unten. Dazu die Sprechblase in Handschrift.
 //
+// Dasselbe Foto wie in der Begrüßung, nur klein und rund – so erkennt man
+// denselben Menschen wieder. Eine gezeichnete Figur war hier vorher und blieb
+// immer eine Behauptung von Ähnlichkeit.
+//
 // Die Figur sitzt fest am Bildrand, aber NIE über einem Knopf oder einem
 // laufenden Video – darum kümmert sich figur.ts, das bei offener Vorführung
 // gar nichts sagt, und die CSS, die sie dort ausblendet.
 //
-// Die Zeichnung orientiert sich am Kontaktfoto – Haar, Gesichtsform, dunkle
-// Jacke –, bleibt aber eine Zeichnung und kein Portrait. Zum Austauschen
-// reicht es, figur-klein.svg zu ersetzen; am Code ändert sich nichts.
-//
 // Vor dem Saal ist sie nicht zu sehen: Wer sie ist, klärt erst die Begrüßung.
 
+import { Image } from "astro:assets";
+import portrait from "../../assets/photos/gabriel-figur.jpg";
 import { FIGUR } from "../../data/screening-texte";
 ---
 
@@ -30,12 +32,12 @@ import { FIGUR } from "../../data/screening-texte";
 		aria-pressed="false"
 		title={FIGUR.ruheEck}
 	>
-		<img
-			src="/screening/cartoon/figur-klein.svg"
+		<Image
+			src={portrait}
 			alt=""
 			aria-hidden="true"
-			width="96"
-			height="120"
+			widths={[120, 240]}
+			sizes="4rem"
 			class="kino-figur__bild"
 		/>
 		<span class="sr-only">{FIGUR.ruheEck}</span>

@@ -121,8 +121,6 @@ export const VORSPANN = {
 	ueberspringen: "Vorspann überspringen ⏭",
 	/** Erscheint auf der Leinwand, solange der Text angehalten ist. */
 	pausiert: "‖ angehalten – klicken zum Weiterlaufen",
-	/** Nach dem Vorspann bzw. bei Wiederkehr. */
-	willkommenZurueck: "Willkommen zurück",
 	scrollHinweis: "Weiter zum Programm ↓",
 } as const;
 
@@ -232,7 +230,7 @@ export const FIGUR = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Meine kleine Vorstellung
+// Was ich kann
 // ---------------------------------------------------------------------------
 
 /**
@@ -243,40 +241,54 @@ export const FIGUR = {
  * Es sind dieselben Fotos wie auf der Startseite, keine Zeichnungen: Die
  * gezeichneten Szenen wirkten neben dem echten Material billig, und die Fotos
  * zeigen ohnehin genau diese vier Schritte.
+ *
+ * schlagworte sind die Marken und Stichworte, die einen Kader sofort einordnen
+ * (Sender, Agenturen). Sie stehen nur dort, wo sie etwas erklären, was der
+ * Satz darunter nicht schon sagt – deshalb sind sie nicht bei jedem Kader.
  */
 export const SZENEN = [
 	{
 		schluessel: "denken",
-		titel: "Drehbuch",
-		unterschrift: "Bevor die Kamera läuft, steht die Idee.",
+		titel: "Konzept & Drehbuch",
+		unterschrift: "Ein guter Film braucht viel Planung.",
+		schlagworte: [],
 		alt: "Gabriel am Schreibtisch über einem Laptop, Stift in der Hand",
 	},
 	{
 		schluessel: "hoeren",
 		titel: "Nachrichten",
 		unterschrift: "Was jemand sagt – und was er eigentlich meint.",
+		schlagworte: ["Tagesaktuell", "RTS", "DPA", "APA"],
 		alt: "Gabriel von hinten, ein Reportermikrofon in der Hand",
 	},
 	{
 		schluessel: "sehen",
 		titel: "Werbung",
-		unterschrift: "Drehen heißt warten können.",
+		unterschrift: "Filme, die man sich ansehen will.",
+		schlagworte: [],
 		alt: "Gabriel hinter der Kamera, das rote Aufnahmelicht leuchtet",
 	},
 	{
 		schluessel: "erzaehlen",
 		titel: "Schnitt",
-		unterschrift: "Aus Material wird ein Film.",
+		unterschrift: "Ob Nachrichten-MAZ unter Zeitdruck oder S-Log-Grading – alles dabei.",
+		schlagworte: [],
 		alt: "Gabriel am Schnittplatz, auf dem Laptop läuft die Timeline",
 	},
 ] as const;
 
 export const VORSTELLUNG = {
-	titelkarte: "Und jetzt: eine kleine Vorstellung.",
+	// "Vorstellung" steht schon im Ticket, im Vorspann und im Schluss. Der
+	// Abschnitt heißt deshalb nach dem, was er zeigt.
+	titelkarte: "Und jetzt: was ich kann.",
 
+	// Steht handschriftlich über dem Foto. Früher hieß es hier "Und in echt
+	// schau ich so aus" – als Gegenstück zur Zeichnung. Die gibt es nicht
+	// mehr, also braucht die Zeile einen eigenen Grund: Sie sagt, wer den
+	// ganzen Abend über neben einem gesessen ist.
 	echtIch: {
-		du: "Und in echt schau ich so aus.",
-		sie: "Und in echt schaue ich so aus.",
+		du: "Der neben dir gesessen ist.",
+		sie: "Der neben Ihnen gesessen ist.",
 	} satisfies AnredeFassung,
 
 	bildunterschrift: "GABRIEL NEUMAYR · TRUE FRAME · SALZBURG",
@@ -291,11 +303,12 @@ export const VORSTELLUNG = {
 		sie: "Ich bin Gabriel, Videojournalist und Filmemacher aus Salzburg. Gelernt habe ich beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Heute arbeite ich als True Frame: für Sender und Nachrichtenagenturen, für Unternehmen mit einer Geschichte und an Dokumentationen. Von der ersten Idee bis zum fertigen Schnitt – meistens alles aus einer Hand.",
 	} satisfies AnredeFassung,
 
-	koennenTitel: "Was ich kann",
+	// Nicht noch einmal "Was ich kann": Das steht jetzt über dem Abschnitt.
+	koennenTitel: "Im Überblick",
 
 	schluss: {
-		du: "Ich hoffe, dir hat meine kleine Vorstellung gefallen.",
-		sie: "Ich hoffe, Ihnen hat meine kleine Vorstellung gefallen.",
+		du: "Ich hoffe, du hast jetzt ein Bild davon, wie ich arbeite.",
+		sie: "Ich hoffe, Sie haben jetzt ein Bild davon, wie ich arbeite.",
 	} satisfies AnredeFassung,
 } as const;
 
@@ -322,9 +335,11 @@ export const KOENNEN_REIHENFOLGE: Record<Zielgruppe, (keyof typeof KOENNEN)[]> =
 
 export const SCHLUSS = {
 	cta: "Nächste Vorstellung: Wir zwei. Ein Kaffee. Salzburg.",
+	// Bleibt im Bild des Abends: Man sichert sich ein Ticket, man bucht keinen
+	// Termin. Du und Sie gleich – kürzer geht es in beiden Fassungen nicht.
 	ctaLabel: {
-		du: "Vorstellung buchen",
-		sie: "Vorstellung vereinbaren",
+		du: "Ticket sichern",
+		sie: "Ticket sichern",
 	} satisfies AnredeFassung,
 	postCredits: "– Post-Credits-Szene –",
 	ps: {

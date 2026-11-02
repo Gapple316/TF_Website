@@ -13,8 +13,6 @@ import { initFigur, type FigurSteuerung } from "./figur";
 /** Von initKino gesetzt, damit die Szenen der Figur etwas sagen lassen können. */
 let figur: FigurSteuerung | undefined;
 
-const SPEICHER_SCHLUESSEL = "tf-screening-gesehen";
-
 let aufraeumen: (() => void)[] = [];
 
 /** Meldet dem Inline-Skript im Seitenkopf, dass dieses Modul geladen ist. */
@@ -25,23 +23,6 @@ if (typeof document !== "undefined") {
 const wenigerBewegung = () =>
 	typeof window !== "undefined" &&
 	window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/** localStorage kann in privaten Fenstern werfen – deshalb immer gekapselt. */
-function schonGesehen(slug: string): boolean {
-	try {
-		return localStorage.getItem(SPEICHER_SCHLUESSEL) === slug;
-	} catch {
-		return false;
-	}
-}
-
-function merkeGesehen(slug: string): void {
-	try {
-		localStorage.setItem(SPEICHER_SCHLUESSEL, slug);
-	} catch {
-		/* Kein Speicher verfügbar – dann startet die Seite eben immer im Foyer. */
-	}
-}
 
 // ---------------------------------------------------------------------------
 // Szenenwechsel
@@ -121,12 +102,10 @@ function begruesse(wurzel: HTMLElement): void {
 	aufraeumen.push(() => knopf.removeEventListener("click", weiter));
 }
 
-function initTicket(wurzel: HTMLElement, slug: string): void {
+function initTicket(wurzel: HTMLElement): void {
 	const ab = initTicketRiss(wurzel, {
 		wenigerBewegung: wenigerBewegung(),
 		beiRiss: () => {
-			merkeGesehen(slug);
-
 			if (wenigerBewegung()) {
 				// Ohne Bewegungswunsch keine Zwischenszene mit Zeitgeber: Die
 				// Begrüßung bleibt als normaler Text über dem Saal stehen,
@@ -375,27 +354,21 @@ export function initKino(): void {
 	const wurzel = document.querySelector<HTMLElement>("[data-kino-wurzel]");
 	if (!wurzel) return;
 
-	const slug = wurzel.dataset.slug ?? "";
-
 	figur = initFigur(wurzel, {
 		maxKommentare: Number(wurzel.dataset.figurMax ?? 6),
 		wenigerBewegung: wenigerBewegung(),
 	});
 	if (figur) aufraeumen.push(figur.aufraeumen);
 
-	initTicket(wurzel, slug);
+	initTicket(wurzel);
 	initVorspann(wurzel);
 	initStaub(wurzel);
 	initEinblenden(wurzel);
 	initVorfuehrung(wurzel);
 
-	// Wiederkehr: direkt in den Saal, Begrüßung einblenden, Vorspann sofort
-	// überspringbar. Das Ticket bleibt im Markup, wird aber übersprungen.
-	if (slug && schonGesehen(slug)) {
-		wurzel.dataset.kinoWiederkehr = "true";
-		wurzel.dataset.kinoRiss = "fertig";
-		betreteSaal(wurzel, true);
-	}
+	// Kein Wiedererkennen: Jeder Aufruf fängt beim Ticket an. Die Vorstellung
+	// ist der Punkt der Seite – wer sie zum zweiten Mal öffnet, will sie in
+	// aller Regel noch einmal sehen und nicht übersprungen bekommen.
 }
 
 if (typeof document !== "undefined") {

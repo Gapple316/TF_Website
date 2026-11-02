@@ -46,10 +46,6 @@ export function kurzeAnrede(s: Screening): string {
 }
 
 /** "Willkommen zurück, Maria" bzw. "…, Frau Huber". */
-export function willkommenZurueck(s: Screening): string {
-	return `${VORSPANN.willkommenZurueck}, ${kurzeAnrede(s)}`;
-}
-
 /** Titel der Link-Vorschau in Mail und WhatsApp. */
 export function ogTitel(s: Screening): string {
 	if (s.anrede === "du") return `Ein Ticket für ${s.vorname}`;
