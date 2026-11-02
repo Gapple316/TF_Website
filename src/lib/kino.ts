@@ -90,40 +90,35 @@ function betreteSaal(wurzel: HTMLElement, sofort: boolean): void {
  * sich danebenzusetzen.
  *
  * Sie ist der Grund, warum die Figur später überhaupt verständlich ist – ohne
- * diesen Zwischenschritt saß im Saal unerklärt jemand neben einem. Hängen
- * bleiben kann hier niemand: Der Knopf führt weiter, und nach GRUSS_DAUER geht
- * es auch von allein weiter.
+ * diesen Zwischenschritt saß im Saal unerklärt jemand neben einem.
+ *
+ * Weiter geht es ausschließlich über den Knopf. Kein Zeitgeber, der die Szene
+ * von allein wegnimmt: Wer noch liest, soll nicht überholt werden. Fehlt der
+ * Abschnitt, führt der Weg direkt in den Saal, damit niemand hängen bleibt.
  */
-const GRUSS_DAUER = 7000;
-
 function begruesse(wurzel: HTMLElement): void {
 	const abschnitt = wurzel.querySelector<HTMLElement>("[data-kino-begruessung]");
 	const knopf = wurzel.querySelector<HTMLButtonElement>("[data-begruessung-weiter]");
 
-	if (!abschnitt) {
+	if (!abschnitt || !knopf) {
 		betreteSaal(wurzel, false);
 		return;
 	}
 
 	wurzel.dataset.kinoSzene = "begruessung";
-	// Der Knopf ist das erste Bedienelement der neuen Szene – wer mit der
-	// Tastatur unterwegs ist, soll nicht erst suchen müssen.
-	knopf?.focus({ preventScroll: true });
+	// Der Knopf ist das einzige Bedienelement der Szene – wer mit der Tastatur
+	// unterwegs ist, soll nicht erst suchen müssen.
+	knopf.focus({ preventScroll: true });
 
 	let schonWeiter = false;
 	const weiter = () => {
 		if (schonWeiter) return;
 		schonWeiter = true;
-		window.clearTimeout(vonAllein);
 		betreteSaal(wurzel, false);
 	};
 
-	const vonAllein = window.setTimeout(weiter, GRUSS_DAUER);
-	knopf?.addEventListener("click", weiter);
-	aufraeumen.push(() => {
-		window.clearTimeout(vonAllein);
-		knopf?.removeEventListener("click", weiter);
-	});
+	knopf.addEventListener("click", weiter);
+	aufraeumen.push(() => knopf.removeEventListener("click", weiter));
 }
 
 function initTicket(wurzel: HTMLElement, slug: string): void {
