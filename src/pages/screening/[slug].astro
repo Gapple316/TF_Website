@@ -1,0 +1,134 @@
+---
+// Private Screening. Eine Seite je Eintrag in src/data/screenings.ts.
+//
+// Die Seiten entstehen statisch beim Build. Ein Slug, zu dem es keinen Eintrag
+// gibt, erzeugt also gar keine Datei – der Aufruf endet in der normalen
+// 404-Antwort des Hosters, ohne Hinweis darauf, dass es diese Funktion gibt.
+
+import { getCollection, type CollectionEntry } from "astro:content";
+import ScreeningLayout from "../../layouts/ScreeningLayout.astro";
+import Ticket from "../../components/screening/Ticket.astro";
+import Kinosaal from "../../components/screening/Kinosaal.astro";
+import Marquee from "../../components/screening/Marquee.astro";
+import Programmzettel from "../../components/screening/Programmzettel.astro";
+import Zielgruppe from "../../components/screening/Zielgruppe.astro";
+import Abspann from "../../components/screening/Abspann.astro";
+import { screenings, type Screening } from "../../data/screenings";
+import { KONTAKT, OG_BESCHREIBUNG, PROGRAMM, SCHLUSS } from "../../data/screening-texte";
+import {
+	anredeZeile,
+	genreStempel,
+	mailBetreff,
+	ogTitel,
+	programmText,
+	ticketNummer,
+	vollerName,
+	vorspannAbsaetze,
+	vorstellungsDatum,
+	waehleProjekte,
+	willkommenZurueck,
+} from "../../lib/screening";
+import { getCardEmbedUrl, getPosterUrl } from "../../lib/video";
+
+export async function getStaticPaths() {
+	return screenings.map((screening) => ({
+		params: { slug: screening.slug },
+		props: { screening },
+	}));
+}
+
+const { screening } = Astro.props as { screening: Screening };
+
+const projekte = await getCollection("projects");
+const auswahl = waehleProjekte(screening, projekte);
+
+const filme = await Promise.all(
+	auswahl.map(async ({ projekt, notiz }, i) => {
+		const p = projekt as CollectionEntry<"projects">;
+		return {
+			nummer: String(i + 1).padStart(2, "0"),
+			titel: p.data.title,
+			stempel: genreStempel(p.data.category),
+			posterUrl: await getPosterUrl(p.data),
+			embedUrl: getCardEmbedUrl(p.data.videoUrl, p.data.startSeconds),
+			embeddable: p.data.embeddable,
+			videoUrl: p.data.videoUrl,
+			notiz,
+		};
+	}),
+);
+
+const titel = ogTitel(screening);
+const beschreibung = OG_BESCHREIBUNG[screening.anrede];
+const ogBild = new URL(`/screening/${screening.slug}/ticket.png`, Astro.site).href;
+
+const ctaHref = `mailto:${KONTAKT.email}?subject=${encodeURIComponent(mailBetreff(screening))}`;
+const ps = screening.ps ?? SCHLUSS.ps[screening.anrede];
+---
+
+<ScreeningLayout titel={titel} beschreibung={beschreibung} ogBild={ogBild}>
+	<div
+		class="kino"
+		data-kino-wurzel
+		data-slug={screening.slug}
+		data-kino-szene="foyer"
+		data-kino-riss="bereit"
+		data-kino-countdown="bereit"
+		data-kino-vorspann="laeuft"
+	>
+		<Ticket
+			name={vollerName(screening)}
+			datum={vorstellungsDatum(new Date())}
+			programm={programmText(filme.length)}
+			nummer={ticketNummer(screening.slug)}
+		/>
+
+		{/* Kurzes Schwarz zwischen Foyer und Saal. */}
+		<div class="kino-blende" aria-hidden="true"></div>
+
+		<Kinosaal
+			name={vollerName(screening)}
+			anrede={anredeZeile(screening)}
+			absaetze={vorspannAbsaetze(screening)}
+			willkommenZurueck={willkommenZurueck(screening)}
+		/>
+
+		<section id="programm" class="kino-programm">
+			<Marquee text={PROGRAMM.marquee} untertitel={PROGRAMM.ueberleitung[screening.anrede]} />
+
+			<div class="kino-programm__liste">
+				{
+					filme.map((film) => (
+						<Programmzettel {...film} notizLabel={PROGRAMM.notizLabel[screening.anrede]} />
+					))
+				}
+			</div>
+		</section>
+
+		<Zielgruppe zielgruppe={screening.zielgruppe} />
+
+		<Abspann anrede={screening.anrede} ps={ps} ctaHref={ctaHref} />
+
+		{/* Vorführung: ein Overlay für alle Filme. Die iframe bekommt ihre
+		    Adresse erst beim Öffnen – vorher wird kein Video angefragt. */}
+		<div class="kino-vorfuehrung" data-vorfuehrung data-offen="false" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Vorführung">
+			<div class="kino-vorfuehrung__vorhang kino-vorfuehrung__vorhang--links" aria-hidden="true"></div>
+			<div class="kino-vorfuehrung__vorhang kino-vorfuehrung__vorhang--rechts" aria-hidden="true"></div>
+
+			<div class="kino-vorfuehrung__inner">
+				<p class="kino-vorfuehrung__titel" data-vorfuehrung-titel></p>
+				<div class="kino-vorfuehrung__bild">
+					<iframe
+						data-vorfuehrung-frame
+						title="Vorführung"
+						allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+						allowfullscreen
+					></iframe>
+				</div>
+				<button type="button" class="kino-vorfuehrung__zu" data-vorfuehrung-zu>
+					{PROGRAMM.lichtAn}
+				</button>
+			</div>
+		</div>
+	</div>
+</ScreeningLayout>

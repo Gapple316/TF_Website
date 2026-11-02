@@ -1,0 +1,86 @@
+---
+// Ein Film im Programm, gestaltet wie ein Programmzettel: Standbild,
+// Genre-Stempel, Titel, und bei Bedarf die persönliche Notiz in Handschrift.
+//
+// Der Klick öffnet die Vorführung (Overlay mit Vorhängen) statt das
+// Browser-Vollbild – deshalb eigene data-Attribute statt der von
+// video-player.ts. Die Einbettungsadresse hängt am Knopf und wird erst beim
+// Öffnen in die iframe geschrieben: Beim Laden der Seite wird kein Video
+// angefragt.
+
+interface Props {
+	nummer: string;
+	titel: string;
+	stempel: string;
+	posterUrl?: string;
+	embedUrl?: string;
+	/** false = Einbettung gesperrt, dann Link zur Plattform statt Vorführung. */
+	embeddable?: boolean;
+	videoUrl?: string;
+	notiz?: string;
+	notizLabel: string;
+}
+
+const {
+	nummer,
+	titel,
+	stempel,
+	posterUrl,
+	embedUrl,
+	embeddable,
+	videoUrl,
+	notiz,
+	notizLabel,
+} = Astro.props;
+
+const gesperrt = embeddable === false && !!videoUrl;
+const abspielbar = !!embedUrl && !gesperrt;
+---
+
+<article class="kino-zettel" data-kino-reveal>
+	<div class="kino-zettel__bild">
+		{posterUrl && <img src={posterUrl} alt="" aria-hidden="true" loading="lazy" />}
+		<span class="kino-zettel__stempel">{stempel}</span>
+
+		{
+			gesperrt ? (
+				<a
+					class="kino-zettel__start"
+					href={videoUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={`${titel} auf der Original-Plattform ansehen (externer Link)`}
+				>
+					<span class="kino-zettel__play">↗</span>
+				</a>
+			) : abspielbar ? (
+				<button
+					type="button"
+					class="kino-zettel__start"
+					data-film-start
+					data-embed={embedUrl}
+					data-titel={titel}
+					aria-label={`${titel} vorführen`}
+				>
+					<span class="kino-zettel__play">▶</span>
+				</button>
+			) : (
+				<span class="kino-zettel__bald">Vorführung folgt</span>
+			)
+		}
+	</div>
+
+	<div class="kino-zettel__text">
+		<p class="kino-zettel__nummer">{nummer}</p>
+		<h3 class="kino-zettel__titel">{titel}</h3>
+
+		{
+			notiz && (
+				<div class="kino-zettel__notiz">
+					<p class="kino-zettel__notizlabel">{notizLabel}</p>
+					<p class="kino-zettel__notiztext">{notiz}</p>
+				</div>
+			)
+		}
+	</div>
+</article>

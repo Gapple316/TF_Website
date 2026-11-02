@@ -1,0 +1,89 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "../styles/global.css";
+// Nur hier geladen: Die Kino-Gestaltung gilt ausschließlich für die
+// Screening-Seiten, die übrige Website schleppt sie nicht mit.
+import "../styles/screening.css";
+
+interface Props {
+	/** Persönlicher Titel, z.B. "Ein Ticket für Maria". */
+	titel: string;
+	beschreibung: string;
+	/** Absolute URL des Ticketbilds für die Link-Vorschau. */
+	ogBild: string;
+}
+
+const { titel, beschreibung, ogBild } = Astro.props;
+
+const seitenUrl = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="de" data-theme="landing">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+		{/* Wichtigster Schutz: Screenings gehören in keinen Suchindex. Wirkt
+		    unabhängig von robots.txt und auch dann, wenn jemand den Link
+		    weiterleitet. */}
+		<meta name="robots" content="noindex, nofollow" />
+
+		<meta name="description" content={beschreibung} />
+		<title>{titel}</title>
+
+		{/* Link-Vorschau: zeigt das Ticket mit dem Namen darauf. Das Bild
+		    entsteht beim Bauen (src/pages/screening/[slug]/ticket.png.ts) und
+		    muss absolut angegeben sein, sonst bleibt die Vorschau leer. */}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={titel} />
+		<meta property="og:description" content={beschreibung} />
+		<meta property="og:url" content={seitenUrl} />
+		<meta property="og:image" content={ogBild} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={titel} />
+		<meta name="twitter:description" content={beschreibung} />
+		<meta name="twitter:image" content={ogBild} />
+
+		<ClientRouter />
+
+		{/*
+		  Sicherung gegen eine leere Vorstellung: Alles, was sich einblendet
+		  oder bewegt, ist nur dann vorbereitet, wenn dieses Skript gelaufen
+		  ist. Ohne JavaScript steht die Seite vollständig da – Ticket, Brief
+		  und Programm untereinander, ohne Kino, aber lesbar. Läuft das Skript,
+		  aber kino.ts nicht (Ladefehler), hebt der Zeitgeber die Vorbereitung
+		  nach vier Sekunden wieder auf.
+		*/}
+		<script is:inline>
+			document.documentElement.dataset.kinoAnimiert = "";
+			setTimeout(function () {
+				if (document.documentElement.dataset.kinoModul !== "aktiv") {
+					delete document.documentElement.dataset.kinoAnimiert;
+				}
+			}, 4000);
+		</script>
+	</head>
+
+	<body class="min-h-screen" data-kino>
+		{/* Filmkorn über der ganzen Seite – dieselbe Textur wie auf der
+		    übrigen Website, hier etwas kräftiger für die Kino-Anmutung. */}
+		<div class="grain-overlay pointer-events-none fixed inset-0 z-[90] opacity-[0.07]"></div>
+
+		{/* Bewusst ohne Kopfzeile und ohne Navigation: Die Vorstellung ist ein
+		    geschlossenes Stück. Der Weg zur Website steht ganz unten. */}
+		<main>
+			<slot />
+		</main>
+
+		{/* video-player.ts wird hier NICHT geladen: Die Filme laufen in der
+		    eigenen Vorführung mit Vorhängen und "Licht an"-Knopf, nicht im
+		    Browser-Vollbild der Projektseiten. */}
+		<script>
+			import "../lib/kino";
+		</script>
+	</body>
+</html>

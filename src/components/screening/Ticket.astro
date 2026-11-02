@@ -1,0 +1,78 @@
+---
+// Szene 1: Foyer mit dem Kinoticket.
+//
+// Das ganze Ticket ist ein <button>. Damit funktionieren Tastatur (Enter und
+// Leertaste) und Vorleseprogramme von selbst – ein <div> mit Klick-Handler
+// müsste das alles von Hand nachbauen und wäre trotzdem schlechter.
+//
+// Die Gestaltung (Papier, Perforation, Riss) steckt in global.css unter
+// "Private Screening", damit die Animationen dort zusammen mit ihren
+// prefers-reduced-motion-Abschaltungen stehen.
+
+import { TICKET } from "../../data/screening-texte";
+
+interface Props {
+	name: string;
+	datum: string;
+	programm: string;
+	nummer: string;
+}
+
+const { name, datum, programm, nummer } = Astro.props;
+---
+
+<section class="kino-foyer" data-kino-foyer>
+	<div class="kino-foyer__inner">
+		<button type="button" class="kino-ticket" data-ticket-knopf aria-label={`Ticket abreißen und Vorstellung starten für ${name}`}>
+			<span class="kino-ticket__haupt">
+				<span class="kino-ticket__haus">{TICKET.haus}</span>
+				<span class="kino-ticket__titel">{TICKET.titel}</span>
+				<span class="kino-ticket__platz">{TICKET.platz}</span>
+
+				<span class="kino-ticket__zeile">
+					<span class="kino-ticket__label">{TICKET.reserviert}</span>
+					<span class="kino-ticket__name">{name}</span>
+				</span>
+
+				<span class="kino-ticket__fuss">
+					<span class="kino-ticket__klein">{TICKET.vorstellung}: {datum}</span>
+					<span class="kino-ticket__klein">{TICKET.programm}: {programm}</span>
+					<span class="kino-ticket__klein">{TICKET.nummer} {nummer}</span>
+				</span>
+			</span>
+
+			<span class="kino-ticket__perfo" aria-hidden="true"></span>
+
+			<span class="kino-ticket__abriss" data-ticket-abriss>
+				<span class="kino-ticket__abrisstext">
+					{TICKET.abschnitt} · Platz 1 · {TICKET.nummer} {nummer}
+				</span>
+			</span>
+		</button>
+
+		{/* Pfeil und Handschrift: auf dem Handy unter dem Ticket, am Rechner
+		    rechts daneben zum Abrissstreifen zeigend. */}
+		<div class="kino-hinweis" aria-hidden="true">
+			<svg class="kino-hinweis__pfeil" viewBox="0 0 120 60" fill="none" preserveAspectRatio="xMidYMid meet">
+				<path
+					class="kino-hinweis__linie"
+					d="M8 48 C 30 46, 44 38, 58 26 C 68 18, 80 12, 96 10"
+					stroke="currentColor"
+					stroke-width="2.2"
+					stroke-linecap="round"
+				/>
+				<path
+					class="kino-hinweis__spitze"
+					d="M86 6 L 99 10 L 88 18"
+					stroke="currentColor"
+					stroke-width="2.2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
+			<p class="kino-hinweis__text">{TICKET.abreissen}</p>
+		</div>
+
+		<a class="kino-direktlink" href="#programm">{TICKET.direktZuFilmen}</a>
+	</div>
+</section>

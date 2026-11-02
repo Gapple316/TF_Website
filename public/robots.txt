@@ -1,11 +1,11 @@
 User-agent: *
 Allow: /
 
-# Persönliche Briefe (/fuer/...) sind nur für die Empfänger:innen gedacht,
+# Private Screenings (/screening/...) sind nur für die Empfänger:innen gedacht,
 # die den Link bekommen haben. Sie sind nirgends verlinkt und tragen zusätzlich
 # ein noindex im Seitenkopf – diese Zeile ist die zweite Absicherung für
 # Crawler, die den Seitenkopf nicht auswerten.
-Disallow: /fuer/
+Disallow: /screening/
 
 # Das CMS braucht niemand im Index.
 Disallow: /admin/

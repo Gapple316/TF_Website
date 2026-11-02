@@ -1,0 +1,47 @@
+---
+// Szene 6: Abspann, Aufruf und Post-Credits-Szene.
+//
+// Die Rollenliste steht als Definitionsliste: Rolle und Name gehören
+// inhaltlich zusammen, und Vorleseprogramme geben das Paar dann auch als Paar
+// aus. Die Füllpunkte entstehen in CSS, nicht als getippte Punkte – sonst
+// würden sie mitgelesen.
+
+import { ABSPANN, KONTAKT, SCHLUSS } from "../../data/screening-texte";
+
+interface Props {
+	anrede: "du" | "sie";
+	ps: string;
+	ctaHref: string;
+}
+
+const { anrede, ps, ctaHref } = Astro.props;
+---
+
+<section class="kino-abspann" data-kino-reveal>
+	<dl class="kino-credits">
+		{
+			ABSPANN.map(([rolle, name]) => (
+				<div class="kino-credits__zeile">
+					<dt>{rolle}</dt>
+					<dd>{name}</dd>
+				</div>
+			))
+		}
+	</dl>
+
+	<div class="kino-schluss">
+		<p class="kino-schluss__satz">{SCHLUSS.cta}</p>
+		<a class="kino-schluss__knopf" href={ctaHref}>{SCHLUSS.ctaLabel[anrede]}</a>
+		<p class="kino-schluss__telefon">
+			Oder direkt anrufen:{" "}
+			<a href={`tel:${KONTAKT.telefonRoh}`}>{KONTAKT.telefon}</a>
+		</p>
+	</div>
+
+	<div class="kino-postcredits">
+		<p class="kino-postcredits__marke">{SCHLUSS.postCredits}</p>
+		<p class="kino-postcredits__text">{ps}</p>
+	</div>
+
+	<a class="kino-website" href="/">true-frame.net</a>
+</section>

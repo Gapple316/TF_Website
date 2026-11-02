@@ -1,0 +1,75 @@
+---
+// Szene 3: Der Kinosaal. Vollständig im Code gebaut – Leinwand, Vorhänge,
+// Sitzreihen, Lichtkegel und Staub. Kein Stockfoto, nichts zu laden.
+//
+// Auf der Leinwand läuft erst ein kurzer Countdown, danach rollt der Vorspann
+// von unten nach oben. Beides ist überspringbar, und die Seite ist zu keinem
+// Zeitpunkt scroll-gesperrt.
+
+import { LICHT_AUS, VORSPANN, VORSPANN_KOPF } from "../../data/screening-texte";
+
+interface Props {
+	name: string;
+	anrede: string;
+	absaetze: string[];
+	willkommenZurueck: string;
+}
+
+const { name, anrede, absaetze, willkommenZurueck } = Astro.props;
+---
+
+<section class="kino-saal" data-kino-saal>
+	{/* Vorhänge: zwei Flächen, die zur Seite fahren, sobald der Saal betreten
+	    wird. Reiner CSS-Transform, keine Bilddatei. */}
+	<div class="kino-vorhang kino-vorhang--links" aria-hidden="true"></div>
+	<div class="kino-vorhang kino-vorhang--rechts" aria-hidden="true"></div>
+
+	{/* Lichtkegel vom Projektor hinten oben. */}
+	<div class="kino-lichtkegel" aria-hidden="true"></div>
+
+	<div class="kino-saal__buehne">
+		<div class="kino-leinwand" data-leinwand>
+			<canvas class="kino-staub" data-staub aria-hidden="true"></canvas>
+
+			{/* Countdown 3-2-1 mit Kreis-Sweep, maximal zwei Sekunden. */}
+			<div class="kino-countdown" aria-hidden="true">
+				<svg viewBox="0 0 100 100" class="kino-countdown__kreis">
+					<circle cx="50" cy="50" r="46" />
+					<line x1="50" y1="50" x2="50" y2="4" class="kino-countdown__zeiger" />
+				</svg>
+				<span class="kino-countdown__zahl kino-countdown__zahl--3">3</span>
+				<span class="kino-countdown__zahl kino-countdown__zahl--2">2</span>
+				<span class="kino-countdown__zahl kino-countdown__zahl--1">1</span>
+			</div>
+
+			<p class="kino-willkommen" data-kino-willkommen>{willkommenZurueck}</p>
+
+			<div class="kino-rolle" data-vorspann-rolle>
+				<p class="kino-rolle__haus">{VORSPANN_KOPF.haus}</p>
+				<p class="kino-rolle__klein">{VORSPANN_KOPF.praesentiert}</p>
+
+				<p class="kino-rolle__klein kino-rolle__abstand">{VORSPANN_KOPF.eineVorstellungFuer}</p>
+				<p class="kino-rolle__name">{name}</p>
+
+				<p class="kino-rolle__klein kino-rolle__abstand">{VORSPANN_KOPF.nachWahrerGeschichte}</p>
+
+				<p class="kino-rolle__anrede">{anrede}</p>
+				{absaetze.map((a) => <p class="kino-rolle__absatz">{a}</p>)}
+
+				<p class="kino-rolle__schluss">{LICHT_AUS}</p>
+			</div>
+		</div>
+
+		{/* Sitzreihen als Silhouette im Vordergrund. */}
+		<div class="kino-sitze" aria-hidden="true">
+			<span></span><span></span><span></span><span></span>
+			<span></span><span></span><span></span><span></span>
+		</div>
+	</div>
+
+	<button type="button" class="kino-skip" data-vorspann-skip>
+		{VORSPANN.ueberspringen}
+	</button>
+
+	<a class="kino-weiter" href="#programm">{VORSPANN.scrollHinweis}</a>
+</section>

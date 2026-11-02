@@ -1,0 +1,208 @@
+// Alle Texte des Private Screenings (/screening/[slug]) an EINER Stelle.
+//
+// Jeder Text liegt als Du- und Sie-Fassung vor. Die Sie-Fassung ist neu
+// formuliert, nicht nur im Pronomen getauscht: Wo die Du-Fassung verkürzt
+// spricht ("hab ich", "gibt's"), schreibt die Sie-Fassung aus – das ist der
+// Unterschied zwischen vertraut und höflich, und genau daran merkt man, ob
+// jemand nur suchen und ersetzen gedrückt hat.
+//
+// Wortgleiche Texte stehen trotzdem nur einmal als Konstante und werden in
+// beiden Fassungen referenziert, damit sie nicht auseinanderlaufen.
+
+export interface AnredeFassung {
+	du: string;
+	sie: string;
+}
+
+export type Zielgruppe = "werbekunde" | "produktion" | "sender";
+
+/** Kontaktwege. Stimmen mit der Kontaktseite überein. */
+export const KONTAKT = {
+	email: "mail@true-frame.net",
+	telefon: "+43 660 577 73 67",
+	telefonRoh: "+436605777367",
+} as const;
+
+/** Mehr als vier Filme wird ein Programmheft – das soll es nicht sein. */
+export const MAX_FILME = 4;
+
+/**
+ * Standardauswahl je Zielgruppe, wenn im Screening keine eigene hinterlegt
+ * ist. IDs sind die Dateinamen unter src/content/projects ohne .md.
+ */
+export const STANDARD_PROJEKTE: Record<Zielgruppe, string[]> = {
+	// Was ein Unternehmen sehen will: zwei fertige Imagefilme, dann der Querschnitt.
+	werbekunde: ["wapotec-jubilaeumsfilm", "clear-amine", "showreel"],
+	// Produktionsfirmen interessiert die lange Form zuerst.
+	produktion: ["zeichen-der-vergangenheit", "die-wegewarter", "showreel"],
+	// Sender wollen sehen, dass tagesaktuell und dokumentarisch beides sitzt.
+	sender: ["illegale-e-scooter", "borkenkaefer-salzburg", "zeichen-der-vergangenheit"],
+};
+
+/** Technik-Block für die Zielgruppe "produktion". Frei änderbar. */
+export const TECHNIK = {
+	kamera: ["Sony FX6", "Sony ZV-E1"],
+	schnitt: ["Premiere Pro", "DaVinci Resolve"],
+	arbeitsweise: "Recherche, Dreh und Schnitt aus einer Hand.",
+	verfuegbarkeit: "Kurzfristig buchbar, auch für mehrtägige Drehs.",
+} as const;
+
+// ---------------------------------------------------------------------------
+// Ticket
+// ---------------------------------------------------------------------------
+
+export const TICKET = {
+	haus: "TRUE FRAME LICHTSPIELE · SALZBURG",
+	titel: "PRIVATE SCREENING",
+	platz: "Saal 1 · Reihe 1 · Platz 1",
+	reserviert: "Reserviert für",
+	vorstellung: "Vorstellung",
+	programm: "Programm",
+	nummer: "Nr.",
+	abschnitt: "KONTROLLABSCHNITT",
+	/** Steht handschriftlich am Pfeil zum Abrissstreifen. */
+	abreissen: "Abreißen & los geht's!",
+	/** Ankerlink unter dem Ticket, für alle die das Kino überspringen wollen. */
+	direktZuFilmen: "Direkt zu den Filmen ↓",
+} as const;
+
+// ---------------------------------------------------------------------------
+// Vorspann auf der Leinwand
+// ---------------------------------------------------------------------------
+
+export const VORSPANN_KOPF = {
+	haus: "TRUE FRAME LICHTSPIELE",
+	praesentiert: "präsentiert",
+	eineVorstellungFuer: "eine Vorstellung für",
+	nachWahrerGeschichte: "– nach einer wahren Geschichte –",
+} as const;
+
+// Vor dem Zielgruppen-Absatz.
+const PLATZ_GENOMMEN: AnredeFassung = {
+	du: "schön, dass du Platz genommen hast. Reihe 1, Platz 1 – der beste im Haus. Den hab ich für dich reserviert.",
+	sie: "schön, dass Sie Platz genommen haben. Reihe 1, Platz 1 – der beste im Haus. Den habe ich für Sie reserviert.",
+};
+
+// Nach dem persönlichen Absatz.
+const PROGRAMM_ANKUENDIGUNG: AnredeFassung = {
+	du: "Ich hab dir ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen – eher ein Kurzfilmabend. Lehn dich zurück.",
+	sie: "Ich habe Ihnen ein kleines Programm zusammengestellt. Kein Dreistunden-Epos, versprochen – eher ein Kurzfilmabend. Lehnen Sie sich zurück.",
+};
+
+const POPCORN: AnredeFassung = {
+	du: "Popcorn musst du dir leider selbst holen.",
+	sie: "Popcorn müssen Sie sich leider selbst holen.",
+};
+
+/** Schlusszeile des Vorspanns, danach der Scroll-Hinweis. */
+export const LICHT_AUS = "Licht aus. Film ab.";
+
+// Zielgruppen-Absätze. Zwei davon sprechen den Leser gar nicht direkt an und
+// sind deshalb in beiden Fassungen gleich; nur "produktion" verkürzt im Du.
+const ZG_WERBEKUNDE =
+	"Ich mache Filme für Unternehmen, die mehr zu erzählen haben als ihr Prospekt. Keine Werbung, deren Namen man schon beim Rausgehen vergessen hat – sondern Geschichten, über die man im Foyer noch redet.";
+
+const ZG_SENDER =
+	"Ich liefere Beiträge für RTS und R9 und Material für APA und dpa – Recherche, Dreh und Schnitt aus einer Hand. Kino ist schön, aber ich weiß auch, wie sich Sendeschluss anfühlt. Und dass eine gute Geschichte trotzdem keine Abkürzung nimmt.";
+
+export const ZIELGRUPPEN_ABSATZ: Record<Zielgruppe, AnredeFassung> = {
+	werbekunde: { du: ZG_WERBEKUNDE, sie: ZG_WERBEKUNDE },
+	produktion: {
+		du: "Gelernt hab ich mein Handwerk beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt's nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden – hinter der Kamera und am Schnittplatz.",
+		sie: "Gelernt habe ich mein Handwerk beim Regionalfernsehen – vom Lehrling bis zum Videojournalisten. Dort muss eine Geschichte in neunzig Sekunden sitzen, einen zweiten Take gibt es nicht. Heute drehe ich Dokus und Commercials und bin gern dort, wo größere Geschichten erzählt werden – hinter der Kamera und am Schnittplatz.",
+	},
+	sender: { du: ZG_SENDER, sie: ZG_SENDER },
+};
+
+export const VORSPANN = {
+	platzGenommen: PLATZ_GENOMMEN,
+	programmAnkuendigung: PROGRAMM_ANKUENDIGUNG,
+	popcorn: POPCORN,
+	ueberspringen: "Vorspann überspringen ⏭",
+	/** Nach dem Vorspann bzw. bei Wiederkehr. */
+	willkommenZurueck: "Willkommen zurück",
+	scrollHinweis: "Weiter zum Programm ↓",
+} as const;
+
+// ---------------------------------------------------------------------------
+// Programm
+// ---------------------------------------------------------------------------
+
+export const PROGRAMM = {
+	marquee: "HEUTE IM PROGRAMM",
+	ueberleitung: {
+		du: "Handverlesen für dich. Nicht alles, was ich gedreht habe – nur das, was du sehen solltest.",
+		sie: "Handverlesen für Sie. Nicht alles, was ich gedreht habe – nur das, was Sie sehen sollten.",
+	} satisfies AnredeFassung,
+	notizLabel: {
+		du: "Warum ich dir den zeigen will:",
+		sie: "Warum ich Ihnen den zeigen möchte:",
+	} satisfies AnredeFassung,
+	/** Schließen-Knopf der Vorführung. */
+	lichtAn: "Licht an",
+	/** Genre-Stempel, wenn das Projekt keiner Kategorie zugeordnet ist. */
+	stempelFallback: "SHOWREEL",
+	stempel: {
+		imagefilm: "IMAGEFILM",
+		doku: "DOKU",
+		news: "NEWS",
+	} as Record<string, string>,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Zielgruppenblock
+// ---------------------------------------------------------------------------
+
+export const ZIELGRUPPEN_BLOCK = {
+	produktion: {
+		titel: "Technik im Vorführraum",
+		kamera: "Kamera",
+		schnitt: "Schnitt",
+		arbeitsweise: "Arbeitsweise",
+		verfuegbarkeit: "Verfügbarkeit",
+	},
+	sender: {
+		titel: "Ausgestrahlt bei",
+		absatz:
+			"Recherche, Dreh und Schnitt aus einer Hand – vom ersten Anruf bis zur fertigen Sendefassung.",
+	},
+	werbekunde: {
+		titel: "Gemeinsam entstanden",
+	},
+} as const;
+
+// ---------------------------------------------------------------------------
+// Abspann
+// ---------------------------------------------------------------------------
+
+export const ABSPANN = [
+	["Regie", "Gabriel Neumayr"],
+	["Kamera", "Gabriel Neumayr"],
+	["Schnitt", "Gabriel Neumayr"],
+	["Ton", "Gabriel Neumayr"],
+	["Catering", "leider auch Gabriel Neumayr"],
+	["Gedreht mit", "Sony FX6 · Sony ZV-E1"],
+	["Ein Film von", "True Frame, Salzburg"],
+] as const;
+
+export const SCHLUSS = {
+	cta: "Nächste Vorstellung: Wir zwei. Ein Kaffee. Salzburg.",
+	ctaLabel: {
+		du: "Vorstellung buchen",
+		sie: "Vorstellung vereinbaren",
+	} satisfies AnredeFassung,
+	postCredits: "– Post-Credits-Szene –",
+	ps: {
+		du: "Du bist bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für dich – sie steht in keinem Programmheft.",
+		sie: "Sie sind bis zum Schluss geblieben. Das machen nur echte Filmleute.\nP.S. Diese Vorstellung läuft nur für Sie – sie steht in keinem Programmheft.",
+	} satisfies AnredeFassung,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Link-Vorschau
+// ---------------------------------------------------------------------------
+
+export const OG_BESCHREIBUNG = {
+	du: "Reihe 1, Platz 1 – reserviert für dich. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
+	sie: "Reihe 1, Platz 1 – für Sie reserviert. Eine private Vorstellung von Gabriel Neumayr, True Frame.",
+} satisfies AnredeFassung;

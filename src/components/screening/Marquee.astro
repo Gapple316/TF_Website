@@ -1,0 +1,38 @@
+---
+// Szene 4, Kopf: Leuchtschild über dem Programm. Der Glühbirnenrahmen besteht
+// aus einzelnen Punkten, die beim Einscrollen kurz anflackern und dann ruhig
+// leuchten – das Flackern schaltet sich bei prefers-reduced-motion ab.
+
+interface Props {
+	text: string;
+	untertitel: string;
+}
+
+const { text, untertitel } = Astro.props;
+
+// 2 × 16 oben/unten, 2 × 5 links/rechts – genug für den Eindruck, wenig genug
+// fürs Rendern.
+const birnenOben = Array.from({ length: 16 });
+const birnenSeite = Array.from({ length: 5 });
+---
+
+<header class="kino-marquee" data-kino-reveal>
+	<div class="kino-marquee__schild">
+		<span class="kino-marquee__reihe kino-marquee__reihe--oben" aria-hidden="true">
+			{birnenOben.map(() => <i></i>)}
+		</span>
+		<span class="kino-marquee__reihe kino-marquee__reihe--unten" aria-hidden="true">
+			{birnenOben.map(() => <i></i>)}
+		</span>
+		<span class="kino-marquee__spalte kino-marquee__spalte--links" aria-hidden="true">
+			{birnenSeite.map(() => <i></i>)}
+		</span>
+		<span class="kino-marquee__spalte kino-marquee__spalte--rechts" aria-hidden="true">
+			{birnenSeite.map(() => <i></i>)}
+		</span>
+
+		<h2 class="kino-marquee__text">{text}</h2>
+	</div>
+
+	<p class="kino-marquee__untertitel">{untertitel}</p>
+</header>
