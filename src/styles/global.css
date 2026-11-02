@@ -34,7 +34,11 @@
 */
 @font-face {
 	font-family: "Gabriel Handschrift";
-	src: url("/fonts/gabriel-handschrift.ttf") format("truetype");
+	/* Die Zahl hinter ?v= bei JEDEM Austausch der Schriftdatei erhöhen.
+	   Sonst behalten Browser die alte Fassung: Der Dateiname bleibt gleich,
+	   und wenn die neue Datei zufällig gleich groß ist, ändert sich auch die
+	   Kennung nicht zuverlässig. Mit neuer Nummer ist es eine neue Adresse. */
+	src: url("/fonts/gabriel-handschrift.ttf?v=2") format("truetype");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
