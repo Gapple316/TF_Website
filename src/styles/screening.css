@@ -1364,6 +1364,38 @@ html[data-kino-animiert] [data-kino-vorspann="fertig"] .kino-skip {
 	visibility: hidden;
 }
 
+/*
+  Ist der Text durchgelaufen, leuchtet der Weg zum Programm auf. Vorher stand
+  der Hinweis blass neben dem Überspringen-Knopf und ging unter – gerade in
+  dem Moment, in dem er der einzige Weg weiter ist.
+
+  "statisch" ist die Fassung ohne Bewegungswunsch: Dort steht der Vorspann von
+  Anfang an vollständig da, also ist man auch von Anfang an fertig. Gold ja,
+  Pulsieren nein – darum kümmert sich die Medienabfrage weiter unten.
+*/
+html[data-kino-animiert] [data-kino-vorspann="fertig"] .kino-weiter,
+html[data-kino-animiert] [data-kino-vorspann="statisch"] .kino-weiter {
+	color: var(--kino-gold);
+}
+
+html[data-kino-animiert] [data-kino-vorspann="fertig"] .kino-weiter {
+	animation: kino-aufleuchten 2s ease-in-out infinite;
+}
+
+@keyframes kino-aufleuchten {
+	0%,
+	100% {
+		opacity: 0.8;
+		text-shadow: none;
+	}
+	50% {
+		opacity: 1;
+		text-shadow:
+			0 0 10px rgba(201, 162, 39, 0.8),
+			0 0 22px rgba(201, 162, 39, 0.35);
+	}
+}
+
 @keyframes kino-rollen {
 	from {
 		transform: translateY(0);
@@ -1925,6 +1957,12 @@ body:has(.kino-vorfuehrung[data-offen="true"]) .kino-figur {
 
 	html[data-kino-animiert] .kino-countdown {
 		display: none;
+	}
+
+	/* Der Hinweis zum Programm bleibt gold, aber er pulsiert nicht. */
+	html[data-kino-animiert] [data-kino-vorspann="fertig"] .kino-weiter {
+		animation: none;
+		opacity: 1;
 	}
 
 	/* Der Pfeil wird nicht gezeichnet, er ist einfach da. */
