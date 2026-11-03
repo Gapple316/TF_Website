@@ -20,7 +20,15 @@ const { title, description, theme, showHeaderLogo = true, footerVariant = "full"
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		{/* Eigenes Zeichen statt des Astro-Logos: "TF" in Anton, der Schrift
+		    des Logos, darunter das Rot der Marke. ?v=2 hängt dran, weil
+		    Browser ein einmal geholtes Favicon sehr lange behalten.
+
+		    Die .ico steht zuerst für alte Browser, die kein SVG verstehen;
+		    alle anderen nehmen das SVG und zeichnen es scharf in jeder Größe. */}
+		<link rel="icon" href="/favicon.ico?v=2" sizes="32x32" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
 		<meta name="description" content={description} />
 		<title>{title} · TRUE FRAME</title>
 		<ClientRouter />
