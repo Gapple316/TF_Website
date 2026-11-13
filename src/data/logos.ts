@@ -20,6 +20,7 @@ export const kundenLogos: LogoEntry[] = [
 	{ name: "Explosive Egg", src: "/logos/kunden/explosive-egg.webp" },
 	{ name: "Grow & Scale", src: "/logos/kunden/grow-scale.webp" },
 	{ name: "Alexander Egger", src: "/logos/kunden/alexander-egger.webp" },
+	{ name: "Cettaox", src: "/logos/kunden/cettaox.webp" },
 ];
 
 // Sender-Logos: NDR/Sat.1/RTL/KurierTV-Dateien sind offizielle Logos von
