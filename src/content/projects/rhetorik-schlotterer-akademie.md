@@ -6,11 +6,11 @@ thumbnail: /uploads/thumbs/rhetorik-schlotterer-akademie.jpg
 date: 2026-11-13
 client: Schlotterer
 year: 2026
-description: 'Werbefilm für das Rhetorik-Training der Schlotterer Akademie. Er wirbt im Haus für das eigene Weiterbildungsprogramm.'
+description: 'Event-Video vom Rhetorik-Training der Schlotterer Akademie. Es wirbt im Haus für das eigene Weiterbildungsprogramm.'
 tags:
   - Corporate
   - Weiterbildung
 featured: false
 ---
 
-Der Film richtet sich an die eigenen Mitarbeiterinnen und Mitarbeiter und zeigt, was im Rhetorik-Training passiert.
+Mein Kunde kommt zu mir und will ein Event-Video. Anstatt aber langweilige Bilder mit Musik zu unterlegen, versuche ich eine kleine Geschichte über echte Personen im Unternehmen zu erzählen. So wird das Video authentisch zum Anschauen.

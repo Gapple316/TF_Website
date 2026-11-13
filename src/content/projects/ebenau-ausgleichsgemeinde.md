@@ -1,5 +1,5 @@
 ---
-title: 'Ebenau: Wenn der Bürgermeister den Schulbus fährt'
+title: 'Ebenau: Der Bürgermeister fährt die Kindergartenkinder'
 category: news
 client: RTS Regional TV Salzburg
 videoUrl: 'https://youtu.be/RjBZMyoDPEc'
@@ -7,7 +7,7 @@ thumbnail: /uploads/thumbs/ebenau-ausgleichsgemeinde.jpg
 date: 2026-11-13
 year: 2026
 duration: '02:55'
-description: 'Ebenau ist eine von sieben Ausgleichsgemeinden in Salzburg und kann die laufenden Ausgaben nicht mehr selbst decken. Fällt der Schulbusfahrer aus, fährt der Bürgermeister.'
+description: 'Wenn in Ebenau jemand krank wird, springt der Bürgermeister ein. Die Flachgauer Gemeinde ist eine von sieben Ausgleichsgemeinden in Salzburg.'
 tags:
   - News
   - Gemeindefinanzen
@@ -20,8 +20,6 @@ stills:
   - /uploads/stills/ebenau-gemeindeamt.jpg
 ---
 
-Ebenau im Flachgau hat knapp 1500 Einwohner und ist seit zehn Jahren Ausgleichsgemeinde. Das heißt: nur noch Pflichtaufgaben. Ein neuer Feuerwehrstellplatz oder ein Übungsraum für die Jugend gehen sich nicht aus, Straßen und Kanäle bleiben liegen.
+Wenn in Ebenau jemand krank wird, springt der Bürgermeister ein. Die Flachgauer Gemeinde ist eine von sieben Ausgleichsgemeinden in Salzburg und kann ihre laufenden Ausgaben nicht mehr selbst decken. Der Bürgermeister wollte deshalb sogar auf einen Teil seines Gehalts verzichten, das erlaubt das Gesetz aber nicht. Mit dem Gehaltsverzicht wollte er nur ein Zeichen setzen, die eigentliche Problematik ist eine andere.
 
-Bürgermeister Johannes Fürstaller wollte deshalb bei allen Angestellten zehn Prozent beim Gehalt sparen, beim eigenen auch. Die Gemeindeaufsicht erlaubt ihm das nicht. Manfred Sampl vom Salzburger Gemeindeverband ordnet im Beitrag ein, wie die Gemeinden im Bundesland insgesamt dastehen.
-
-Eine Produktion für RTS Regional TV Salzburg. Beitrag: Gabriel Neumayr, Resi Rossmann, Thomas Mayer.
+Eine Produktion für die Nachrichtensendung von RTS Regionalfernsehen. Beitrag: Gabriel Neumayr, Resi Rossmann, Thomas Mayer.
