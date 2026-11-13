@@ -79,7 +79,7 @@ const arbeitsweiseSteps = await Promise.all(
 			text: k.text,
 			markWord: k.markWord,
 			image: optimized.src,
-			imageAlt: `${k.tagline} – ${k.word}`,
+			imageAlt: `${k.tagline}, ${k.word}`,
 		};
 	}),
 );
@@ -119,7 +119,7 @@ const wasSteps = await Promise.all(
 
 <BaseLayout
 	title="Home"
-	description="TRUE FRAME – Produktionsfirma für Imagefilme, Magazin & News und Dokumentationen."
+	description="TRUE FRAME, Produktionsfirma für Imagefilme, Magazin & News und Dokumentationen."
 	theme="landing"
 	showHeaderLogo={false}
 >
@@ -161,7 +161,7 @@ const wasSteps = await Promise.all(
 				</h1>
 				<p class="max-w-xl font-sans text-[clamp(0.875rem,2vmin,1.125rem)] text-white/70">
 					Produktionsfirma für Imagefilme, Magazin & News und
-					Dokumentationen – ehrliche Geschichten, cinematisch erzählt.
+					Dokumentationen. Ehrliche Geschichten, cinematisch erzählt.
 				</p>
 				<p class="mt-2 font-mono text-[10px] tracking-[0.24em] text-white/50">SCROLLEN</p>
 			</div>
@@ -181,10 +181,10 @@ const wasSteps = await Promise.all(
 		</div>
 
 		<p class="mt-8 max-w-2xl font-sans text-xs text-ink-muted">
-			Hinweis: Ein Teil der gezeigten Sender-Logos steht für vollständige
-			Geschichten, die ich selbst produziert habe, ein anderer Teil für
-			Rohmaterial, das ich vor Ort gedreht und über Presseagenturen (dpa,
-			APA) an die jeweilige Redaktion geliefert habe.
+			Hinweis: Ein Teil der gezeigten Logos steht für Rohmaterial, das ich
+			vor Ort gedreht und über Presseagenturen (APA, dpa) an die jeweilige
+			Redaktion geliefert habe, ein anderer Teil für vollständige
+			Geschichten, die ich selbst produziert habe.
 		</p>
 	</section>
 

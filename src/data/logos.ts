@@ -26,17 +26,20 @@ export const kundenLogos: LogoEntry[] = [
 	// mitbenutzt, statt sie zu kopieren.
 	{ name: "RTS Regionalfernsehen Salzburg", src: "/logos/sender/rts.webp" },
 	{ name: "dpa", src: "/logos/sender/dpa.webp" },
+	{ name: "APA", src: "/logos/sender/apa.webp" },
 ];
 
-// Sender-Logos: NDR/Sat.1/RTL/KurierTV-Dateien sind offizielle Logos von
-// Wikimedia Commons (gemeinfrei/CC-lizenziert dort hinterlegt), lokal auf
-// Graustufen + transparenten Hintergrund gebracht, damit sie sich optisch
-// wie die übrigen Marquee-Logos verhalten.
+// Wo die Arbeit landet: die beiden Agenturen, über die das Rohmaterial läuft,
+// und die beiden Sender, bei denen ganze Geschichten laufen. NDR, Sat.1, RTL
+// und Kurier TV sind bewusst raus, auch wenn Material dort gelaufen ist: Vier
+// Logos, hinter denen eine laufende Zusammenarbeit steht, sagen mehr als zehn
+// einmalige Übernahmen. Die Dateien bleiben im Ordner liegen.
+//
+// Alle Dateien sind lokal auf Weiß und transparenten Hintergrund gebracht,
+// damit sie sich im Marquee gleich verhalten.
 export const senderLogos: LogoEntry[] = [
-	{ name: "NDR", src: "/logos/sender/ndr.webp" },
-	{ name: "Sat.1", src: "/logos/sender/sat1.webp" },
-	{ name: "RTL", src: "/logos/sender/rtl.webp" },
+	{ name: "APA", src: "/logos/sender/apa.webp" },
+	{ name: "dpa", src: "/logos/sender/dpa.webp" },
 	{ name: "RTS Regionalfernsehen Salzburg", src: "/logos/sender/rts.webp" },
 	{ name: "R9", src: "/logos/sender/r9.webp" },
-	{ name: "Kurier TV", src: "/logos/sender/kuriertv.webp" },
 ];
