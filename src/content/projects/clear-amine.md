@@ -1,5 +1,5 @@
 ---
-title: Clear AMine – Imagefilm
+title: Clear AMine Imagefilm
 category: imagefilm
 videoUrl: 'https://youtu.be/w0_fK4r7Yrs'
 thumbnail: /uploads/thumbs/clear-amine.jpg

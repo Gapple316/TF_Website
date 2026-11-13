@@ -2,6 +2,7 @@
 title: Adventskalender des Musikums Salzburg
 category: news
 client: RTS Regional TV Salzburg
+videoUrl: 'https://youtu.be/kizqRM9mPbM'
 thumbnail: /uploads/thumbs/adventskalender-musikum.jpg
 date: 2026-11-12
 year: 2026

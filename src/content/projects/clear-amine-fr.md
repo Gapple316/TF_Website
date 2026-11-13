@@ -1,5 +1,5 @@
 ---
-title: Clear AMine – Imagefilm (FR)
+title: Clear AMine Imagefilm (FR)
 category: imagefilm
 videoUrl: 'https://youtu.be/u_PBIHWY2PI'
 thumbnail: /uploads/thumbs/clear-amine-fr.jpg

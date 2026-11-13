@@ -2,6 +2,7 @@
 title: 'Ebenau: Wenn der Bürgermeister den Schulbus fährt'
 category: news
 client: RTS Regional TV Salzburg
+videoUrl: 'https://youtu.be/RjBZMyoDPEc'
 thumbnail: /uploads/thumbs/ebenau-ausgleichsgemeinde.jpg
 date: 2026-11-13
 year: 2026
