@@ -21,6 +21,11 @@ export const kundenLogos: LogoEntry[] = [
 	{ name: "Grow & Scale", src: "/logos/kunden/grow-scale.webp" },
 	{ name: "Alexander Egger", src: "/logos/kunden/alexander-egger.webp" },
 	{ name: "Cettaox", src: "/logos/kunden/cettaox.webp" },
+	// RTS und dpa sind beides: Auftraggeber und Sender bzw. Agentur. Die
+	// Dateien liegen deshalb nur einmal unter /logos/sender/ und werden hier
+	// mitbenutzt, statt sie zu kopieren.
+	{ name: "RTS Regionalfernsehen Salzburg", src: "/logos/sender/rts.webp" },
+	{ name: "dpa", src: "/logos/sender/dpa.webp" },
 ];
 
 // Sender-Logos: NDR/Sat.1/RTL/KurierTV-Dateien sind offizielle Logos von
